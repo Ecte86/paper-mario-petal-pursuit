@@ -6,70 +6,77 @@
 font_path = "res://Fonts/komika_text/KOMTXTI_.ttf"
 
 [sub_resource type="DynamicFont" id=2]
-size = 64
+size = 53
+outline_size = 2
+outline_color = Color( 0, 0, 0, 1 )
 font_data = SubResource( 1 )
 
 [sub_resource type="DynamicFontData" id=3]
 font_path = "res://Fonts/komika_text/KOMTXTI_.ttf"
 
 [sub_resource type="DynamicFont" id=4]
-size = 32
+size = 53
+outline_size = 2
+outline_color = Color( 0, 0, 0, 1 )
 font_data = SubResource( 3 )
 
 [sub_resource type="DynamicFontData" id=5]
 font_path = "res://Fonts/komika_text/KOMTXTI_.ttf"
 
 [sub_resource type="DynamicFont" id=6]
-size = 32
+size = 53
+outline_size = 2
+outline_color = Color( 0, 0, 0, 1 )
 font_data = SubResource( 5 )
 
 [node name="HUD" type="CanvasLayer"]
 script = ExtResource( 1 )
+__meta__ = {
+"_edit_horizontal_guides_": [ 0.0 ]
+}
 
 [node name="HPLabel" type="Label" parent="."]
 margin_top = 1.0
 margin_right = 241.0
-margin_bottom = 52.0
+margin_bottom = 69.0
+grow_horizontal = 0
+grow_vertical = 0
 size_flags_vertical = 1
 custom_fonts/font = SubResource( 2 )
 text = "HP: "
-uppercase = true
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="StarsLabel" type="Label" parent="."]
-margin_left = 600.0
-margin_top = 8.0
-margin_right = 826.0
-margin_bottom = 50.0
+margin_left = 516.0
+margin_right = 742.0
+margin_bottom = 68.0
 custom_fonts/font = SubResource( 4 )
-text = "Stars:"
-percent_visible = -0.166667
+text = "S:"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="CoinLabel" type="Label" parent="."]
-margin_left = 844.0
-margin_top = 4.0
-margin_right = 1010.0
-margin_bottom = 46.0
+margin_left = 763.0
+margin_top = -4.0
+margin_right = 963.0
+margin_bottom = 64.0
 custom_fonts/font = SubResource( 4 )
-text = "Coins:"
-percent_visible = -0.166667
+text = "C:"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="FlowersLabel" type="Label" parent="."]
-margin_left = 321.0
-margin_top = 7.0
-margin_right = 593.0
-margin_bottom = 49.0
+margin_left = 252.0
+margin_top = -1.0
+margin_right = 524.0
+margin_bottom = 67.0
 size_flags_vertical = 1
 custom_fonts/font = SubResource( 6 )
-text = "Flowers:"
+text = "P:"
 __meta__ = {
 "_edit_use_anchors_": false
 }

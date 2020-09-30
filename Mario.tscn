@@ -17,39 +17,39 @@ atlas = ExtResource( 2 )
 region = Rect2( 167, 0, 167, 260 )
 
 [sub_resource type="AtlasTexture" id=3]
-flags = 7
-atlas = ExtResource( 4 )
-region = Rect2( 0, 0, 176, 275 )
+flags = 23
+atlas = ExtResource( 2 )
+region = Rect2( 167, 0, 167, 260 )
 
 [sub_resource type="AtlasTexture" id=4]
-flags = 7
-atlas = ExtResource( 4 )
-region = Rect2( 176, 0, 176, 275 )
-
-[sub_resource type="AtlasTexture" id=5]
-flags = 7
-atlas = ExtResource( 4 )
-region = Rect2( 0, 275, 176, 275 )
-
-[sub_resource type="AtlasTexture" id=6]
-flags = 7
-atlas = ExtResource( 4 )
-region = Rect2( 176, 275, 176, 275 )
-
-[sub_resource type="AtlasTexture" id=7]
 flags = 23
 atlas = ExtResource( 3 )
 region = Rect2( 0, 0, 210, 282 )
 
+[sub_resource type="AtlasTexture" id=5]
+flags = 7
+atlas = ExtResource( 4 )
+region = Rect2( 0, 0, 176, 275 )
+
+[sub_resource type="AtlasTexture" id=6]
+flags = 7
+atlas = ExtResource( 4 )
+region = Rect2( 176, 0, 176, 275 )
+
+[sub_resource type="AtlasTexture" id=7]
+flags = 7
+atlas = ExtResource( 4 )
+region = Rect2( 0, 275, 176, 275 )
+
 [sub_resource type="AtlasTexture" id=8]
+flags = 7
+atlas = ExtResource( 4 )
+region = Rect2( 176, 275, 176, 275 )
+
+[sub_resource type="AtlasTexture" id=9]
 flags = 7
 atlas = ExtResource( 5 )
 region = Rect2( 0, 602, 196, 301 )
-
-[sub_resource type="AtlasTexture" id=9]
-flags = 23
-atlas = ExtResource( 2 )
-region = Rect2( 167, 0, 167, 260 )
 
 [sub_resource type="SpriteFrames" id=10]
 animations = [ {
@@ -58,24 +58,24 @@ animations = [ {
 "name": "walkDown",
 "speed": 5.0
 }, {
-"frames": [ SubResource( 3 ), SubResource( 4 ), SubResource( 5 ), SubResource( 6 ) ],
+"frames": [ SubResource( 3 ) ],
 "loop": true,
-"name": "walkUp",
+"name": "idleDown",
 "speed": 5.0
 }, {
-"frames": [ SubResource( 7 ) ],
+"frames": [ SubResource( 4 ) ],
 "loop": true,
 "name": "jump",
 "speed": 5.0
 }, {
-"frames": [ SubResource( 8 ) ],
+"frames": [ SubResource( 5 ), SubResource( 6 ), SubResource( 7 ), SubResource( 8 ) ],
 "loop": true,
-"name": "idleUp",
+"name": "walkUp",
 "speed": 5.0
 }, {
 "frames": [ SubResource( 9 ) ],
 "loop": true,
-"name": "idleDown",
+"name": "idleUp",
 "speed": 5.0
 } ]
 

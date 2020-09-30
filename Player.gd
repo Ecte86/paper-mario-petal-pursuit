@@ -1,19 +1,33 @@
 extends KinematicBody
 signal hit
 
-var speed = 200
+var speed = 300
 var direction = Vector3()
 var gravity = -9.8
 var velocity = Vector3()
 
 var hp
 
-# Called when the node enters the scene tree for the first time.
+export (NodePath) var attack_path
+var attackPath_points
+var attackPath_index = 0
+
+var collision_partner
+
 func _ready():
-	pass # Replace with function body.
+	set_hp(Globals.hp)
+	if attack_path:
+		attackPath_points = get_node(attack_path).curve.get_baked_points()
 
 func new_game():
-	hp = 10
+	set_hp(10)
+	
+func set_hp(num):
+	hp=num
+	Globals.hp=num
+	
+func get_hp():
+	return Globals.hp
 
 func _process(delta):
 	# Animation processing!
@@ -84,8 +98,21 @@ func _process(delta):
 	#if Input.is_action_just_released("ui_up"):
 		#$AnimatedSprite3D.play("idleUp")
 
+func attack():
+	var target = attackPath_points[attackPath_index]
+	var position = self.transform.origin
+	if position.distance_to(target) < 1:
+		attackPath_index = wrapi(attackPath_index + 1, 0, attackPath_points.size())
+		target = attackPath_points[attackPath_index]
+	velocity = (target - position).normalized() * speed
+	velocity = move_and_slide(velocity)
+	return
+
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta):
+	#if attack_path and Globals.playerTurn==true:
+	#	attack() #(attack_path)
+	
 	direction=Vector3(0,0,0)
 	if Input.is_action_pressed("ui_left"):
 		direction.x -= 1 # subtract 1 from direction.x
@@ -99,13 +126,15 @@ func _physics_process(delta):
 	direction=direction.normalized()
 	direction=direction*speed*delta
 	
-	velocity.y += gravity*delta
+	var gravity_modified = gravity * 1.5
+	
+	velocity.y += gravity_modified*delta
 	velocity.x=direction.x
 	velocity.z=direction.z
 	
 	velocity = move_and_slide(velocity,Vector3(0,1,0))
 	
-	if Input.is_action_pressed("ui_accept"): # TODO: find a better action for jumping
+	if Input.is_action_pressed("jump"): # TODO: find a better action for jumping
 		#velocity.y=10
 		if is_on_floor():
 			velocity.y=10
@@ -114,10 +143,27 @@ func _physics_process(delta):
 
 #	pass
 
+func set_last_collision_partner(body):
+	collision_partner = body
+
+func get_last_collision_partner():
+	return collision_partner
+
+func isOnFloor():
+	return (velocity.y > 0)
 
 func _on_Area_body_entered(body):
-	if body.is_in_group("Enemies"):
-		body.hide()
+	set_last_collision_partner(body)
+	var test = get_tree().current_scene.filename
+	#if body.is_in_group("Enemies"):
+	#	breakpoint
+	#print_debug(str(test))
+	if str(get_tree().current_scene.filename) == "res://BattleStage.tscn":
+		if body.is_in_group("Enemies"):
+			if self.is_on_floor():
+				self.set_hp(self.get_hp()-1)
+			else:
+				body.hide()	
 	#if body is RigidBody:#Area: # TODO: What type will enemy be? Assuming area for now.
 	#	body.hide() # eliminate enemy as a test
 
