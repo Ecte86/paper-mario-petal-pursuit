@@ -5,6 +5,7 @@ var speed = 300
 var direction = Vector3()
 var gravity = -9.8
 var velocity = Vector3()
+var jumpAmount = 10
 
 var hp
 
@@ -17,6 +18,7 @@ var collision_partner
 func _ready():
 	set_hp(Globals.hp)
 	if attack_path:
+		velocity=Vector3(0,0,0)
 		attackPath_points = get_node(attack_path).curve.get_baked_points()
 
 func new_game():
@@ -99,45 +101,68 @@ func _process(delta):
 		#$AnimatedSprite3D.play("idleUp")
 
 func attack():
-	var target = attackPath_points[attackPath_index]
-	var position = self.transform.origin
-	if position.distance_to(target) < 1:
-		attackPath_index = wrapi(attackPath_index + 1, 0, attackPath_points.size())
-		target = attackPath_points[attackPath_index]
-	velocity = (target - position).normalized() * speed
-	velocity = move_and_slide(velocity)
+#	var target = attackPath_points[attackPath_index]
+#	var position = self.transform.origin
+#	#if position.distance_to(target) < 1:
+#	#	attackPath_index = wrapi(attackPath_index + 1, 0, attackPath_points.size())
+#	#	target = attackPath_points[attackPath_index]
+#	velocity = (target - position).normalized() * speed
+#	velocity = move_and_slide(velocity, Vector3(0,1,0))
 	return
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta):
-	#if attack_path and Globals.playerTurn==true:
-	#	attack() #(attack_path)
+	if attack_path:
+		if Globals.battleStatus==1:
+			if Globals.playerTurn==true:
+				var target = attackPath_points[attackPath_index]
+				var position = self.transform.origin
+				if position.distance_to(target) < 1:
+					attackPath_index = clamp(attackPath_index + 1, 0, attackPath_points.size())
+					target = attackPath_points[attackPath_index]
+				velocity = (target - position).normalized() * speed * delta
+				if attackPath_index < attackPath_points.size()-1:
+					attackPath_index=attackPath_index+1
+				else:
+					var onceOnly=1
+					if onceOnly == 1:
+						onceOnly=0
+						velocity.x=1*speed*delta
+					else:
+						velocity.x=0
+					if velocity.y!=jumpAmount:
+						velocity.y=jumpAmount
+						
+				direction.x=velocity.x
+				#direction.z=velocity.z
+				velocity = move_and_slide(velocity, Vector3(0,1,0))
+				
+	else:
+		direction=Vector3(0,0,0)
+		if Input.is_action_pressed("ui_left"):
+			direction.x -= 1 # subtract 1 from direction.x
+		if Input.is_action_pressed("ui_right"):
+			direction.x += 1 # add 1 from direction.x
+			#$AnimationPlayer.play("Walk Down")
+		if Input.is_action_pressed("ui_down"):
+			direction.z += 1 # add 1 from direction.z
+		if Input.is_action_pressed("ui_up"):
+			direction.z -= 1 # subtract 1 from direction.z
+		direction=direction.normalized()
+		direction=direction*speed*delta
+		
+		var gravity_modified = gravity * 1.5
+		
+		velocity.y += gravity_modified*delta
+		velocity.x=direction.x
+		velocity.z=direction.z
+		
+		velocity = move_and_slide(velocity,Vector3(0,1,0))
 	
-	direction=Vector3(0,0,0)
-	if Input.is_action_pressed("ui_left"):
-		direction.x -= 1 # subtract 1 from direction.x
-	if Input.is_action_pressed("ui_right"):
-		direction.x += 1 # add 1 from direction.x
-		#$AnimationPlayer.play("Walk Down")
-	if Input.is_action_pressed("ui_down"):
-		direction.z += 1 # add 1 from direction.z
-	if Input.is_action_pressed("ui_up"):
-		direction.z -= 1 # subtract 1 from direction.z
-	direction=direction.normalized()
-	direction=direction*speed*delta
-	
-	var gravity_modified = gravity * 1.5
-	
-	velocity.y += gravity_modified*delta
-	velocity.x=direction.x
-	velocity.z=direction.z
-	
-	velocity = move_and_slide(velocity,Vector3(0,1,0))
-	
-	if Input.is_action_pressed("jump"): # TODO: find a better action for jumping
-		#velocity.y=10
-		if is_on_floor():
-			velocity.y=10
+		if Input.is_action_pressed("jump"): # TODO: find a better action for jumping
+			#velocity.y=10
+			if is_on_floor():
+				velocity.y=jumpAmount
 
 	#velocity = move_and_slide(direction,Vector3(0,1,0))
 
