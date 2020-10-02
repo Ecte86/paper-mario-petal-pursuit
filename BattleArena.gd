@@ -1,11 +1,14 @@
 extends Spatial
 signal startBattle(freeAttack)
+signal endBattle(playerWins)
 
 # Declare member variables here. Examples:
 # var a = 2
 # var b = "text"
 
 var globals = true
+export (NodePath) var player
+export (NodePath) var enemy
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -22,11 +25,18 @@ func _ready():
 	if Globals.playerGoesFirst==false:
 		_on_BattleArena_startBattle(false)
 		Globals.setPlayerGoesFirst(false)
+		
+func getworldEdge():
+	return $Floor.global_scale()
+		
+func getEnemy():
+	return get_node(enemy)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):
 #	pass
+
 
 
 func _on_BattleArena_startBattle(freeAttack):
@@ -43,3 +53,7 @@ func _on_BattleArena_startBattle(freeAttack):
 #		$Mario.attack()
 #	else:
 #		get_tree().call_group("Enemies", "attack()")
+
+
+func _on_BattleArena_endBattle(playerWins):
+	Globals.endBattle(playerWins)

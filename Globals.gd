@@ -25,10 +25,15 @@ func startBattle(playersTurn: bool):
 	setPlayerGoesFirst(playersTurn)
 	battleStatus=1
 
-func endBattle():
+func endBattle(playerWins: bool):
 	battleStatus=0
 	playerGoesFirst=null
 	playerTurn=null
+	if playerWins:
+		get_tree().change_scene("res://Main.tscn")
+	else:
+		# insert lose msg
+		get_tree().quit()
 	
 	
 
