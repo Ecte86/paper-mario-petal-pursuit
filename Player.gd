@@ -1,11 +1,16 @@
 extends KinematicBody
 signal hit
 
-var speed = 300
+var airspeed = 520
+var speed = 505
+var friction = 0.5
+var acceleration = 40
+var deacceleration = 30
+
 var direction = Vector3()
-var gravity = -9.8
+var gravity = -85
 var velocity = Vector3()
-var jumpAmount = 10
+var jump_height = 25
 
 var hp
 
@@ -85,6 +90,7 @@ func _process(delta):
 			$AnimatedSprite3D.play("walkDown")
 			$AnimatedSprite3D.flip_h=true
 			
+
 	if !is_on_floor(): # If mario is in the air, jump
 		$AnimatedSprite3D.play("jump")
 		if direction.x>0: # flip if we are heading right
@@ -130,8 +136,8 @@ func _physics_process(delta):
 						velocity.x=1*speed*delta
 					else:
 						velocity.x=0
-					if velocity.y!=jumpAmount:
-						velocity.y=jumpAmount
+					if velocity.y!=jump_height:
+							velocity.y=jump_height
 						
 				direction.x=velocity.x
 				#direction.z=velocity.z
@@ -149,9 +155,12 @@ func _physics_process(delta):
 		if Input.is_action_pressed("ui_up"):
 			direction.z -= 1 # subtract 1 from direction.z
 		direction=direction.normalized()
-		direction=direction*speed*delta
-		
-		var gravity_modified = gravity * 1.5
+		if !is_on_floor():
+			direction=direction*speed*delta
+		else:
+			direction=direction*airspeed*delta
+			
+		var gravity_modified = gravity
 		
 		velocity.y += gravity_modified*delta
 		velocity.x=direction.x
@@ -159,10 +168,11 @@ func _physics_process(delta):
 		
 		velocity = move_and_slide(velocity,Vector3(0,1,0))
 	
-		if Input.is_action_pressed("jump"): # TODO: find a better action for jumping
+		if Input.is_action_pressed("jump"): # TODO: ECTE YOU NEED TO ASSIGN A BUTTON LOL find a better action for jumping
 			#velocity.y=10
-			if is_on_floor():
-				velocity.y=jumpAmount
+			if !is_on_floor():
+				velocity.y=jump_height
+			
 
 	#velocity = move_and_slide(direction,Vector3(0,1,0))
 

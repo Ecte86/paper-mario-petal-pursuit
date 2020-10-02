@@ -14,6 +14,7 @@ signal main_startBattle(playerGoesFirst)
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	$Mario.new_game()
+	$AudioStreamPlayer3D.play()
 	$HUD.update_hp($Mario.get_hp())
 	$HUD.update_petals(Globals.petals)
 	$HUD.update_stars(Globals.stars)

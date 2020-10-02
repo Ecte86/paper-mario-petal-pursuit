@@ -2,8 +2,8 @@
 
 importer="texture"
 type="StreamTexture"
-path.s3tc="res://.import/jump.png-60e7d08374724f073911fc9d3b6ea700.s3tc.stex"
-path.etc2="res://.import/jump.png-60e7d08374724f073911fc9d3b6ea700.etc2.stex"
+path.s3tc="res://.import/Pera_Albedo.0003.png-49213bbc16da6edf95c83682649b7346.s3tc.stex"
+path.etc2="res://.import/Pera_Albedo.0003.png-49213bbc16da6edf95c83682649b7346.etc2.stex"
 metadata={
 "imported_formats": [ "s3tc", "etc2" ],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://jump.png"
-dest_files=[ "res://.import/jump.png-60e7d08374724f073911fc9d3b6ea700.s3tc.stex", "res://.import/jump.png-60e7d08374724f073911fc9d3b6ea700.etc2.stex" ]
+source_file="res://Mario Idle Forward/Pera_Albedo.0003.png"
+dest_files=[ "res://.import/Pera_Albedo.0003.png-49213bbc16da6edf95c83682649b7346.s3tc.stex", "res://.import/Pera_Albedo.0003.png-49213bbc16da6edf95c83682649b7346.etc2.stex" ]
 
 [params]
 

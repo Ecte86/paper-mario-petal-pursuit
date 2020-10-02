@@ -2,8 +2,8 @@
 
 importer="texture"
 type="StreamTexture"
-path.s3tc="res://.import/jump.png-60e7d08374724f073911fc9d3b6ea700.s3tc.stex"
-path.etc2="res://.import/jump.png-60e7d08374724f073911fc9d3b6ea700.etc2.stex"
+path.s3tc="res://.import/Paper Mario Run Forward Test.png-353bdd68ead13a108791a6935006a099.s3tc.stex"
+path.etc2="res://.import/Paper Mario Run Forward Test.png-353bdd68ead13a108791a6935006a099.etc2.stex"
 metadata={
 "imported_formats": [ "s3tc", "etc2" ],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://jump.png"
-dest_files=[ "res://.import/jump.png-60e7d08374724f073911fc9d3b6ea700.s3tc.stex", "res://.import/jump.png-60e7d08374724f073911fc9d3b6ea700.etc2.stex" ]
+source_file="res://Paper Mario Run Forward Test.png"
+dest_files=[ "res://.import/Paper Mario Run Forward Test.png-353bdd68ead13a108791a6935006a099.s3tc.stex", "res://.import/Paper Mario Run Forward Test.png-353bdd68ead13a108791a6935006a099.etc2.stex" ]
 
 [params]
 
