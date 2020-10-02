@@ -21,6 +21,9 @@ func _ready():
 #	var BattleArenaNode = get_tree()
 #	BattleArenaNode.connect("startBattle", self, "_on_Main_main_startBattle")#connect("startBattle",self,"handleplayerspotted")
 
+func getWorldEdge():
+	return $Floor.get_child(0).scale
+
 func _on_Main_main_startBattle(playerGoesFirst):
 	get_tree().change_scene("res://BattleArena.tscn")
 	if playerGoesFirst == true:

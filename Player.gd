@@ -7,6 +7,11 @@ var gravity = -9.8
 var velocity = Vector3()
 var jumpAmount = 10
 
+var onceOnly=1
+
+var reachedTarget=0
+
+
 var hp
 
 export (NodePath) var attack_path
@@ -112,57 +117,68 @@ func attack():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta):
+	var edge=get_parent().getWorldEdge()
+	self.transform.origin.x = clamp(self.transform.origin.x,-edge.x,edge.x)
+	self.transform.origin.z = clamp(self.transform.origin.z,-edge.z,edge.z)
+	var gravity_modified = gravity * 1.5
 	if attack_path:
 		if Globals.battleStatus==1:
 			if Globals.playerTurn==true:
-				var target = attackPath_points[attackPath_index]
+				var target = get_parent().getEnemy().transform.origin #attackPath_points[attackPath_index-1]
 				var position = self.transform.origin
-				if position.distance_to(target) < 1:
-					attackPath_index = clamp(attackPath_index + 1, 0, attackPath_points.size())
-					target = attackPath_points[attackPath_index]
-				velocity = (target - position).normalized() * speed * delta
-				if attackPath_index < attackPath_points.size()-1:
-					attackPath_index=attackPath_index+1
+				if position.distance_to(target) < 4.5:
+					if reachedTarget==0:
+						reachedTarget=1
+						if onceOnly == 1:
+							onceOnly = 0
+							velocity.x=1*speed*delta
+							velocity.y=jumpAmount
+						else:
+							velocity.x = 0
 				else:
-					var onceOnly=1
-					if onceOnly == 1:
-						onceOnly=0
-						velocity.x=1*speed*delta
-					else:
-						velocity.x=0
-					if velocity.y!=jumpAmount:
-						velocity.y=jumpAmount
+					if reachedTarget == 0:
+						velocity = (target - position).normalized() * speed * delta
+				#if attackPath_index < attackPath_points.size():
+				#	attackPath_index=attackPath_index+1
+				#else:
+				#	if onceOnly == 1:
+				#		onceOnly=0
+						
+				#	else:
+				#		velocity.x=0
 						
 				direction.x=velocity.x
 				#direction.z=velocity.z
+				velocity.y += gravity_modified*delta
 				velocity = move_and_slide(velocity, Vector3(0,1,0))
 				
 	else:
-		direction=Vector3(0,0,0)
-		if Input.is_action_pressed("ui_left"):
-			direction.x -= 1 # subtract 1 from direction.x
-		if Input.is_action_pressed("ui_right"):
-			direction.x += 1 # add 1 from direction.x
-			#$AnimationPlayer.play("Walk Down")
-		if Input.is_action_pressed("ui_down"):
-			direction.z += 1 # add 1 from direction.z
-		if Input.is_action_pressed("ui_up"):
-			direction.z -= 1 # subtract 1 from direction.z
-		direction=direction.normalized()
-		direction=direction*speed*delta
+		if Globals.battleStatus==0:
+			direction=Vector3(0,0,0)
+			if Input.is_action_pressed("ui_left"):
+				direction.x -= 1 # subtract 1 from direction.x
+			if Input.is_action_pressed("ui_right"):
+				direction.x += 1 # add 1 from direction.x
+				#$AnimationPlayer.play("Walk Down")
+			if Input.is_action_pressed("ui_down"):
+				direction.z += 1 # add 1 from direction.z
+			if Input.is_action_pressed("ui_up"):
+				direction.z -= 1 # subtract 1 from direction.z
+			direction=direction.normalized()
+			direction=direction*speed*delta
+			
+			
+			velocity.y += gravity_modified*delta
+			velocity.x=direction.x
+			velocity.z=direction.z
+			
+			velocity = move_and_slide(velocity,Vector3(0,1,0))
 		
-		var gravity_modified = gravity * 1.5
-		
-		velocity.y += gravity_modified*delta
-		velocity.x=direction.x
-		velocity.z=direction.z
-		
-		velocity = move_and_slide(velocity,Vector3(0,1,0))
+			if Input.is_action_pressed("jump"): # TODO: find a better action for jumping
+				#velocity.y=10
+				if is_on_floor():
+					velocity.y=jumpAmount
 	
-		if Input.is_action_pressed("jump"): # TODO: find a better action for jumping
-			#velocity.y=10
-			if is_on_floor():
-				velocity.y=jumpAmount
 
 	#velocity = move_and_slide(direction,Vector3(0,1,0))
 
@@ -179,16 +195,12 @@ func isOnFloor():
 
 func _on_Area_body_entered(body):
 	set_last_collision_partner(body)
-	var test = get_tree().current_scene.filename
-	#if body.is_in_group("Enemies"):
-	#	breakpoint
-	#print_debug(str(test))
-	if str(get_tree().current_scene.filename) == "res://BattleStage.tscn":
+	if Globals.battleStatus==1:
 		if body.is_in_group("Enemies"):
 			if self.is_on_floor():
 				self.set_hp(self.get_hp()-1)
 			else:
-				body.hide()	
+				self.get_parent().enemy.receiveDamage(1)
 	#if body is RigidBody:#Area: # TODO: What type will enemy be? Assuming area for now.
 	#	body.hide() # eliminate enemy as a test
 

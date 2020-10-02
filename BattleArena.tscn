@@ -10,16 +10,17 @@
 
 [sub_resource type="Curve3D" id=1]
 _data = {
-"points": PoolVector3Array( 0, 0, 0, 0, 0, 0, -4.912, 2.85934, 0.0806417, 0, 0, 0, 0, 0, 0, 4.52806, 2.67573, -0.318353 ),
-"tilts": PoolRealArray( 0, 0 )
+"points": PoolVector3Array( 0, 0, 0, 0, 0, 0, -4.912, 2.85934, 0.0806417, 0, 0, 0, 0, 0, 0, 0.485017, 3.05363, 0.177611, 0, 0, 0, 0, 0, 0, 4.32216, 3.10414, -0.234 ),
+"tilts": PoolRealArray( 0, 0, 0 )
 }
+up_vector_enabled = false
 
 [node name="BattleArena" type="Spatial" groups=[
 "BattleArena",
 ]]
 script = ExtResource( 6 )
-
-[node name="Floor" parent="." instance=ExtResource( 2 )]
+player = NodePath("Mario")
+enemy = NodePath("Goombah")
 
 [node name="Walls" parent="." instance=ExtResource( 1 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 2.05, 10, 0.5, 0 )
@@ -52,3 +53,7 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.61602, 0 )
 
 [node name="Path" type="Path" parent="."]
 curve = SubResource( 1 )
+
+[node name="Floor" parent="." instance=ExtResource( 2 )]
+[connection signal="endBattle" from="." to="." method="_on_BattleArena_endBattle" binds= [ false ]]
+[connection signal="endBattle" from="Goombah" to="." method="_on_Goombah_endBattle"]
