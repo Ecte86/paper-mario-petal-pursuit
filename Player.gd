@@ -93,7 +93,7 @@ func _process(delta):
 			$AnimatedSprite3D.flip_h=true
 			
 
-	if !is_on_floor() and velocity.y>0: # If mario is in the air, jump
+	if !is_on_floor(): # If mario is in the air, jump
 		$AnimatedSprite3D.play("jump")
 		if direction.x>0: # flip if we are heading right
 			$AnimatedSprite3D.flip_h=true
@@ -147,7 +147,7 @@ func _physics_process(delta):
 				direction.z -= 1 # subtract 1 from direction.z
 			direction=direction.normalized()
 			direction=direction*speed*delta
-			if Input.is_action_pressed("jump"): # TODO: ECTE YOU NEED TO ASSIGN A BUTTON LOL find a better action for jumping
+			if Input.is_action_just_pressed("jump"): # TODO: ECTE YOU NEED TO ASSIGN A BUTTON LOL find a better action for jumping
 			#velocity.y=10
 				if is_on_floor():
 					velocity.y=jump_height
