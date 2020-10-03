@@ -1,6 +1,7 @@
 extends KinematicBody
 signal hit
 
+#speed
 var airspeed = 520
 var speed = 505
 var friction = 0.5
@@ -14,7 +15,10 @@ var jump_height = 25
 
 
 
-var hp
+var hp #heart points
+var fp #flower points (magic points)
+var sp #special/star points (higher powered special moves)
+var bp #badge points, aren't used in battle, used up in menus to equip badges
 
 export (NodePath) var attack_path
 var attackPath_points
@@ -151,6 +155,7 @@ func _physics_process(delta):
 			#velocity.y=10
 				if is_on_floor():
 					velocity.y=jump_height
+					$AnimatedSprite3D/AudioStreamPlayer.play()
 			velocity.y += gravity*delta
 			velocity.x=direction.x
 			velocity.z=direction.z
