@@ -17,36 +17,36 @@
 [ext_resource path="res://Mario_Run_Forward/Pera_Albedo.0012.png" type="Texture" id=15]
 
 [sub_resource type="AtlasTexture" id=1]
-flags = 23
+flags = 7
 atlas = ExtResource( 5 )
 region = Rect2( 0, 602, 196, 301 )
 
 [sub_resource type="SpriteFrames" id=2]
 animations = [ {
-"frames": [ ExtResource( 12 ), ExtResource( 14 ), ExtResource( 15 ), ExtResource( 14 ) ],
-"loop": true,
-"name": "walkDown",
-"speed": 10.0
-}, {
 "frames": [ SubResource( 1 ) ],
 "loop": true,
 "name": "idleUp",
 "speed": 5.0
+}, {
+"frames": [ ExtResource( 12 ), ExtResource( 14 ), ExtResource( 15 ), ExtResource( 14 ) ],
+"loop": true,
+"name": "walkDown",
+"speed": 10.0
 }, {
 "frames": [ ExtResource( 13 ), ExtResource( 2 ), ExtResource( 4 ), ExtResource( 2 ) ],
 "loop": true,
 "name": "walkUp",
 "speed": 10.0
 }, {
-"frames": [ ExtResource( 11 ), ExtResource( 3 ), ExtResource( 10 ) ],
-"loop": false,
-"name": "jump",
-"speed": 2.0
-}, {
 "frames": [ ExtResource( 9 ), ExtResource( 9 ), ExtResource( 9 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 9 ), ExtResource( 9 ), ExtResource( 9 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 9 ), ExtResource( 9 ), ExtResource( 9 ), ExtResource( 8 ), ExtResource( 7 ), ExtResource( 8 ), ExtResource( 9 ), ExtResource( 9 ), ExtResource( 7 ), ExtResource( 8 ), ExtResource( 9 ), ExtResource( 9 ), ExtResource( 9 ), ExtResource( 9 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 8 ), ExtResource( 9 ), ExtResource( 9 ), ExtResource( 9 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 9 ), ExtResource( 9 ), ExtResource( 9 ), ExtResource( 8 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 9 ), ExtResource( 9 ), ExtResource( 9 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 9 ), ExtResource( 9 ), ExtResource( 9 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 7 ) ],
 "loop": true,
 "name": "idleDown",
 "speed": 4.0
+}, {
+"frames": [ ExtResource( 11 ), ExtResource( 3 ), ExtResource( 10 ) ],
+"loop": false,
+"name": "jump",
+"speed": 2.0
 } ]
 
 [sub_resource type="CapsuleShape" id=3]
@@ -61,8 +61,8 @@ script = ExtResource( 1 )
 [node name="AnimatedSprite3D" type="AnimatedSprite3D" parent="."]
 offset = Vector2( 0, 25 )
 frames = SubResource( 2 )
-animation = "walkUp"
-frame = 2
+animation = "idleDown"
+frame = 42
 playing = true
 __meta__ = {
 "_edit_group_": true

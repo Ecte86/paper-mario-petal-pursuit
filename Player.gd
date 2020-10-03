@@ -12,9 +12,6 @@ var gravity = -85
 var velocity = Vector3()
 var jump_height = 25
 
-var onceOnly=1
-
-var reachedTarget=0
 
 
 var hp
@@ -96,7 +93,7 @@ func _process(delta):
 			$AnimatedSprite3D.flip_h=true
 			
 
-	if !is_on_floor(): # If mario is in the air, jump
+	if !is_on_floor() and velocity.y>0: # If mario is in the air, jump
 		$AnimatedSprite3D.play("jump")
 		if direction.x>0: # flip if we are heading right
 			$AnimatedSprite3D.flip_h=true
@@ -111,7 +108,7 @@ func _process(delta):
 	#if Input.is_action_just_released("ui_up"):
 		#$AnimatedSprite3D.play("idleUp")
 
-func attack():
+func attack(delta):
 #	var target = attackPath_points[attackPath_index]
 #	var position = self.transform.origin
 #	#if position.distance_to(target) < 1:
@@ -119,6 +116,8 @@ func attack():
 #	#	target = attackPath_points[attackPath_index]
 #	velocity = (target - position).normalized() * speed
 #	velocity = move_and_slide(velocity, Vector3(0,1,0))
+
+	velocity = move_and_slide(velocity, Vector3(0,1,0))
 	return
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -126,38 +125,14 @@ func _physics_process(delta):
 	var edge=get_parent().getWorldEdge()
 	self.transform.origin.x = clamp(self.transform.origin.x,-edge.x,edge.x)
 	self.transform.origin.z = clamp(self.transform.origin.z,-edge.z,edge.z)
-	var gravity_modified = gravity * 1.5
+	#var gravity_modified = gravity * 1.5
 	if attack_path:
 		if Globals.battleStatus==1:
 			if Globals.playerTurn==true:
-				var target = get_parent().getEnemy().transform.origin #attackPath_points[attackPath_index-1]
-				var position = self.transform.origin
-				if position.distance_to(target) < 4.5:
-					if reachedTarget==0:
-						reachedTarget=1
-						if onceOnly == 1:
-							onceOnly = 0
-							velocity.x=1*speed*delta
-							velocity.y=jumpAmount
-						else:
-							velocity.x = 0
-				else:
-					if reachedTarget == 0:
-						velocity = (target - position).normalized() * speed * delta
-				#if attackPath_index < attackPath_points.size():
-				#	attackPath_index=attackPath_index+1
-				#else:
-				#	if onceOnly == 1:
-				#		onceOnly=0
-						
-				#	else:
-				#		velocity.x=0
-						
+				#velocity=get_parent().playerAttack(delta)
 				direction.x=velocity.x
-				#direction.z=velocity.z
-				velocity.y += gravity_modified*delta
-				velocity = move_and_slide(velocity, Vector3(0,1,0))
-				
+				velocity.y += gravity*delta
+				move_and_slide(velocity, Vector3(0,1,0))
 	else:
 		if Globals.battleStatus==0:
 			direction=Vector3(0,0,0)
@@ -172,19 +147,16 @@ func _physics_process(delta):
 				direction.z -= 1 # subtract 1 from direction.z
 			direction=direction.normalized()
 			direction=direction*speed*delta
-			
-		var gravity_modified = gravity
-		
-		velocity.y += gravity_modified*delta
-		velocity.x=direction.x
-		velocity.z=direction.z
-		
-		velocity = move_and_slide(velocity,Vector3(0,1,0))
-	
-		if Input.is_action_pressed("jump"): # TODO: ECTE YOU NEED TO ASSIGN A BUTTON LOL find a better action for jumping
+			if Input.is_action_pressed("jump"): # TODO: ECTE YOU NEED TO ASSIGN A BUTTON LOL find a better action for jumping
 			#velocity.y=10
-			if !is_on_floor():
-				velocity.y=jump_height
+				if is_on_floor():
+					velocity.y=jump_height
+			velocity.y += gravity*delta
+			velocity.x=direction.x
+			velocity.z=direction.z
+			
+			velocity = move_and_slide(velocity,Vector3(0,1,0))
+	
 			
 
 	#velocity = move_and_slide(direction,Vector3(0,1,0))
@@ -202,12 +174,22 @@ func isOnFloor():
 
 func _on_Area_body_entered(body):
 	set_last_collision_partner(body)
-	if Globals.battleStatus==1:
-		if body.is_in_group("Enemies"):
+	if body.is_in_group("Enemies"):
+		if Globals.battleStatus==1:
 			if self.is_on_floor():
 				self.set_hp(self.get_hp()-1)
 			else:
 				self.get_parent().enemy.receiveDamage(1)
+				get_parent().reachedTarget=1
+				self.velocity.x=0
+		else:
+			if self.is_on_floor():
+				get_parent().emit_signal("main_startBattle",false)
+			else:
+				get_parent().emit_signal("main_startBattle",true)
+			#yield(get_parent(), "main_startBattle")
+			#yield(get_parent(),"main_startBattle(true)")
+
 	#if body is RigidBody:#Area: # TODO: What type will enemy be? Assuming area for now.
 	#	body.hide() # eliminate enemy as a test
 
