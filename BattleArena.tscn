@@ -35,12 +35,12 @@ transform = Transform( -1.62921e-07, 0, 2, 0, 1, 0, -1, 0, -3.25841e-07, 0, 0.5,
 transform = Transform( -1.62921e-07, 0, 2, 0, 1, 0, -1, 0, -3.25841e-07, 0, 0.5, -10 )
 
 [node name="Goombah" parent="." instance=ExtResource( 4 )]
-transform = Transform( 1, 0, 0, 0, -1.62921e-07, -1, 0, 1, -1.62921e-07, 5.78541, 4.3663, 0.108679 )
+transform = Transform( 1, 0, 0, 0, -1.62921e-07, -1, 0, 1, -1.62921e-07, 5.785, 4.366, 0 )
 collision_layer = 7
 collision_mask = 7
 
 [node name="Mario" parent="." instance=ExtResource( 3 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -4.68413, 3.83278, 0.0621157 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -4.684, 3.833, 0 )
 attack_path = NodePath("../Path")
 
 [node name="Camera" type="Camera" parent="Mario"]
@@ -56,4 +56,3 @@ curve = SubResource( 1 )
 
 [node name="Floor" parent="." instance=ExtResource( 2 )]
 [connection signal="endBattle" from="." to="." method="_on_BattleArena_endBattle" binds= [ false ]]
-[connection signal="endBattle" from="Goombah" to="." method="_on_Goombah_endBattle"]

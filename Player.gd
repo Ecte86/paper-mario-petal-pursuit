@@ -90,7 +90,12 @@ func _process(delta):
 			$AnimatedSprite3D.play("walkDown")
 			$AnimatedSprite3D.flip_h=true
 			
+<<<<<<< Updated upstream
 	if !is_on_floor(): # If mario is in the air, jump
+=======
+
+	if !is_on_floor() and self.transform.origin.y>get_parent().getWorldEdge().y: # If mario is in the air, jump
+>>>>>>> Stashed changes
 		$AnimatedSprite3D.play("jump")
 		if direction.x>0: # flip if we are heading right
 			$AnimatedSprite3D.flip_h=true
@@ -195,12 +200,31 @@ func isOnFloor():
 
 func _on_Area_body_entered(body):
 	set_last_collision_partner(body)
+<<<<<<< Updated upstream
 	if Globals.battleStatus==1:
 		if body.is_in_group("Enemies"):
 			if self.is_on_floor():
 				self.set_hp(self.get_hp()-1)
 			else:
 				self.get_parent().enemy.receiveDamage(1)
+=======
+	if body.is_in_group("Enemies"):
+		if get_parent().name=="BattleArena":#if Globals.battleStatus==1:
+			if self.is_on_floor():
+				self.set_hp(self.get_hp()-1)
+			else:
+				#self.get_parent().enemy.receiveDamage(1)
+				get_parent().reachedTarget=1
+				self.velocity.x=0
+		else:
+			if self.is_on_floor():
+				get_parent().emit_signal("main_startBattle",false)
+			else:
+				get_parent().emit_signal("main_startBattle",true)
+			#yield(get_parent(), "main_startBattle")
+			#yield(get_parent(),"main_startBattle(true)")
+
+>>>>>>> Stashed changes
 	#if body is RigidBody:#Area: # TODO: What type will enemy be? Assuming area for now.
 	#	body.hide() # eliminate enemy as a test
 
