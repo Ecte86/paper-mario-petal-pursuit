@@ -5,6 +5,13 @@ export (PackedScene) var Mob
 
 signal main_startBattle(playerGoesFirst)
 
+<<<<<<< Updated upstream
+=======
+var lastCollisionPartner
+
+var battleArena
+
+>>>>>>> Stashed changes
 # Declare member variables here. Examples:
 # var a = 2
 # var b = "text"
@@ -18,6 +25,12 @@ func _ready():
 	$HUD.update_petals(Globals.petals)
 	$HUD.update_stars(Globals.stars)
 	$HUD.update_coins(Globals.coins)
+<<<<<<< Updated upstream
+=======
+	Globals.battleStatus=0
+	$BackgroundMusic.play()
+	battleArena=load("res://InheritedScenes/BattleArena.tscn")
+>>>>>>> Stashed changes
 #	var BattleArenaNode = get_tree()
 #	BattleArenaNode.connect("startBattle", self, "_on_Main_main_startBattle")#connect("startBattle",self,"handleplayerspotted")
 
@@ -25,14 +38,23 @@ func getWorldEdge():
 	return $Floor.get_child(0).scale
 
 func _on_Main_main_startBattle(playerGoesFirst):
+<<<<<<< Updated upstream
 	get_tree().change_scene("res://BattleArena.tscn")
+=======
+	#Globals.goto_scene("res://BattleArena.tscn")
+	var arenaScene=battleArena.instance()
+>>>>>>> Stashed changes
 	if playerGoesFirst == true:
-		Globals.setPlayerGoesFirst(playerGoesFirst)
+		arenaScene.setPlayerGoesFirst(true)
+		#Globals.setPlayerGoesFirst(playerGoesFirst)
 		#get_tree().call_group("BattleArena", "_on_BattleArena_startBattle(true)")
 				#get_tree().get_root().emit_signal("startBattle", true)
 	else:
-		Globals.setPlayerGoesFirst(playerGoesFirst)
-
+		arenaScene.setPlayerGoesFirst(false)
+		#Globals.setPlayerGoesFirst(playerGoesFirst)
+	get_tree().root.call_deferred("add_child", arenaScene)
+	queue_free()
+	
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
