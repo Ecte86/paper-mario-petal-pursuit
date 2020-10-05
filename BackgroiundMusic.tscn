@@ -1,7 +1,0 @@
-[gd_scene load_steps=2 format=2]
-
-[ext_resource path="res://Pleasant_Plains.ogg" type="AudioStream" id=1]
-
-[node name="BackgroundMusic" type="AudioStreamPlayer3D"]
-stream = ExtResource( 1 )
-unit_db = 17.085
