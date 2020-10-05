@@ -20,13 +20,10 @@ var enemyPos: Vector3
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	var petals = Globals.petals
-	var stars = Globals.stars
-	var coins = Globals.coins
-	$HUD.update_hp($Mario.get_hp())
-	$HUD.update_petals(petals)
-	$HUD.update_stars(stars)
-	$HUD.update_coins(coins)
+	#var petals = Globals.petals
+	#var stars = Globals.stars
+	#var coins = Globals.coins
+
 	if Globals.playerGoesFirst==true:
 		_on_BattleArena_startBattle(true)
 		Globals.setPlayerGoesFirst(true)
@@ -49,8 +46,10 @@ func _ready():
 	$Mario.free()
 	playerPos=player.transform.origin
 	enemyPos=enemy.transform.origin
-	#print_debug(str(player.transform.origin))
-	#print_debug(str(enemy.transform.origin))
+	$HUD.update_hp(player.get_hp())
+	$HUD.update_petals(player.get_pp())
+	$HUD.update_stars(player.get_sp())
+	$HUD.update_coins(player.coins)
 		
 func getWorldEdge():
 	return $BattleStage.get_child(0).scale

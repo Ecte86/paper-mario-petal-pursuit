@@ -6,16 +6,16 @@ extends CanvasLayer
 # var b = "text"
 
 func update_hp(HP):
-	$HPLabel.text = "HP: "+str(HP)+"/10"
+	$HPLabel.text = "HP: "+str(HP)+"/"+str(Globals.max_Heart_Points)
 
 func update_petals(petals):
-	$FlowersLabel.text = "P: "+str(petals)+"/5"
+	$FlowersLabel.text = "FP: "+str(petals)+"/"+str(Globals.max_Flower_Points)
 
 func update_coins(coins):
-	$CoinLabel.text = "C: "+str(coins)+"/56"
+	$CoinLabel.text = "C: "+str(coins)+"/"+str(Globals.max_Coins)
 	
 func update_stars(stars):
-	$StarsLabel.text = "S: "+str(stars)+"/63"
+	$StarsLabel.text = "S: "+str(stars)+"/"+str(Globals.max_Star_Points)
 
 
 

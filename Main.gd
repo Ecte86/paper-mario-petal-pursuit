@@ -5,47 +5,59 @@ export (PackedScene) var Mob
 
 signal main_startBattle(playerGoesFirst)
 
-<<<<<<< Updated upstream
-=======
 var lastCollisionPartner
 
 var battleArena
 
->>>>>>> Stashed changes
 # Declare member variables here. Examples:
 # var a = 2
 # var b = "text"
 
-
+var playerSettings = []
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	$Mario.new_game()
-	$HUD.update_hp($Mario.get_hp())
-	$HUD.update_petals(Globals.petals)
-	$HUD.update_stars(Globals.stars)
-	$HUD.update_coins(Globals.coins)
-<<<<<<< Updated upstream
-=======
+	$HUD.update_hp($Mario.getHeartPoints())
+	$HUD.update_petals($Mario.getFlowerPoints())
+	$HUD.update_stars($Mario.getStarPoints())
+	$HUD.update_coins($Mario.getCoins())
+
 	Globals.battleStatus=0
 	$BackgroundMusic.play()
 	battleArena=load("res://InheritedScenes/BattleArena.tscn")
->>>>>>> Stashed changes
 #	var BattleArenaNode = get_tree()
 #	BattleArenaNode.connect("startBattle", self, "_on_Main_main_startBattle")#connect("startBattle",self,"handleplayerspotted")
 
 func getWorldEdge():
 	return $Floor.get_child(0).scale
 
+func getPlayerSettings(player):
+	return [player.name,
+		player.getHeartPoints(),
+		player.getFlowerPoints(),
+		player.getBadgePoints(),
+		player.getStarPoints(),
+		player.getLevel(),
+		player.getPetalPower(),
+		player.getCoins()]
+	
+func setPlayerSettings(player, settings: Array):
+	player.setHeartPoints(settings[1])
+	player.setFlowerPoints(settings[2])
+	player.setBadgePoints(settings[3])
+	player.setStarPoints(settings[4])
+	player.setLevel(settings[5])
+	player.setPetalPower(settings[6])
+	player.setCoins(settings[7])
+
 func _on_Main_main_startBattle(playerGoesFirst):
-<<<<<<< Updated upstream
-	get_tree().change_scene("res://BattleArena.tscn")
-=======
+
 	#Globals.goto_scene("res://BattleArena.tscn")
 	var arenaScene=battleArena.instance()
->>>>>>> Stashed changes
 	if playerGoesFirst == true:
 		arenaScene.setPlayerGoesFirst(true)
+		arenaScene.setPlayerSettings(self.getPlayerSettings($Mario))
 		#Globals.setPlayerGoesFirst(playerGoesFirst)
 		#get_tree().call_group("BattleArena", "_on_BattleArena_startBattle(true)")
 				#get_tree().get_root().emit_signal("startBattle", true)

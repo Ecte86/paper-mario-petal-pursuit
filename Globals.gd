@@ -5,16 +5,29 @@ extends Node
 # var a = 2
 # var b = "text"
 
-var hp=10
-var petals=5
-var coins=56
-var stars=63
+#var hp=10
+#var petals=5
+#var coins=56
+#var stars=63
 var playerGoesFirst = null
 var playerTurn=null
 var battleStatus=0
 
-<<<<<<< Updated upstream
-=======
+export(int) var max_Heart_Points = 10 # Maximum Heart Points == Hit Points == Life
+
+export (int) var max_Flower_Points = 10 # Max FP = Mana
+
+export (int) var max_Badge_Points = 10 # 
+
+export (int) var max_Star_Points = 99 # XP
+
+export (int) var max_Level = 10
+
+export (int) var max_Petal_Power = 7
+
+export (int) var max_Coins = 100
+
+
 var current_scene = null
 
 func _ready():
@@ -65,14 +78,11 @@ func _deferred_goto_provided_scene(theScene: NodePath):
 	# Optionally, to make it compatible with the SceneTree.change_scene() API.
 	get_tree().set_current_scene(get_node(theScene))
 
->>>>>>> Stashed changes
 func setPlayerGoesFirst(value: bool):
 	playerTurn=value
 	playerGoesFirst=value
 
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	pass # Replace with function body.
+
 	
 func startBattle(playersTurn: bool):
 	setPlayerGoesFirst(playersTurn)

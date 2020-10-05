@@ -1,7 +1,8 @@
 extends RigidBody
 
-var hp: int
+export (int) var hp
 
+var originalPos
 
 # Declare member variables here. Examples:
 # var a = 2
@@ -10,35 +11,24 @@ var hp: int
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-<<<<<<< Updated upstream
-	pass # Replace with function body.
-=======
 	if get_parent().name != "Main":
 		originalPos=get_node("../EnemySpawn").transform.origin
 		self.rotate_x(90)
->>>>>>> Stashed changes
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	if Globals.battleStatus==1:
 		if Globals.playerTurn==true:
-<<<<<<< Updated upstream
-			self.mode = 3
-		else:
-			self.mode = 1
-=======
 			self.transform.origin=originalPos
 	if self.visible==false:
 		self.show()
 		
-func _process(delta):
 	#if Globals.battleStatus==1:
 		#if Globals.playerTurn==true:
 			#self.mode = 3
 		#else:
 			#self.mode = 1
->>>>>>> Stashed changes
 		#Attack goes here?
 	#else:
 		#self.mode=1

@@ -11,8 +11,26 @@ var onceOnly=1
 
 var reachedTarget=0
 
+export(int) var Heart_Points = 10 # Heart Points == Hit Points == Life
+export(int) var max_Heart_Points = 10 # Maximum Heart Points == Hit Points == Life
 
-var hp
+export (int) var Flower_Points = 10 # FP = Mana
+export (int) var max_Flower_Points = 10 # Max FP = Mana
+
+export (int) var Badge_Points = 0 # Points to use for "Equipment" I guess
+export (int) var max_Badge_Points = 10 # 
+
+export (int) var Star_Points = 0 # XP
+export (int) var max_Star_Points = 99 # XP
+
+export (int) var Level = 1
+export (int) var max_Level = 10
+
+export (int) var Petal_Power = 0
+export (int) var max_Petal_Power = 7
+
+export (int) var Coins = 100
+export (int) var max_Coins = 100
 
 export (NodePath) var attack_path
 var attackPath_points
@@ -21,20 +39,56 @@ var attackPath_index = 0
 var collision_partner
 
 func _ready():
-	set_hp(Globals.hp)
+	setHeartPoints(max_Heart_Points)
 	if attack_path:
 		velocity=Vector3(0,0,0)
 		attackPath_points = get_node(attack_path).curve.get_baked_points()
 
 func new_game():
-	set_hp(10)
+	setHeartPoints(max_Heart_Points)
 	
-func set_hp(num):
-	hp=num
-	Globals.hp=num
+func getFlowerPoints():
+	return Flower_Points
+
+func getBadgePoints(): # Points to use for "Equipment" I guess
+	return Badge_Points
+
+func getStarPoints(): # XP
+	return Star_Points
+
+func getLevel():
+	return Level
+
+func getPetalPower():
+	return Petal_Power
+
+func getCoins():
+	return Coins
+
+func setFlowerPoints(num: int):
+	Flower_Points = num
+
+func setBadgePoints(num: int): # Points to use for "Equipment" I guess
+	Badge_Points = num
+
+func setStarPoints(num: int): # XP
+	Star_Points=num
+
+func setLevel(num: int):
+	Level=num
+
+func setPetalPower(num: int):
+	Petal_Power=num
+
+func setCoins(num: int):
+	Coins=num
+
+func setHeartPoints(num: int):
+	self.Heart_Points=num
+	#Globals.hp=num
 	
-func get_hp():
-	return Globals.hp
+func getHeartPoints():
+	return self.Heart_Points
 
 func _process(delta):
 	# Animation processing!
@@ -90,12 +144,7 @@ func _process(delta):
 			$AnimatedSprite3D.play("walkDown")
 			$AnimatedSprite3D.flip_h=true
 			
-<<<<<<< Updated upstream
-	if !is_on_floor(): # If mario is in the air, jump
-=======
-
 	if !is_on_floor() and self.transform.origin.y>get_parent().getWorldEdge().y: # If mario is in the air, jump
->>>>>>> Stashed changes
 		$AnimatedSprite3D.play("jump")
 		if direction.x>0: # flip if we are heading right
 			$AnimatedSprite3D.flip_h=true
@@ -200,18 +249,10 @@ func isOnFloor():
 
 func _on_Area_body_entered(body):
 	set_last_collision_partner(body)
-<<<<<<< Updated upstream
-	if Globals.battleStatus==1:
-		if body.is_in_group("Enemies"):
-			if self.is_on_floor():
-				self.set_hp(self.get_hp()-1)
-			else:
-				self.get_parent().enemy.receiveDamage(1)
-=======
 	if body.is_in_group("Enemies"):
 		if get_parent().name=="BattleArena":#if Globals.battleStatus==1:
 			if self.is_on_floor():
-				self.set_hp(self.get_hp()-1)
+				self.setHeartPoints(self.getHeartPoints()-1)
 			else:
 				#self.get_parent().enemy.receiveDamage(1)
 				get_parent().reachedTarget=1
@@ -224,7 +265,6 @@ func _on_Area_body_entered(body):
 			#yield(get_parent(), "main_startBattle")
 			#yield(get_parent(),"main_startBattle(true)")
 
->>>>>>> Stashed changes
 	#if body is RigidBody:#Area: # TODO: What type will enemy be? Assuming area for now.
 	#	body.hide() # eliminate enemy as a test
 
