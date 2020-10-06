@@ -15,17 +15,33 @@ var battleArena
 
 var playerSettings = []
 
+export (PackedScene) var PlayerScene
+
+var player: KinematicBody
+
+var camera
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	$Mario.new_game()
-	$HUD.update_hp($Mario.getHeartPoints())
-	$HUD.update_petals($Mario.getFlowerPoints())
-	$HUD.update_stars($Mario.getStarPoints())
-	$HUD.update_coins($Mario.getCoins())
-
+	PlayerScene = preload("res://Mario.tscn")
+	player = PlayerScene.instance()
+	self.add_child(player)
+	player.add_child(Camera.new())
+	print_tree_pretty()
+	camera=player.get_child(player.get_child_count()-1)
+	camera.translate(Vector3(0,5,9))
+	camera.current=true
+	camera.look_at(player.transform.origin,Vector3.UP)
+	player = self.get_node(player.get_path())
+	player.new_game()
+	$HUD.update_hp(player.getHeartPoints())
+	$HUD.update_petals(player.getFlowerPoints())
+	$HUD.update_stars(player.getStarPoints())
+	$HUD.update_coins(player.getCoins())
 	Globals.battleStatus=0
 	$BackgroundMusic.play()
 	battleArena=load("res://InheritedScenes/BattleArena.tscn")
+	print_debug($Floor.get_child(0).scale)
 #	var BattleArenaNode = get_tree()
 #	BattleArenaNode.connect("startBattle", self, "_on_Main_main_startBattle")#connect("startBattle",self,"handleplayerspotted")
 
@@ -57,7 +73,7 @@ func _on_Main_main_startBattle(playerGoesFirst):
 	var arenaScene=battleArena.instance()
 	if playerGoesFirst == true:
 		arenaScene.setPlayerGoesFirst(true)
-		arenaScene.setPlayerSettings(self.getPlayerSettings($Mario))
+		arenaScene.setPlayerSettings(player, self.getPlayerSettings(player))
 		#Globals.setPlayerGoesFirst(playerGoesFirst)
 		#get_tree().call_group("BattleArena", "_on_BattleArena_startBattle(true)")
 				#get_tree().get_root().emit_signal("startBattle", true)
@@ -70,10 +86,10 @@ func _on_Main_main_startBattle(playerGoesFirst):
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	for i in $Mario.get_slide_count():
-		var collider = $Mario.get_slide_collision(i)
+	for i in player.get_slide_count():
+		var collider = player.get_slide_collision(i)
 		if collider:
-			_on_Mario_hit($Mario.get_last_collision_partner())
+			_on_Mario_hit(player.get_last_collision_partner())
 #	pass
 
 
@@ -81,7 +97,7 @@ func _on_Mario_hit(body):
 	#print_debug(str(body.collider.get_parent().get_parent().get_groups()))
 	#print_debug(str(body.get_groups()))
 	if body.is_in_group("Enemies"): # NEED TO FIND OUT HOW TO CHECK WHAT WE COLLIDING WITH
-		if ($Mario.isOnFloor()):
+		if (player.isOnFloor()):
 			_on_Main_main_startBattle(false)
 			#emit_signal("main_startBattle", false)
 		else:

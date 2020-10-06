@@ -32,17 +32,38 @@ export (int) var max_Petal_Power = 7
 export (int) var Coins = 100
 export (int) var max_Coins = 100
 
+var SceneRoot
+var groundLevel
+
 export (NodePath) var attack_path
 var attackPath_points
 var attackPath_index = 0
 
 var collision_partner
 
+var position: Vector3
+
 func _ready():
+	self.set_position(self.position.x,1,self.position.z)
 	setHeartPoints(max_Heart_Points)
 	if attack_path:
 		velocity=Vector3(0,0,0)
 		attackPath_points = get_node(attack_path).curve.get_baked_points()
+	SceneRoot=get_tree().get_root().get_child(1)
+	if self.position.y<=0:
+		self.move_and_slide_with_snap(Vector3(0,5,0),Vector3.DOWN,Vector3.UP)
+		#$Shadow.translate(Vector3(0,-1,0))
+	self.move_and_slide_with_snap(Vector3(0,-5,0),Vector3.DOWN,Vector3.UP)
+	groundLevel=self.transform.origin.y-self.scale.y
+
+func get_position():
+	return self.transform.origin
+
+func set_position(x=self.transform.origin.x,y=self.transform.origin.y,z=self.transform.origin.z):
+	self.transform.origin.x=x
+	self.transform.origin.y=y
+	self.transform.origin.z=z
+	
 
 func new_game():
 	setHeartPoints(max_Heart_Points)
@@ -91,6 +112,7 @@ func getHeartPoints():
 	return self.Heart_Points
 
 func _process(delta):
+
 	# Animation processing!
 	
 	var mario_direction # Possible values: N, S, E, W, NW, SW, NE, SE and Idle
@@ -144,13 +166,14 @@ func _process(delta):
 			$AnimatedSprite3D.play("walkDown")
 			$AnimatedSprite3D.flip_h=true
 			
-	if !is_on_floor() and self.transform.origin.y>get_parent().getWorldEdge().y: # If mario is in the air, jump
+	if !is_on_floor() and self.transform.origin.y>groundLevel: # If mario is in the air, jump
 		$AnimatedSprite3D.play("jump")
 		if direction.x>0: # flip if we are heading right
 			$AnimatedSprite3D.flip_h=true
 		else:
 			if is_on_floor() or direction.x<0: #head left only if user specifies, or we complete jump
 				$AnimatedSprite3D.flip_h=false
+	$AnimatedSprite3D/Shadow.global_transform.origin.y=groundLevel
 	
 	
 	
@@ -172,8 +195,12 @@ func attack():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta):
 	var edge=get_parent().getWorldEdge()
-	self.transform.origin.x = clamp(self.transform.origin.x,-edge.x,edge.x)
-	self.transform.origin.z = clamp(self.transform.origin.z,-edge.z,edge.z)
+	var EdgeLocationsX=[-edge.x,edge.x]
+	var EdgeLocationsZ=[-edge.z,edge.z]
+	if self.global_transform.origin.y<0:
+		print_debug( "wtf:"+str(self.global_transform.origin))
+	self.global_transform.origin.x = clamp(self.global_transform.origin.x,-edge.x,edge.x)
+	self.global_transform.origin.z = clamp(self.global_transform.origin.z,-(edge.z)/2,edge.z/2)
 	var gravity_modified = gravity * 1.5
 	if attack_path:
 		if Globals.battleStatus==1:

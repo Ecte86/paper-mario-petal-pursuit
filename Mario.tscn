@@ -1,83 +1,61 @@
-[gd_scene load_steps=17 format=2]
+[gd_scene load_steps=21 format=2]
 
 [ext_resource path="res://Player.gd" type="Script" id=1]
-[ext_resource path="res://Paper_Mario_Walk_Forward2.png" type="Texture" id=2]
-[ext_resource path="res://jump.png" type="Texture" id=3]
-[ext_resource path="res://Paper_Mario_Run_Back.png" type="Texture" id=4]
+[ext_resource path="res://Mario_Run_Backward/Pera_Albedo.0012_Back.png" type="Texture" id=2]
+[ext_resource path="res://SE4_P_MARIO_JUMP1.wav" type="AudioStream" id=3]
+[ext_resource path="res://Mario Idle Forward/Pera_Albedo.0002.png" type="Texture" id=4]
 [ext_resource path="res://Paper_Mario_Back.png" type="Texture" id=5]
+[ext_resource path="res://Mario Idle Forward/Pera_Albedo.0003.png" type="Texture" id=6]
+[ext_resource path="res://Mario Idle Forward/Pera_Albedo.0001.png" type="Texture" id=7]
+[ext_resource path="res://Mario Jump Forward/Pera_Albedo.0018.png" type="Texture" id=8]
+[ext_resource path="res://Mario_Run_Backward/Pera_Albedo.0011_Back.png" type="Texture" id=9]
+[ext_resource path="res://Mario Jump Forward/Pera_Albedo.0017.png" type="Texture" id=10]
+[ext_resource path="res://Mario_Run_Backward/Pera_Albedo.0010_Back.png" type="Texture" id=11]
+[ext_resource path="res://Mario_Run_Forward/Pera_Albedo.0012.png" type="Texture" id=12]
+[ext_resource path="res://Mario_Run_Forward/Pera_Albedo.0011.png" type="Texture" id=13]
+[ext_resource path="res://Mario_Run_Forward/Pera_Albedo.0010.png" type="Texture" id=14]
+[ext_resource path="res://Mario Jump Forward/Pera_Albedo.0016.png" type="Texture" id=15]
 
 [sub_resource type="AtlasTexture" id=1]
-flags = 23
-atlas = ExtResource( 2 )
-region = Rect2( 0, 0, 167, 260 )
-
-[sub_resource type="AtlasTexture" id=2]
-flags = 23
-atlas = ExtResource( 2 )
-region = Rect2( 167, 0, 167, 260 )
-
-[sub_resource type="AtlasTexture" id=3]
-flags = 23
-atlas = ExtResource( 2 )
-region = Rect2( 167, 0, 167, 260 )
-
-[sub_resource type="AtlasTexture" id=4]
 flags = 7
 atlas = ExtResource( 5 )
 region = Rect2( 0, 602, 196, 301 )
 
-[sub_resource type="AtlasTexture" id=5]
-flags = 7
-atlas = ExtResource( 3 )
-region = Rect2( 0, 0, 210, 282 )
-
-[sub_resource type="AtlasTexture" id=6]
-flags = 7
-atlas = ExtResource( 4 )
-region = Rect2( 0, 0, 176, 275 )
-
-[sub_resource type="AtlasTexture" id=7]
-flags = 7
-atlas = ExtResource( 4 )
-region = Rect2( 176, 0, 176, 275 )
-
-[sub_resource type="AtlasTexture" id=8]
-flags = 7
-atlas = ExtResource( 4 )
-region = Rect2( 0, 275, 176, 275 )
-
-[sub_resource type="AtlasTexture" id=9]
-flags = 7
-atlas = ExtResource( 4 )
-region = Rect2( 176, 275, 176, 275 )
-
-[sub_resource type="SpriteFrames" id=10]
+[sub_resource type="SpriteFrames" id=2]
 animations = [ {
-"frames": [ SubResource( 1 ), SubResource( 2 ) ],
-"loop": true,
-"name": "walkDown",
-"speed": 5.0
-}, {
-"frames": [ SubResource( 3 ) ],
+"frames": [ ExtResource( 7 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 6 ), ExtResource( 4 ), ExtResource( 6 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 4 ), ExtResource( 6 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 6 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 6 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 4 ) ],
 "loop": true,
 "name": "idleDown",
-"speed": 5.0
+"speed": 4.0
 }, {
-"frames": [ SubResource( 4 ) ],
+"frames": [ ExtResource( 14 ), ExtResource( 13 ), ExtResource( 12 ), ExtResource( 13 ) ],
+"loop": true,
+"name": "walkDown",
+"speed": 10.0
+}, {
+"frames": [ SubResource( 1 ) ],
 "loop": true,
 "name": "idleUp",
 "speed": 5.0
 }, {
-"frames": [ SubResource( 5 ) ],
-"loop": true,
+"frames": [ ExtResource( 15 ), ExtResource( 10 ), ExtResource( 8 ) ],
+"loop": false,
 "name": "jump",
-"speed": 5.0
+"speed": 2.0
 }, {
-"frames": [ SubResource( 6 ), SubResource( 7 ), SubResource( 8 ), SubResource( 9 ) ],
+"frames": [ ExtResource( 11 ), ExtResource( 9 ), ExtResource( 2 ), ExtResource( 9 ) ],
 "loop": true,
 "name": "walkUp",
-"speed": 5.0
+"speed": 10.0
 } ]
+
+[sub_resource type="CapsuleMesh" id=12]
+
+[sub_resource type="SpatialMaterial" id=13]
+flags_transparent = true
+flags_unshaded = true
+flags_use_point_size = true
+albedo_color = Color( 0, 0, 0, 0.498039 )
 
 [sub_resource type="CapsuleShape" id=11]
 
@@ -90,11 +68,22 @@ script = ExtResource( 1 )
 
 [node name="AnimatedSprite3D" type="AnimatedSprite3D" parent="."]
 offset = Vector2( 0, 25 )
-frames = SubResource( 10 )
-animation = "jump"
+frames = SubResource( 2 )
+animation = "idleDown"
+frame = 20
+playing = true
 __meta__ = {
 "_edit_group_": true
 }
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="AnimatedSprite3D"]
+stream = ExtResource( 3 )
+
+[node name="Shadow" type="MeshInstance" parent="AnimatedSprite3D"]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, 0, 0, 1, 0, 0, -1, 0 )
+cast_shadow = 0
+mesh = SubResource( 12 )
+material/0 = SubResource( 13 )
 
 [node name="CollisionShape" type="CollisionShape" parent="."]
 transform = Transform( 1, 0, 0, 0, -1.62921e-07, 1, 0, -1, -1.62921e-07, 0, 0, 0 )

@@ -50,6 +50,25 @@ func _ready():
 	$HUD.update_petals(player.get_pp())
 	$HUD.update_stars(player.get_sp())
 	$HUD.update_coins(player.coins)
+	
+func getPlayerSettings(player):
+	return [player.name,
+		player.getHeartPoints(),
+		player.getFlowerPoints(),
+		player.getBadgePoints(),
+		player.getStarPoints(),
+		player.getLevel(),
+		player.getPetalPower(),
+		player.getCoins()]
+	
+func setPlayerSettings(player, settings: Array):
+	player.setHeartPoints(settings[1])
+	player.setFlowerPoints(settings[2])
+	player.setBadgePoints(settings[3])
+	player.setStarPoints(settings[4])
+	player.setLevel(settings[5])
+	player.setPetalPower(settings[6])
+	player.setCoins(settings[7])
 		
 func getWorldEdge():
 	return $BattleStage.get_child(0).scale
