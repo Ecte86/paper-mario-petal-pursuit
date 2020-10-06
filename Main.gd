@@ -23,27 +23,35 @@ var camera
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	PlayerScene = preload("res://Mario.tscn")
-	player = PlayerScene.instance()
-	self.add_child(player)
-	player.add_child(Camera.new())
-	print_tree_pretty()
-	camera=player.get_child(player.get_child_count()-1)
-	camera.translate(Vector3(0,5,9))
-	camera.current=true
-	camera.look_at(player.transform.origin,Vector3.UP)
-	player = self.get_node(player.get_path())
+	self.load_players_and_enemies()
+	self.setup_cameras()
+	self.preload_BattleArena_and_setup_HUD()
+#	var BattleArenaNode = get_tree()
+#	BattleArenaNode.connect("startBattle", self, "_on_Main_main_startBattle")#connect("startBattle",self,"handleplayerspotted")
+
+func preload_BattleArena_and_setup_HUD():
 	player.new_game()
-	$HUD.update_hp(player.getHeartPoints())
-	$HUD.update_petals(player.getFlowerPoints())
-	$HUD.update_stars(player.getStarPoints())
-	$HUD.update_coins(player.getCoins())
+	$HUD.showGUI()
+	$HUD.update(getPlayerSettings(player))
 	Globals.battleStatus=0
 	$BackgroundMusic.play()
 	battleArena=load("res://InheritedScenes/BattleArena.tscn")
 	print_debug($Floor.get_child(0).scale)
-#	var BattleArenaNode = get_tree()
-#	BattleArenaNode.connect("startBattle", self, "_on_Main_main_startBattle")#connect("startBattle",self,"handleplayerspotted")
+
+func setup_cameras():
+	player.add_child(Camera.new())
+	camera=player.get_child(player.get_child_count()-1)
+	camera.translate(Vector3(0,5,9))
+	camera.current=true
+	camera.look_at(player.transform.origin,Vector3.UP)
+
+func load_players_and_enemies():
+	PlayerScene = preload("res://Mario.tscn")
+	player = PlayerScene.instance()
+	self.add_child(player)
+	player = self.get_node(player.get_path())
+
+
 
 func getWorldEdge():
 	return $Floor.get_child(0).scale
@@ -68,10 +76,11 @@ func setPlayerSettings(player, settings: Array):
 	player.setCoins(settings[7])
 
 func _on_Main_main_startBattle(playerGoesFirst):
-
 	#Globals.goto_scene("res://BattleArena.tscn")
 	var arenaScene=battleArena.instance()
 	if playerGoesFirst == true:
+		$HUD.startBattle(true)
+		yield(get_tree().create_timer(3.0), "timeout")
 		arenaScene.setPlayerGoesFirst(true)
 		arenaScene.setPlayerSettings(player, self.getPlayerSettings(player))
 		#Globals.setPlayerGoesFirst(playerGoesFirst)
@@ -86,6 +95,8 @@ func _on_Main_main_startBattle(playerGoesFirst):
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	if Input.is_action_pressed("ui_focus_next"):
+		$HUD.showGUI()
 	for i in player.get_slide_count():
 		var collider = player.get_slide_collision(i)
 		if collider:

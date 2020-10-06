@@ -5,11 +5,13 @@ extends CanvasLayer
 # var a = 2
 # var b = "text"
 
+var response
+
 func update_hp(HP):
 	$HPLabel.text = "HP: "+str(HP)+"/"+str(Globals.max_Heart_Points)
 
-func update_petals(petals):
-	$FlowersLabel.text = "FP: "+str(petals)+"/"+str(Globals.max_Flower_Points)
+func update_flowers(flowers):
+	$FlowersLabel.text = "FP: "+str(flowers)+"/"+str(Globals.max_Flower_Points)
 
 func update_coins(coins):
 	$CoinLabel.text = "C: "+str(coins)+"/"+str(Globals.max_Coins)
@@ -17,7 +19,35 @@ func update_coins(coins):
 func update_stars(stars):
 	$StarsLabel.text = "S: "+str(stars)+"/"+str(Globals.max_Star_Points)
 
+func update(playerSettings: Array):
+	update_hp(playerSettings[Globals.MarioStats.HEART_POINTS])
+	update_flowers(playerSettings[Globals.MarioStats.FLOWER_POINTS])
+	update_coins(playerSettings[Globals.MarioStats.COINS])
+	update_stars(playerSettings[Globals.MarioStats.STAR_POINTS])
 
+func showGUI(time = 3.0):
+	$HPLabel.show()
+	$FlowersLabel.show()
+	$CoinLabel.show()
+	$StarsLabel.show()
+	yield(get_tree().create_timer(time), "timeout")
+	$HPLabel.hide()
+	$FlowersLabel.hide()
+	$CoinLabel.hide()
+	$StarsLabel.hide()
+
+
+func startBattle(playerFirst: bool):
+	if playerFirst:
+		$BattlePanel.show()
+		yield(get_tree().create_timer(3.0), "timeout")
+		$BattlePanel.hide()
+
+func showTurnPanel():
+	$BattlePanel2.show()
+	while response=="":
+		yield(get_tree().create_timer(0.5), "timeout")
+	return response
 
 # Called when the node enters the scene tree for the first time.
 func _ready():

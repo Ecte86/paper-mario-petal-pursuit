@@ -11,18 +11,40 @@ var originalPos
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	if get_parent().name != "Main":
-		originalPos=get_node("../EnemySpawn").transform.origin
+	print_debug(str(get_parent().name))
+	if get_parent().name!="Main":
+		originalPos=get_parent().get_node("EnemySpawn").global_transform.origin
 		self.rotate_x(90)
+		self.rotate_y(0)
+		self.rotate_z(0)
+	else:
+		originalPos=self.global_transform.origin
+	self.axis_lock_linear_x=true
+	self.axis_lock_linear_y=true
+	self.axis_lock_linear_z=true
+	
+	self.axis_lock_angular_x=true
+	self.axis_lock_angular_y=true
+	self.axis_lock_angular_z=true	
+		
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	if Globals.battleStatus==1:
-		if Globals.playerTurn==true:
-			self.transform.origin=originalPos
-	if self.visible==false:
-		self.show()
+		if Globals.playerTurn==false:
+			self.axis_lock_linear_x=false
+			self.axis_lock_linear_y=false
+			self.axis_lock_linear_z=false
+		
+			self.axis_lock_angular_x=false
+			self.axis_lock_angular_y=false
+			self.axis_lock_angular_z=false
+#			self.transform.origin=originalPos
+#	else:
+#		self.transform.origin=originalPos
+#		if self.visible==false:
+#			self.show()
 		
 	#if Globals.battleStatus==1:
 		#if Globals.playerTurn==true:
@@ -32,8 +54,7 @@ func _process(delta):
 		#Attack goes here?
 	#else:
 		#self.mode=1
-		
-#	pass
+	pass
 
 func receiveDamage(damage):
 	self.set_hp(self.get_hp()-damage)

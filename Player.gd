@@ -43,15 +43,17 @@ var collision_partner
 
 var position: Vector3
 
+
 func _ready():
 	self.set_position(self.position.x,1,self.position.z)
 	setHeartPoints(max_Heart_Points)
 	if attack_path:
-		velocity=Vector3(0,0,0)
+		velocity=Vector3.ZERO
 		attackPath_points = get_node(attack_path).curve.get_baked_points()
 	SceneRoot=get_tree().get_root().get_child(1)
-	if self.position.y<=0:
-		self.move_and_slide_with_snap(Vector3(0,5,0),Vector3.DOWN,Vector3.UP)
+	self.move_and_slide_with_snap(Vector3(0,5,0),Vector3.DOWN,Vector3.UP)
+	#if self.position.y<=0:
+	#	self.move_and_slide_with_snap(Vector3(0,5,0),Vector3.DOWN,Vector3.UP)
 		#$Shadow.translate(Vector3(0,-1,0))
 	self.move_and_slide_with_snap(Vector3(0,-5,0),Vector3.DOWN,Vector3.UP)
 	groundLevel=self.transform.origin.y-self.scale.y
@@ -182,14 +184,30 @@ func _process(delta):
 	#if Input.is_action_just_released("ui_up"):
 		#$AnimatedSprite3D.play("idleUp")
 
-func attack():
-#	var target = attackPath_points[attackPath_index]
-#	var position = self.transform.origin
-#	#if position.distance_to(target) < 1:
-#	#	attackPath_index = wrapi(attackPath_index + 1, 0, attackPath_points.size())
-#	#	target = attackPath_points[attackPath_index]
-#	velocity = (target - position).normalized() * speed
-#	velocity = move_and_slide(velocity, Vector3(0,1,0))
+func attack(delta):
+	var target = get_parent().getEnemy().transform.origin #attackPath_points[attackPath_index-1]
+	var position = self.transform.origin
+	if position.distance_to(target) < 4.5:
+		if reachedTarget==0:
+			reachedTarget=1
+			if onceOnly == 1:
+				onceOnly = 0
+				velocity.x=1*speed*delta
+				velocity.y=jumpAmount
+			else:
+				velocity.x = 0
+	else:
+		if reachedTarget == 0:
+			velocity = (target - position).normalized() * speed * delta
+	#if attackPath_index < attackPath_points.size():
+	#	attackPath_index=attackPath_index+1
+	#else:
+	#	if onceOnly == 1:
+	#		onceOnly=0
+			
+	#	else:
+	#		velocity.x=0
+			
 	return
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -205,29 +223,7 @@ func _physics_process(delta):
 	if attack_path:
 		if Globals.battleStatus==1:
 			if Globals.playerTurn==true:
-				var target = get_parent().getEnemy().transform.origin #attackPath_points[attackPath_index-1]
-				var position = self.transform.origin
-				if position.distance_to(target) < 4.5:
-					if reachedTarget==0:
-						reachedTarget=1
-						if onceOnly == 1:
-							onceOnly = 0
-							velocity.x=1*speed*delta
-							velocity.y=jumpAmount
-						else:
-							velocity.x = 0
-				else:
-					if reachedTarget == 0:
-						velocity = (target - position).normalized() * speed * delta
-				#if attackPath_index < attackPath_points.size():
-				#	attackPath_index=attackPath_index+1
-				#else:
-				#	if onceOnly == 1:
-				#		onceOnly=0
-						
-				#	else:
-				#		velocity.x=0
-						
+				
 				direction.x=velocity.x
 				#direction.z=velocity.z
 				velocity.y += gravity_modified*delta
@@ -289,6 +285,8 @@ func _on_Area_body_entered(body):
 				get_parent().emit_signal("main_startBattle",false)
 			else:
 				get_parent().emit_signal("main_startBattle",true)
+	#else:
+		#print_debug(body.group)
 			#yield(get_parent(), "main_startBattle")
 			#yield(get_parent(),"main_startBattle(true)")
 

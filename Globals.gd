@@ -13,6 +13,17 @@ var playerGoesFirst = null
 var playerTurn=null
 var battleStatus=0
 
+enum MarioStats{
+	NAME = 0,
+	HEART_POINTS = 1,
+	FLOWER_POINTS = 2,
+	BADGE_POINTS = 3,
+	STAR_POINTS = 4,
+	LEVEL = 5,
+	PETAL_POWER = 6,
+	COINS = 7
+}
+
 export(int) var max_Heart_Points = 10 # Maximum Heart Points == Hit Points == Life
 
 export (int) var max_Flower_Points = 10 # Max FP = Mana
@@ -84,9 +95,7 @@ func setPlayerGoesFirst(value: bool):
 
 
 	
-func startBattle(playersTurn: bool):
-	setPlayerGoesFirst(playersTurn)
-	battleStatus=1
+#func startBattle(playersTurn: bool):
 
 func endBattle(playerWins: bool):
 	battleStatus=0
