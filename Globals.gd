@@ -5,14 +5,43 @@ extends Node
 # var a = 2
 # var b = "text"
 
-var hp=10
-var petals=5
-var coins=56
-var stars=63
+#var hp=10
+#var petals=5
+#var coins=56
+#var stars=63
 var playerGoesFirst = null
 var playerTurn=null
 var battleStatus=0
 
+<<<<<<< HEAD
+=======
+enum MarioStats{
+	NAME = 0,
+	HEART_POINTS = 1,
+	FLOWER_POINTS = 2,
+	BADGE_POINTS = 3,
+	STAR_POINTS = 4,
+	LEVEL = 5,
+	PETAL_POWER = 6,
+	COINS = 7
+}
+
+export(int) var max_Heart_Points = 10 # Maximum Heart Points == Hit Points == Life
+
+export (int) var max_Flower_Points = 10 # Max FP = Mana
+
+export (int) var max_Badge_Points = 10 # 
+
+export (int) var max_Star_Points = 99 # XP
+
+export (int) var max_Level = 10
+
+export (int) var max_Petal_Power = 7
+
+export (int) var max_Coins = 100
+
+
+>>>>>>> Ectes-stuff
 var current_scene = null
 
 func _ready():
@@ -49,13 +78,33 @@ func _deferred_goto_scene(path):
 	# Optionally, to make it compatible with the SceneTree.change_scene() API.
 	get_tree().set_current_scene(current_scene)
 
+<<<<<<< HEAD
 func setPlayerGoesFirst(value: bool):
 	playerTurn=value
 	playerGoesFirst=value
+=======
+func _deferred_goto_provided_scene(theScene: NodePath):
+	# It is now safe to remove the current scene
+	yield()
+	current_scene.free()
+
+	# Instance the new scene.
+	#current_scene = s.instance()
+
+	# Add it to the active scene, as child of root.
+	#get_tree().get_root().add_child(theScene)
+
+	# Optionally, to make it compatible with the SceneTree.change_scene() API.
+	get_tree().set_current_scene(get_node(theScene))
+
+func setPlayerGoesFirst(value: bool):
+	playerTurn=value
+	playerGoesFirst=value
+
+
+>>>>>>> Ectes-stuff
 	
-func startBattle(playersTurn: bool):
-	setPlayerGoesFirst(playersTurn)
-	battleStatus=1
+#func startBattle(playersTurn: bool):
 
 func endBattle(playerWins: bool):
 	battleStatus=0

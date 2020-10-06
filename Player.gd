@@ -14,11 +14,36 @@ var velocity = Vector3()
 var jump_height = 25
 
 
+export(int) var Heart_Points = 10 # Heart Points == Hit Points == Life
+export(int) var max_Heart_Points = 10 # Maximum Heart Points == Hit Points == Life
 
+<<<<<<< HEAD
 var hp #heart points
 var fp #flower points (magic points)
 var sp #special/star points (higher powered special moves)
 var bp #badge points, aren't used in battle, used up in menus to equip badges
+=======
+export (int) var Flower_Points = 10 # FP = Mana
+export (int) var max_Flower_Points = 10 # Max FP = Mana
+
+export (int) var Badge_Points = 0 # Points to use for "Equipment" I guess
+export (int) var max_Badge_Points = 10 # 
+
+export (int) var Star_Points = 0 # XP
+export (int) var max_Star_Points = 99 # XP
+
+export (int) var Level = 1
+export (int) var max_Level = 10
+
+export (int) var Petal_Power = 0
+export (int) var max_Petal_Power = 7
+
+export (int) var Coins = 100
+export (int) var max_Coins = 100
+
+var SceneRoot
+var groundLevel
+>>>>>>> Ectes-stuff
 
 export (NodePath) var attack_path
 var attackPath_points
@@ -26,23 +51,80 @@ var attackPath_index = 0
 
 var collision_partner
 
+var position: Vector3
+
+
 func _ready():
-	set_hp(Globals.hp)
+	self.set_position(self.position.x,1,self.position.z)
+	setHeartPoints(max_Heart_Points)
 	if attack_path:
-		velocity=Vector3(0,0,0)
+		velocity=Vector3.ZERO
 		attackPath_points = get_node(attack_path).curve.get_baked_points()
+	SceneRoot=get_tree().get_root().get_child(1)
+	self.move_and_slide_with_snap(Vector3(0,5,0),Vector3.DOWN,Vector3.UP)
+	#if self.position.y<=0:
+	#	self.move_and_slide_with_snap(Vector3(0,5,0),Vector3.DOWN,Vector3.UP)
+		#$Shadow.translate(Vector3(0,-1,0))
+	self.move_and_slide_with_snap(Vector3(0,-5,0),Vector3.DOWN,Vector3.UP)
+	groundLevel=self.transform.origin.y-self.scale.y
+
+func get_position():
+	return self.transform.origin
+
+func set_position(x=self.transform.origin.x,y=self.transform.origin.y,z=self.transform.origin.z):
+	self.transform.origin.x=x
+	self.transform.origin.y=y
+	self.transform.origin.z=z
+	
 
 func new_game():
-	set_hp(10)
+	setHeartPoints(max_Heart_Points)
 	
-func set_hp(num):
-	hp=num
-	Globals.hp=num
+func getFlowerPoints():
+	return Flower_Points
+
+func getBadgePoints(): # Points to use for "Equipment" I guess
+	return Badge_Points
+
+func getStarPoints(): # XP
+	return Star_Points
+
+func getLevel():
+	return Level
+
+func getPetalPower():
+	return Petal_Power
+
+func getCoins():
+	return Coins
+
+func setFlowerPoints(num: int):
+	Flower_Points = num
+
+func setBadgePoints(num: int): # Points to use for "Equipment" I guess
+	Badge_Points = num
+
+func setStarPoints(num: int): # XP
+	Star_Points=num
+
+func setLevel(num: int):
+	Level=num
+
+func setPetalPower(num: int):
+	Petal_Power=num
+
+func setCoins(num: int):
+	Coins=num
+
+func setHeartPoints(num: int):
+	self.Heart_Points=num
+	#Globals.hp=num
 	
-func get_hp():
-	return Globals.hp
+func getHeartPoints():
+	return self.Heart_Points
 
 func _process(delta):
+
 	# Animation processing!
 	
 	var mario_direction # Possible values: N, S, E, W, NW, SW, NE, SE and Idle
@@ -96,14 +178,19 @@ func _process(delta):
 			$AnimatedSprite3D.play("walkDown")
 			$AnimatedSprite3D.flip_h=true
 			
+<<<<<<< HEAD
 
 	if !is_on_floor(): # If mario is in the air, jump
+=======
+	if !is_on_floor() and self.transform.origin.y>groundLevel: # If mario is in the air, jump
+>>>>>>> Ectes-stuff
 		$AnimatedSprite3D.play("jump")
 		if direction.x>0: # flip if we are heading right
 			$AnimatedSprite3D.flip_h=true
 		else:
 			if is_on_floor() or direction.x<0: #head left only if user specifies, or we complete jump
 				$AnimatedSprite3D.flip_h=false
+	$AnimatedSprite3D/Shadow.global_transform.origin.y=groundLevel
 	
 	
 	
@@ -113,6 +200,7 @@ func _process(delta):
 		#$AnimatedSprite3D.play("idleUp")
 
 func attack(delta):
+<<<<<<< HEAD
 #	var target = attackPath_points[attackPath_index]
 #	var position = self.transform.origin
 #	#if position.distance_to(target) < 1:
@@ -122,11 +210,37 @@ func attack(delta):
 #	velocity = move_and_slide(velocity, Vector3(0,1,0))
 
 	velocity = move_and_slide(velocity, Vector3(0,1,0))
+=======
+	var target = get_parent().getEnemy().transform.origin #attackPath_points[attackPath_index-1]
+	var position = self.transform.origin
+	if position.distance_to(target) < 4.5:
+		if reachedTarget==0:
+			reachedTarget=1
+			if onceOnly == 1:
+				onceOnly = 0
+				velocity.x=1*speed*delta
+				velocity.y=jumpAmount
+			else:
+				velocity.x = 0
+	else:
+		if reachedTarget == 0:
+			velocity = (target - position).normalized() * speed * delta
+	#if attackPath_index < attackPath_points.size():
+	#	attackPath_index=attackPath_index+1
+	#else:
+	#	if onceOnly == 1:
+	#		onceOnly=0
+			
+	#	else:
+	#		velocity.x=0
+			
+>>>>>>> Ectes-stuff
 	return
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta):
 	var edge=get_parent().getWorldEdge()
+<<<<<<< HEAD
 	self.transform.origin.x = clamp(self.transform.origin.x,-edge.x,edge.x)
 	self.transform.origin.z = clamp(self.transform.origin.z,-edge.z,edge.z)
 	#var gravity_modified = gravity * 1.5
@@ -134,6 +248,19 @@ func _physics_process(delta):
 		if Globals.battleStatus==1:
 			if Globals.playerTurn==true:
 				#velocity=get_parent().playerAttack(delta)
+=======
+	var EdgeLocationsX=[-edge.x,edge.x]
+	var EdgeLocationsZ=[-edge.z,edge.z]
+	if self.global_transform.origin.y<0:
+		print_debug( "wtf:"+str(self.global_transform.origin))
+	self.global_transform.origin.x = clamp(self.global_transform.origin.x,-edge.x,edge.x)
+	self.global_transform.origin.z = clamp(self.global_transform.origin.z,-(edge.z)/2,edge.z/2)
+	var gravity_modified = gravity * 1.5
+	if attack_path:
+		if Globals.battleStatus==1:
+			if Globals.playerTurn==true:
+				
+>>>>>>> Ectes-stuff
 				direction.x=velocity.x
 				velocity.y += gravity*delta
 				move_and_slide(velocity, Vector3(0,1,0))
@@ -180,11 +307,19 @@ func isOnFloor():
 func _on_Area_body_entered(body):
 	set_last_collision_partner(body)
 	if body.is_in_group("Enemies"):
+<<<<<<< HEAD
 		if Globals.battleStatus==1:
+=======
+		if get_parent().name=="BattleArena":#if Globals.battleStatus==1:
+>>>>>>> Ectes-stuff
 			if self.is_on_floor():
-				self.set_hp(self.get_hp()-1)
+				self.setHeartPoints(self.getHeartPoints()-1)
 			else:
+<<<<<<< HEAD
 				self.get_parent().enemy.receiveDamage(1)
+=======
+				#self.get_parent().enemy.receiveDamage(1)
+>>>>>>> Ectes-stuff
 				get_parent().reachedTarget=1
 				self.velocity.x=0
 		else:
@@ -192,6 +327,11 @@ func _on_Area_body_entered(body):
 				get_parent().emit_signal("main_startBattle",false)
 			else:
 				get_parent().emit_signal("main_startBattle",true)
+<<<<<<< HEAD
+=======
+	#else:
+		#print_debug(body.group)
+>>>>>>> Ectes-stuff
 			#yield(get_parent(), "main_startBattle")
 			#yield(get_parent(),"main_startBattle(true)")
 
