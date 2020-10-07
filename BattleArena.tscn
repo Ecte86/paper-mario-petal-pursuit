@@ -44,7 +44,7 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 9 )
 
 [node name="HUD" parent="." instance=ExtResource( 5 )]
 
-[node name="BattleStage" parent="." instance=ExtResource( 7 )]
+[node name="Floor2" parent="." instance=ExtResource( 7 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.61602, 0 )
 
 [node name="Path" type="Path" parent="."]

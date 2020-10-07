@@ -8,15 +8,9 @@ var originalPos
 # var a = 2
 # var b = "text"
 
-var originalPos
-
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-<<<<<<< HEAD
-	originalPos=transform.origin
-	pass # Replace with function body.
-=======
 	print_debug(str(get_parent().name))
 	if get_parent().name!="Main":
 		originalPos=get_parent().get_node("EnemySpawn").global_transform.origin
@@ -33,18 +27,11 @@ func _ready():
 	self.axis_lock_angular_y=true
 	self.axis_lock_angular_z=true	
 		
->>>>>>> Ectes-stuff
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _physics_process(delta):
-	if Globals.battleStatus==1:
-<<<<<<< HEAD
-		if Globals.playerTurn==true:
-			self.transform.origin=originalPos
-		
 func _process(delta):
-=======
+	if Globals.battleStatus==1:
 		if Globals.playerTurn==false:
 			self.axis_lock_linear_x=false
 			self.axis_lock_linear_y=false
@@ -59,7 +46,6 @@ func _process(delta):
 #		if self.visible==false:
 #			self.show()
 		
->>>>>>> Ectes-stuff
 	#if Globals.battleStatus==1:
 		#if Globals.playerTurn==true:
 			#self.mode = 3
@@ -68,10 +54,6 @@ func _process(delta):
 		#Attack goes here?
 	#else:
 		#self.mode=1
-<<<<<<< HEAD
-		
-=======
->>>>>>> Ectes-stuff
 	pass
 
 func receiveDamage(damage):
