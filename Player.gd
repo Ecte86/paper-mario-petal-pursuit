@@ -1,28 +1,19 @@
 extends KinematicBody
 signal hit
 
-#speed
-var airspeed = 520
-var speed = 505
-var friction = 0.5
-var acceleration = 40
-var deacceleration = 30
-
+var speed = 300
 var direction = Vector3()
-var gravity = -85
+var gravity = -9.8
 var velocity = Vector3()
-var jump_height = 25
+var jumpAmount = 10
 
+var onceOnly=1
+
+var reachedTarget=0
 
 export(int) var Heart_Points = 10 # Heart Points == Hit Points == Life
 export(int) var max_Heart_Points = 10 # Maximum Heart Points == Hit Points == Life
 
-<<<<<<< HEAD
-var hp #heart points
-var fp #flower points (magic points)
-var sp #special/star points (higher powered special moves)
-var bp #badge points, aren't used in battle, used up in menus to equip badges
-=======
 export (int) var Flower_Points = 10 # FP = Mana
 export (int) var max_Flower_Points = 10 # Max FP = Mana
 
@@ -43,7 +34,6 @@ export (int) var max_Coins = 100
 
 var SceneRoot
 var groundLevel
->>>>>>> Ectes-stuff
 
 export (NodePath) var attack_path
 var attackPath_points
@@ -178,12 +168,7 @@ func _process(delta):
 			$AnimatedSprite3D.play("walkDown")
 			$AnimatedSprite3D.flip_h=true
 			
-<<<<<<< HEAD
-
-	if !is_on_floor(): # If mario is in the air, jump
-=======
 	if !is_on_floor() and self.transform.origin.y>groundLevel: # If mario is in the air, jump
->>>>>>> Ectes-stuff
 		$AnimatedSprite3D.play("jump")
 		if direction.x>0: # flip if we are heading right
 			$AnimatedSprite3D.flip_h=true
@@ -200,17 +185,6 @@ func _process(delta):
 		#$AnimatedSprite3D.play("idleUp")
 
 func attack(delta):
-<<<<<<< HEAD
-#	var target = attackPath_points[attackPath_index]
-#	var position = self.transform.origin
-#	#if position.distance_to(target) < 1:
-#	#	attackPath_index = wrapi(attackPath_index + 1, 0, attackPath_points.size())
-#	#	target = attackPath_points[attackPath_index]
-#	velocity = (target - position).normalized() * speed
-#	velocity = move_and_slide(velocity, Vector3(0,1,0))
-
-	velocity = move_and_slide(velocity, Vector3(0,1,0))
-=======
 	var target = get_parent().getEnemy().transform.origin #attackPath_points[attackPath_index-1]
 	var position = self.transform.origin
 	if position.distance_to(target) < 4.5:
@@ -234,21 +208,11 @@ func attack(delta):
 	#	else:
 	#		velocity.x=0
 			
->>>>>>> Ectes-stuff
 	return
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta):
 	var edge=get_parent().getWorldEdge()
-<<<<<<< HEAD
-	self.transform.origin.x = clamp(self.transform.origin.x,-edge.x,edge.x)
-	self.transform.origin.z = clamp(self.transform.origin.z,-edge.z,edge.z)
-	#var gravity_modified = gravity * 1.5
-	if attack_path:
-		if Globals.battleStatus==1:
-			if Globals.playerTurn==true:
-				#velocity=get_parent().playerAttack(delta)
-=======
 	var EdgeLocationsX=[-edge.x,edge.x]
 	var EdgeLocationsZ=[-edge.z,edge.z]
 	if self.global_transform.origin.y<0:
@@ -260,10 +224,11 @@ func _physics_process(delta):
 		if Globals.battleStatus==1:
 			if Globals.playerTurn==true:
 				
->>>>>>> Ectes-stuff
 				direction.x=velocity.x
-				velocity.y += gravity*delta
-				move_and_slide(velocity, Vector3(0,1,0))
+				#direction.z=velocity.z
+				velocity.y += gravity_modified*delta
+				velocity = move_and_slide(velocity, Vector3(0,1,0))
+				
 	else:
 		if Globals.battleStatus==0:
 			direction=Vector3(0,0,0)
@@ -278,18 +243,19 @@ func _physics_process(delta):
 				direction.z -= 1 # subtract 1 from direction.z
 			direction=direction.normalized()
 			direction=direction*speed*delta
-			if Input.is_action_just_pressed("jump"): # TODO: ECTE YOU NEED TO ASSIGN A BUTTON LOL find a better action for jumping
-			#velocity.y=10
-				if is_on_floor():
-					velocity.y=jump_height
-					$AnimatedSprite3D/AudioStreamPlayer.play()
-			velocity.y += gravity*delta
+			
+			
+			velocity.y += gravity_modified*delta
 			velocity.x=direction.x
 			velocity.z=direction.z
 			
 			velocity = move_and_slide(velocity,Vector3(0,1,0))
+		
+			if Input.is_action_pressed("jump"): # TODO: find a better action for jumping
+				#velocity.y=10
+				if is_on_floor():
+					velocity.y=jumpAmount
 	
-			
 
 	#velocity = move_and_slide(direction,Vector3(0,1,0))
 
@@ -307,19 +273,11 @@ func isOnFloor():
 func _on_Area_body_entered(body):
 	set_last_collision_partner(body)
 	if body.is_in_group("Enemies"):
-<<<<<<< HEAD
-		if Globals.battleStatus==1:
-=======
 		if get_parent().name=="BattleArena":#if Globals.battleStatus==1:
->>>>>>> Ectes-stuff
 			if self.is_on_floor():
 				self.setHeartPoints(self.getHeartPoints()-1)
 			else:
-<<<<<<< HEAD
-				self.get_parent().enemy.receiveDamage(1)
-=======
 				#self.get_parent().enemy.receiveDamage(1)
->>>>>>> Ectes-stuff
 				get_parent().reachedTarget=1
 				self.velocity.x=0
 		else:
@@ -327,11 +285,8 @@ func _on_Area_body_entered(body):
 				get_parent().emit_signal("main_startBattle",false)
 			else:
 				get_parent().emit_signal("main_startBattle",true)
-<<<<<<< HEAD
-=======
 	#else:
 		#print_debug(body.group)
->>>>>>> Ectes-stuff
 			#yield(get_parent(), "main_startBattle")
 			#yield(get_parent(),"main_startBattle(true)")
 

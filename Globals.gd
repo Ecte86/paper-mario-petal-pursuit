@@ -13,8 +13,6 @@ var playerGoesFirst = null
 var playerTurn=null
 var battleStatus=0
 
-<<<<<<< HEAD
-=======
 enum MarioStats{
 	NAME = 0,
 	HEART_POINTS = 1,
@@ -41,7 +39,6 @@ export (int) var max_Petal_Power = 7
 export (int) var max_Coins = 100
 
 
->>>>>>> Ectes-stuff
 var current_scene = null
 
 func _ready():
@@ -78,11 +75,6 @@ func _deferred_goto_scene(path):
 	# Optionally, to make it compatible with the SceneTree.change_scene() API.
 	get_tree().set_current_scene(current_scene)
 
-<<<<<<< HEAD
-func setPlayerGoesFirst(value: bool):
-	playerTurn=value
-	playerGoesFirst=value
-=======
 func _deferred_goto_provided_scene(theScene: NodePath):
 	# It is now safe to remove the current scene
 	yield()
@@ -102,7 +94,6 @@ func setPlayerGoesFirst(value: bool):
 	playerGoesFirst=value
 
 
->>>>>>> Ectes-stuff
 	
 #func startBattle(playersTurn: bool):
 
