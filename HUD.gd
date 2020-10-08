@@ -5,7 +5,9 @@ extends CanvasLayer
 # var a = 2
 # var b = "text"
 
-var response
+var response = ""
+
+var doneOnce = false
 
 func update_hp(HP):
 	$HPLabel.text = "HP: "+str(HP)+"/"+str(Globals.max_Heart_Points)
@@ -25,12 +27,19 @@ func update(playerSettings: Array):
 	update_coins(playerSettings[Globals.MarioStats.COINS])
 	update_stars(playerSettings[Globals.MarioStats.STAR_POINTS])
 
-func showGUI(time = 3.0):
+func showGUI(time = 3.0, forever = false):
 	$HPLabel.show()
 	$FlowersLabel.show()
 	$CoinLabel.show()
 	$StarsLabel.show()
-	yield(get_tree().create_timer(time), "timeout")
+	if forever == false:
+		yield(get_tree().create_timer(time), "timeout")
+		$HPLabel.hide()
+		$FlowersLabel.hide()
+		$CoinLabel.hide()
+		$StarsLabel.hide()
+
+func hideGUI():
 	$HPLabel.hide()
 	$FlowersLabel.hide()
 	$CoinLabel.hide()
@@ -47,6 +56,8 @@ func showTurnPanel():
 	$BattlePanel2.show()
 	while response=="":
 		yield(get_tree().create_timer(0.5), "timeout")
+	$BattlePanel2.hide()
+	$BattlePanel2.set_process(false)
 	return response
 
 # Called when the node enters the scene tree for the first time.
@@ -55,5 +66,8 @@ func _ready():
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
+func _process(delta):
+	if Input.is_action_pressed("ui_focus_next") and doneOnce==false:
+		doneOnce = true
+		showGUI()
+	pass

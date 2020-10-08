@@ -1,8 +1,18 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://HUD.gd" type="Script" id=1]
 [ext_resource path="res://ItemList.gd" type="Script" id=2]
 [ext_resource path="res://Fonts/HUD_font.tres" type="DynamicFont" id=3]
+[ext_resource path="res://BattlePanel2.gd" type="Script" id=4]
+
+[sub_resource type="DynamicFontData" id=1]
+font_path = "res://Fonts/komika_text/KOMTXTI_.ttf"
+
+[sub_resource type="DynamicFont" id=2]
+size = 53
+outline_size = 2
+outline_color = Color( 0, 0, 0, 1 )
+font_data = SubResource( 1 )
 
 [sub_resource type="DynamicFontData" id=3]
 font_path = "res://Fonts/komika_text/KOMTXTI_.ttf"
@@ -13,26 +23,17 @@ outline_size = 2
 outline_color = Color( 0, 0, 0, 1 )
 font_data = SubResource( 3 )
 
-[sub_resource type="DynamicFontData" id=5]
-font_path = "res://Fonts/komika_text/KOMTXTI_.ttf"
-
-[sub_resource type="DynamicFont" id=6]
-size = 53
-outline_size = 2
-outline_color = Color( 0, 0, 0, 1 )
-font_data = SubResource( 5 )
-
-[sub_resource type="StyleBoxFlat" id=7]
+[sub_resource type="StyleBoxFlat" id=5]
 bg_color = Color( 0.498039, 0, 0, 1 )
 
-[sub_resource type="DynamicFontData" id=1]
+[sub_resource type="DynamicFontData" id=6]
 font_path = "res://Fonts/komika_text/KOMTXTI_.ttf"
 
-[sub_resource type="DynamicFont" id=8]
+[sub_resource type="DynamicFont" id=7]
 size = 24
 outline_size = 2
 outline_color = Color( 0, 0, 0, 1 )
-font_data = SubResource( 1 )
+font_data = SubResource( 6 )
 
 [node name="HUD" type="CanvasLayer"]
 script = ExtResource( 1 )
@@ -57,7 +58,7 @@ __meta__ = {
 margin_left = 516.0
 margin_right = 742.0
 margin_bottom = 68.0
-custom_fonts/font = SubResource( 4 )
+custom_fonts/font = SubResource( 2 )
 text = "S:"
 __meta__ = {
 "_edit_use_anchors_": false
@@ -68,7 +69,7 @@ margin_left = 763.0
 margin_top = -4.0
 margin_right = 963.0
 margin_bottom = 64.0
-custom_fonts/font = SubResource( 4 )
+custom_fonts/font = SubResource( 2 )
 text = "C:"
 __meta__ = {
 "_edit_use_anchors_": false
@@ -80,7 +81,7 @@ margin_top = -1.0
 margin_right = 524.0
 margin_bottom = 67.0
 size_flags_vertical = 1
-custom_fonts/font = SubResource( 6 )
+custom_fonts/font = SubResource( 4 )
 text = "P:"
 __meta__ = {
 "_edit_use_anchors_": false
@@ -96,7 +97,7 @@ margin_left = -279.0
 margin_top = -65.0
 margin_right = 279.0
 margin_bottom = 65.0
-custom_styles/panel = SubResource( 7 )
+custom_styles/panel = SubResource( 5 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -127,7 +128,8 @@ margin_left = -12.72
 margin_top = -16.2
 margin_right = 248.28
 margin_bottom = 140.8
-custom_styles/panel = SubResource( 7 )
+custom_styles/panel = SubResource( 5 )
+script = ExtResource( 4 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -141,7 +143,7 @@ margin_left = -112.5
 margin_top = -64.5
 margin_right = 112.5
 margin_bottom = 59.5
-custom_fonts/font = SubResource( 8 )
+custom_fonts/font = SubResource( 7 )
 items = [ "Jump", null, false, "Hammer", null, true, "Item", null, true ]
 script = ExtResource( 2 )
 __meta__ = {

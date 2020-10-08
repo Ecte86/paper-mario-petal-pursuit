@@ -83,8 +83,6 @@ func _on_Main_main_startBattle(playerGoesFirst):
 	#Globals.goto_scene("res://BattleArena.tscn")
 	var arenaScene=battleArena.instance()
 	if playerGoesFirst == true:
-		$HUD.startBattle(true)
-		yield(get_tree().create_timer(3.0), "timeout")
 		arenaScene.setPlayerGoesFirst(true)
 		arenaScene.setPlayerSettings(player, self.getPlayerSettings(player))
 		#Globals.setPlayerGoesFirst(playerGoesFirst)
@@ -99,6 +97,8 @@ func _on_Main_main_startBattle(playerGoesFirst):
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	if Input.is_action_just_pressed("ui_focus_next"):
+		showGUI()
 #	if CurrentPlayerPosition != player.to_global(player.transform.origin):
 	var oldCameraPos=self.to_global(MarioCamera.transform.origin)
 	var playerPos=self.to_global(player.transform.origin)
@@ -118,14 +118,17 @@ func _process(delta):
 	var edge = getWorldEdge()
 	MarioCamera.global_transform.origin.x = clamp(MarioCamera.global_transform.origin.x,-edge.x/2,edge.x/2)	
 		#MarioCamera.call("update_camera", CurrentPlayerPosition)#.update_camera(CurrentPlayerPosition)
-	if Input.is_action_pressed("ui_focus_next"):
-		$HUD.showGUI()
 	for i in player.get_slide_count():
 		var collider = player.get_slide_collision(i)
 		if collider:
 			_on_Mario_hit(player.get_last_collision_partner())
 #	pass
 
+func showGUI(duration = 3, forever = false):
+	$HUD.showGUI(duration, forever)
+
+func hideGUI():
+	$HUD.hideGUI()
 
 func _on_Mario_hit(body):
 	#print_debug(str(body.collider.get_parent().get_parent().get_groups()))

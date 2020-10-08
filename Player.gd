@@ -9,6 +9,16 @@ var jumpAmount = 10
 
 var onceOnly=1
 
+var idleTime=0
+
+var idleAnimTime=0
+
+export (int) var idleStatsBar=10
+
+export (int) var idleSeconds = 3
+
+export (int) var fps=60 #not sure if 60
+
 var reachedTarget=0
 
 export(int) var Heart_Points = 10 # Heart Points == Hit Points == Life
@@ -143,6 +153,7 @@ func _process(delta):
 	match mario_direction:
 		"Idle":
 			$AnimatedSprite3D.play("idleDown")
+			
 		"NW":
 			$AnimatedSprite3D.play("walkUp")
 			$AnimatedSprite3D.flip_h=false
@@ -176,6 +187,14 @@ func _process(delta):
 			if is_on_floor() or direction.x<0: #head left only if user specifies, or we complete jump
 				$AnimatedSprite3D.flip_h=false
 	$AnimatedSprite3D/Shadow.global_transform.origin.y=groundLevel
+
+#	I cannot get this to work very well.
+#	if mario_direction=="Idle":
+#		yield(get_tree().create_timer(10), "timeout")
+#		get_parent().showGUI(3,true)
+#	else:
+#		get_parent().hideGUI()
+
 	
 	
 	
@@ -292,4 +311,3 @@ func _on_Area_body_entered(body):
 
 	#if body is RigidBody:#Area: # TODO: What type will enemy be? Assuming area for now.
 	#	body.hide() # eliminate enemy as a test
-

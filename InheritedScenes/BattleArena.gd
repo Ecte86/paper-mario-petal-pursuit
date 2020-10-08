@@ -6,7 +6,7 @@ var onceOnly=1
 var reachedTarget=0
 var startedAttack=0
 var attackStarted=false
-var response
+var response=""
 # Declare member variables here. Examples:
 # var a = 2
 # var b = "text"
@@ -34,6 +34,8 @@ func _ready():
 	setupHUD()
 	
 func setupHUD():
+	$HUD.startBattle(true)
+	yield(get_tree().create_timer(3.0), "timeout")
 	$HUD.update(getPlayerSettings(player))
 	$HUD.showGUI(0)
 

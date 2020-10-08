@@ -28,15 +28,15 @@ animations = [ {
 "name": "idleDown",
 "speed": 4.0
 }, {
-"frames": [ ExtResource( 14 ), ExtResource( 13 ), ExtResource( 12 ), ExtResource( 13 ) ],
-"loop": true,
-"name": "walkDown",
-"speed": 10.0
-}, {
 "frames": [ SubResource( 1 ) ],
 "loop": true,
 "name": "idleUp",
 "speed": 5.0
+}, {
+"frames": [ ExtResource( 14 ), ExtResource( 13 ), ExtResource( 12 ), ExtResource( 13 ) ],
+"loop": true,
+"name": "walkDown",
+"speed": 10.0
 }, {
 "frames": [ ExtResource( 15 ), ExtResource( 10 ), ExtResource( 8 ) ],
 "loop": false,
@@ -70,7 +70,7 @@ script = ExtResource( 1 )
 offset = Vector2( 0, 25 )
 frames = SubResource( 2 )
 animation = "idleDown"
-frame = 40
+frame = 8
 playing = true
 __meta__ = {
 "_edit_group_": true
@@ -94,4 +94,5 @@ shape = SubResource( 5 )
 [node name="CollisionShape2" type="CollisionShape" parent="Area"]
 transform = Transform( 1, 0, 0, 0, -1.62921e-07, 1, 0, -1, -1.62921e-07, 0, 0, 0 )
 shape = SubResource( 5 )
+[connection signal="input_event" from="." to="." method="_on_Player_input_event"]
 [connection signal="body_entered" from="Area" to="." method="_on_Area_body_entered"]
