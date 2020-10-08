@@ -7,42 +7,27 @@ signal main_startBattle(playerGoesFirst)
 
 var lastCollisionPartner
 
-<<<<<<< HEAD
-=======
 var battleArena
 
->>>>>>> Ectes-stuff
 # Declare member variables here. Examples:
 # var a = 2
 # var b = "text"
 
-<<<<<<< HEAD
-var current_scene
-
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	$Mario.new_game()
-	$AudioStreamPlayer3D.play()
-	$HUD.update_hp($Mario.get_hp())
-	$HUD.update_petals(Globals.petals)
-	$HUD.update_stars(Globals.stars)
-	$HUD.update_coins(Globals.coins)
-	Globals.battleStatus=0
-=======
 var playerSettings = []
 
 export (PackedScene) var PlayerScene
 
 var player: KinematicBody
 
-var camera
+var MarioCamera: Camera
+
+var CurrentPlayerPosition: Vector3 = Vector3.ZERO
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	self.load_players_and_enemies()
-	self.setup_cameras()
 	self.preload_BattleArena_and_setup_HUD()
->>>>>>> Ectes-stuff
+	self.setup_cameras()
 #	var BattleArenaNode = get_tree()
 #	BattleArenaNode.connect("startBattle", self, "_on_Main_main_startBattle")#connect("startBattle",self,"handleplayerspotted")
 
@@ -56,11 +41,13 @@ func preload_BattleArena_and_setup_HUD():
 	print_debug($Floor.get_child(0).scale)
 
 func setup_cameras():
-	player.add_child(Camera.new())
-	camera=player.get_child(player.get_child_count()-1)
-	camera.translate(Vector3(0,5,9))
-	camera.current=true
-	camera.look_at(player.transform.origin,Vector3.UP)
+	self.add_child(Camera.new())
+	MarioCamera=self.get_child(self.get_child_count()-1)
+	print_tree_pretty()
+	MarioCamera.translate(Vector3(0,5,9))
+	MarioCamera.current=true
+	CurrentPlayerPosition = player.transform.origin
+	MarioCamera.look_at(CurrentPlayerPosition,Vector3.UP)
 
 func load_players_and_enemies():
 	PlayerScene = preload("res://Mario.tscn")
@@ -93,12 +80,8 @@ func setPlayerSettings(player, settings: Array):
 	player.setCoins(settings[7])
 
 func _on_Main_main_startBattle(playerGoesFirst):
-<<<<<<< HEAD
-	Globals.goto_scene("res://BattleArena.tscn")
-=======
 	#Globals.goto_scene("res://BattleArena.tscn")
 	var arenaScene=battleArena.instance()
->>>>>>> Ectes-stuff
 	if playerGoesFirst == true:
 		$HUD.startBattle(true)
 		yield(get_tree().create_timer(3.0), "timeout")
@@ -116,23 +99,30 @@ func _on_Main_main_startBattle(playerGoesFirst):
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+#	if CurrentPlayerPosition != player.to_global(player.transform.origin):
+	var oldCameraPos=self.to_global(MarioCamera.transform.origin)
+	var playerPos=self.to_global(player.transform.origin)
+	if player.transform.origin.y>oldCameraPos.y:
+		MarioCamera.look_at(player.transform.origin,Vector3.UP)
+		if player.velocity.y==0:
+			MarioCamera.translate(Vector3(0,playerPos.y-oldCameraPos.y,0))
+	if player.transform.origin.y<MarioCamera.transform.origin.y:
+		MarioCamera.look_at(player.transform.origin,Vector3.UP)
+#		if player.velocity.y==0:
+#			MarioCamera.translate(Vector3(0,(oldCameraPos.y-playerPos.y,0)))
+			
+
+			
+	#MarioCamera.look_at(player.transform.origin,Vector3.UP)
+	MarioCamera.transform.origin.x=player.transform.origin.x
+	var edge = getWorldEdge()
+	MarioCamera.global_transform.origin.x = clamp(MarioCamera.global_transform.origin.x,-edge.x/2,edge.x/2)	
+		#MarioCamera.call("update_camera", CurrentPlayerPosition)#.update_camera(CurrentPlayerPosition)
 	if Input.is_action_pressed("ui_focus_next"):
 		$HUD.showGUI()
 	for i in player.get_slide_count():
 		var collider = player.get_slide_collision(i)
 		if collider:
-<<<<<<< HEAD
-			lastCollisionPartner = ($Mario.get_last_collision_partner())
-#	pass
-
-
-func _on_Mario_hit():
-#	#print_debug(str(body.collider.get_parent().get_parent().get_groups()))
-#	#print_debug(str(body.get_groups()))
-
-	if lastCollisionPartner.is_in_group("Enemies"): # NEED TO FIND OUT HOW TO CHECK WHAT WE COLLIDING WITH
-		if ($Mario.isOnFloor()):
-=======
 			_on_Mario_hit(player.get_last_collision_partner())
 #	pass
 
@@ -142,10 +132,8 @@ func _on_Mario_hit(body):
 	#print_debug(str(body.get_groups()))
 	if body.is_in_group("Enemies"): # NEED TO FIND OUT HOW TO CHECK WHAT WE COLLIDING WITH
 		if (player.isOnFloor()):
->>>>>>> Ectes-stuff
 			_on_Main_main_startBattle(false)
 			#emit_signal("main_startBattle", false)
 		else:
-#
 			_on_Main_main_startBattle(true)
-#			#emit_signal("main_startBattle", true)
+			#emit_signal("main_startBattle", true)

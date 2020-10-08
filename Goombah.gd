@@ -91,7 +91,7 @@ func get_hp():
 
 func _on_Area_body_entered(body):
 	var topEdge=self.get_child(0).scale.y
-	topEdge = topEdge + get_parent().getWorldEdge().y
+	topEdge = topEdge + get_tree().get_root().get_child(1).getWorldEdge().y
 	if Globals.battleStatus==1:
 		if Globals.playerTurn==true:
 			if get_parent().startedAttack==1:
