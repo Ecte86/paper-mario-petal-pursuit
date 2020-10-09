@@ -48,16 +48,19 @@ func hideGUI():
 
 func startBattle(playerFirst: bool):
 	if playerFirst:
-		$BattlePanel.show()
+		$BattlePanel.popup()
 		yield(get_tree().create_timer(3.0), "timeout")
 		$BattlePanel.hide()
 
 func showTurnPanel():
-	$BattlePanel2.show()
-	while response=="":
-		yield(get_tree().create_timer(0.5), "timeout")
-	$BattlePanel2.hide()
-	$BattlePanel2.set_process(false)
+	if $BattlePanel.visible==false:
+		$BattlePanel2.popup()
+		$BattlePanel2/abilityList.focus_mode=2
+		$BattlePanel2/abilityList.grab_focus()
+	if response!="":
+		$BattlePanel2/abilityList.focus_mode=0
+		$BattlePanel2/abilityList.release_focus()
+		$BattlePanel2.hide()
 	return response
 
 # Called when the node enters the scene tree for the first time.
@@ -67,7 +70,24 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	if Input.is_action_pressed("ui_focus_next") and doneOnce==false:
-		doneOnce = true
-		showGUI()
 	pass
+
+
+func _on_abilityList_gui_input(event):
+	if Input.is_action_pressed("ui_down"):
+		for x in $BattlePanel2/abilityList.get_item_count():
+			if $BattlePanel2/abilityList.is_selected(x):
+				if x+1 > $BattlePanel2/abilityList.get_item_count():
+					$BattlePanel2/abilityList.select(0)
+					break
+				else:
+					$BattlePanel2/abilityList.select(x+1)
+	if Input.is_action_pressed("ui_accept"):
+		var selected_item_idx = -1
+		for x in $BattlePanel2/abilityList.get_item_count():
+			if $BattlePanel2/abilityList.is_selected(x):
+				selected_item_idx=x
+				break
+		if selected_item_idx>-1:
+			response=$BattlePanel2/abilityList.get_item_text(selected_item_idx)
+			$BattlePanel2.hide()

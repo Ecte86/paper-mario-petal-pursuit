@@ -1,9 +1,8 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://HUD.gd" type="Script" id=1]
 [ext_resource path="res://ItemList.gd" type="Script" id=2]
 [ext_resource path="res://Fonts/HUD_font.tres" type="DynamicFont" id=3]
-[ext_resource path="res://BattlePanel2.gd" type="Script" id=4]
 
 [sub_resource type="DynamicFontData" id=1]
 font_path = "res://Fonts/komika_text/KOMTXTI_.ttf"
@@ -87,26 +86,75 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="BattlePanel" type="Panel" parent="."]
-visible = false
+[node name="BattlePanel2" type="WindowDialog" parent="."]
+visible = true
+anchor_left = 0.03
+anchor_top = 0.402
+anchor_right = 0.03
+anchor_bottom = 0.402
+margin_left = -12.72
+margin_top = -16.2
+margin_right = 248.28
+margin_bottom = 140.8
+custom_styles/panel = SubResource( 5 )
+popup_exclusive = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="abilityList" type="ItemList" parent="BattlePanel2"]
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -279.0
-margin_top = -65.0
-margin_right = 279.0
-margin_bottom = 65.0
+margin_left = -112.5
+margin_top = -64.5
+margin_right = 112.5
+margin_bottom = 59.5
+focus_neighbour_left = NodePath(".")
+focus_neighbour_top = NodePath(".")
+focus_neighbour_right = NodePath(".")
+focus_neighbour_bottom = NodePath(".")
+focus_next = NodePath(".")
+focus_previous = NodePath(".")
+custom_fonts/font = SubResource( 7 )
+items = [ "Jump", null, false, "Hammer", null, true, "Item", null, true ]
+allow_reselect = true
+script = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="BattlePanel" type="Popup" parent="."]
+margin_left = -6.0
+margin_top = -6.0
+margin_right = 1024.0
+margin_bottom = 596.0
+mouse_default_cursor_shape = 2
+popup_exclusive = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Background" type="Panel" parent="BattlePanel"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -523.0
+margin_top = -309.0
+margin_right = 513.0
+margin_bottom = 304.0
 custom_styles/panel = SubResource( 5 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="BattleMessage" type="Label" parent="BattlePanel"]
-margin_left = 12.0
-margin_top = 17.0
-margin_right = 539.0
-margin_bottom = 107.0
+margin_left = 245.0
+margin_top = 252.0
+margin_right = 772.0
+margin_bottom = 342.0
 grow_horizontal = 0
 grow_vertical = 0
 size_flags_vertical = 1
@@ -117,35 +165,4 @@ valign = 1
 __meta__ = {
 "_edit_use_anchors_": false
 }
-
-[node name="BattlePanel2" type="Panel" parent="."]
-visible = false
-anchor_left = 0.03
-anchor_top = 0.402
-anchor_right = 0.03
-anchor_bottom = 0.402
-margin_left = -12.72
-margin_top = -16.2
-margin_right = 248.28
-margin_bottom = 140.8
-custom_styles/panel = SubResource( 5 )
-script = ExtResource( 4 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="ItemList" type="ItemList" parent="BattlePanel2"]
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-margin_left = -112.5
-margin_top = -64.5
-margin_right = 112.5
-margin_bottom = 59.5
-custom_fonts/font = SubResource( 7 )
-items = [ "Jump", null, false, "Hammer", null, true, "Item", null, true ]
-script = ExtResource( 2 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
+[connection signal="gui_input" from="BattlePanel2/abilityList" to="." method="_on_abilityList_gui_input"]
