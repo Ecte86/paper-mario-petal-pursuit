@@ -19,13 +19,15 @@ export (PackedScene) var PlayerScene
 
 var player: KinematicBody
 
-var camera
+var MarioCamera: Camera
+
+var CurrentPlayerPosition: Vector3 = Vector3.ZERO
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	self.load_players_and_enemies()
-	self.setup_cameras()
 	self.preload_BattleArena_and_setup_HUD()
+	self.setup_cameras()
 #	var BattleArenaNode = get_tree()
 #	BattleArenaNode.connect("startBattle", self, "_on_Main_main_startBattle")#connect("startBattle",self,"handleplayerspotted")
 
@@ -39,11 +41,13 @@ func preload_BattleArena_and_setup_HUD():
 	print_debug($Floor.get_child(0).scale)
 
 func setup_cameras():
-	player.add_child(Camera.new())
-	camera=player.get_child(player.get_child_count()-1)
-	camera.translate(Vector3(0,5,9))
-	camera.current=true
-	camera.look_at(player.transform.origin,Vector3.UP)
+	self.add_child(Camera.new())
+	MarioCamera=self.get_child(self.get_child_count()-1)
+	print_tree_pretty()
+	MarioCamera.translate(Vector3(0,5,9))
+	MarioCamera.current=true
+	CurrentPlayerPosition = player.transform.origin
+	MarioCamera.look_at(CurrentPlayerPosition,Vector3.UP)
 
 func load_players_and_enemies():
 	PlayerScene = preload("res://Mario.tscn")
@@ -79,8 +83,6 @@ func _on_Main_main_startBattle(playerGoesFirst):
 	#Globals.goto_scene("res://BattleArena.tscn")
 	var arenaScene=battleArena.instance()
 	if playerGoesFirst == true:
-		$HUD.startBattle(true)
-		yield(get_tree().create_timer(3.0), "timeout")
 		arenaScene.setPlayerGoesFirst(true)
 		arenaScene.setPlayerSettings(player, self.getPlayerSettings(player))
 		#Globals.setPlayerGoesFirst(playerGoesFirst)
@@ -95,14 +97,38 @@ func _on_Main_main_startBattle(playerGoesFirst):
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	if Input.is_action_pressed("ui_focus_next"):
-		$HUD.showGUI()
+	if Input.is_action_just_pressed("ui_focus_next"):
+		showGUI()
+#	if CurrentPlayerPosition != player.to_global(player.transform.origin):
+	var oldCameraPos=self.to_global(MarioCamera.transform.origin)
+	var playerPos=self.to_global(player.transform.origin)
+	if player.transform.origin.y>oldCameraPos.y:
+		MarioCamera.look_at(player.transform.origin,Vector3.UP)
+		if player.velocity.y==0:
+			MarioCamera.translate(Vector3(0,playerPos.y-oldCameraPos.y,0))
+	if player.transform.origin.y<MarioCamera.transform.origin.y:
+		MarioCamera.look_at(player.transform.origin,Vector3.UP)
+#		if player.velocity.y==0:
+#			MarioCamera.translate(Vector3(0,(oldCameraPos.y-playerPos.y,0)))
+			
+
+			
+	#MarioCamera.look_at(player.transform.origin,Vector3.UP)
+	MarioCamera.transform.origin.x=player.transform.origin.x
+	var edge = getWorldEdge()
+	MarioCamera.global_transform.origin.x = clamp(MarioCamera.global_transform.origin.x,-edge.x/2,edge.x/2)	
+		#MarioCamera.call("update_camera", CurrentPlayerPosition)#.update_camera(CurrentPlayerPosition)
 	for i in player.get_slide_count():
 		var collider = player.get_slide_collision(i)
 		if collider:
 			_on_Mario_hit(player.get_last_collision_partner())
 #	pass
 
+func showGUI(duration = 3, forever = false):
+	$HUD.showGUI(duration, forever)
+
+func hideGUI():
+	$HUD.hideGUI()
 
 func _on_Mario_hit(body):
 	#print_debug(str(body.collider.get_parent().get_parent().get_groups()))

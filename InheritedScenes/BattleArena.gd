@@ -3,10 +3,11 @@ signal startBattle(freeAttack)
 signal endBattle(playerWins)
 
 var onceOnly=1
-var reachedTarget=0
+var reachedTarget=false
 var startedAttack=0
 var attackStarted=false
-var response
+var response=""
+var plrJumpPhase =-1
 # Declare member variables here. Examples:
 # var a = 2
 # var b = "text"
@@ -34,6 +35,8 @@ func _ready():
 	setupHUD()
 	
 func setupHUD():
+	$HUD.startBattle(true)
+	yield(get_tree().create_timer(3.0), "timeout")
 	$HUD.update(getPlayerSettings(player))
 	$HUD.showGUI(0)
 
@@ -107,16 +110,18 @@ func setPlayerGoesFirst(value: bool):
 	Globals.setPlayerGoesFirst(value)
 
 func playerAttack(delta):
-	var velocity=Vector3(player.velocity.x, player.velocity.y, player.velocity.z)
 	startedAttack=1
+	var newPosition
+	var velocity=Vector3.ZERO
 	var target = enemy.transform.origin #attackPath_points[attackPath_index-1]
 	var position = player.transform.origin
 	if position.distance_to(target) < 4.5:
-		if reachedTarget==0:
+		if reachedTarget==false:
 			if onceOnly == 1:
 				onceOnly = 0
 				velocity.x=1*player.speed*delta
-				velocity.y=player.jump_height
+				velocity.y=player.jumpAmount
+				#player.move_and_slide(velocity)
 				#reachedTarget=1
 		else:
 			velocity.x = 0
@@ -125,10 +130,12 @@ func playerAttack(delta):
 			player.direction=Vector3.ZERO
 			player.transform.origin = playerPos
 	else:
-		if reachedTarget == 0:
-			velocity = (target - position).normalized() * player.speed * delta
-	
-	return velocity
+		if reachedTarget == false:
+			var temp=Vector3(target.x-4.5,target.y,target.z)
+			newPosition=lerp(position,target,delta)
+			
+			
+	return newPosition
 			
 	#if attackPath_index < attackPath_points.size():
 	#	attackPath_index=attackPath_index+1
@@ -148,16 +155,60 @@ func _process(delta):
 			if response=="Jump" and attackStarted!=true:
 				attackStarted=true
 			else:
-				response = $HUD.showTurnPanel()
-			player.velocity=playerAttack(delta)
-			if reachedTarget==1:
-				Globals.playerTurn=false
-				Globals.playerGoesFirst=false
+				while response=="":
+					response = $HUD.showTurnPanel()
+					if response=="": 
+						yield()
+			if attackStarted:
+				var newPos = playerAttack(delta)
+				if newPos != null:
+					player.transform.origin=newPos
+				else:
+					reachedTarget=false
+					var done = false
+					if done == false:
+						done = playerJump(delta)
+					if done:
+						player.move_and_slide(Vector3(0,player.gravity,0), Vector3.UP)
+						#reachedTarget=true
+				if reachedTarget==true:
+					Globals.playerTurn=false
+					Globals.playerGoesFirst=false
+					attackStarted=false
 		else:
 			yield()
 #	pass
 
+func playerJump(delta):
+	if plrJumpPhase ==-1:
+		plrJumpPhase = 1
+	var newPos
+	var origPos = -1
+	if origPos==-1:
+		origPos=playerPos
+	if plrJumpPhase == 1:
+		newPos=playerPos
+		newPos.y=newPos.y+enemy.scale.y # go up
+		if player.transform.origin != newPos:
+			player.transform.origin = \
+				lerp(origPos, newPos,delta*2)
+		else:
+			plrJumpPhase=2
+			origPos=-1
+	if plrJumpPhase == 2:
+		if origPos==-1:
+			origPos=player.transform.origin
+			newPos.x=enemy.transform.origin.x
 
+		if player.transform.origin != newPos:
+			print_debug(str(player.transform.origin)+"=>"+str(newPos))
+			player.transform.origin = \
+				lerp(origPos, newPos,delta*2)
+		else:
+			plrJumpPhase=3
+	if plrJumpPhase==3:
+		return true
+	
 
 func _on_BattleArena_startBattle(freeAttack):
 	#breakpoint
