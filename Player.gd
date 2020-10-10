@@ -204,29 +204,29 @@ func _process(delta):
 		#$AnimatedSprite3D.play("idleUp")
 
 func attack(delta):
-	var target = get_parent().getEnemy().transform.origin #attackPath_points[attackPath_index-1]
-	var position = self.transform.origin
-	if position.distance_to(target) < 4.5:
-		if reachedTarget==0:
-			reachedTarget=1
-			if onceOnly == 1:
-				onceOnly = 0
-				velocity.x=1*speed*delta
-				velocity.y=jumpAmount
-			else:
-				velocity.x = 0
-	else:
-		if reachedTarget == 0:
-			velocity = (target - position).normalized() * speed * delta
-	#if attackPath_index < attackPath_points.size():
-	#	attackPath_index=attackPath_index+1
-	#else:
-	#	if onceOnly == 1:
-	#		onceOnly=0
-			
-	#	else:
-	#		velocity.x=0
-			
+#	var target = get_parent().getEnemy().transform.origin #attackPath_points[attackPath_index-1]
+#	var position = self.transform.origin
+#	if position.distance_to(target) < 4.5:
+#		if reachedTarget==0:
+#			reachedTarget=1
+#			if onceOnly == 1:
+#				onceOnly = 0
+#				velocity.x=1*speed*delta
+#				velocity.y=jumpAmount
+#			else:
+#				velocity.x = 0
+#	else:
+#		if reachedTarget == 0:
+#			velocity = (target - position).normalized() * speed * delta
+#	#if attackPath_index < attackPath_points.size():
+#	#	attackPath_index=attackPath_index+1
+#	#else:
+#	#	if onceOnly == 1:
+#	#		onceOnly=0
+#
+#	#	else:
+#	#		velocity.x=0
+#
 	return
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

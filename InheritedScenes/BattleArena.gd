@@ -7,7 +7,8 @@ var reachedTarget=false
 var startedAttack=0
 var attackStarted=false
 var response=""
-var plrJumpPhase =-1
+var plrAttackPhase =-1
+var startJump: bool = false
 # Declare member variables here. Examples:
 # var a = 2
 # var b = "text"
@@ -25,6 +26,11 @@ var enemy_camera = Camera.new()
 
 var playerPos: Vector3
 var enemyPos: Vector3
+
+var lerp_currentTime=0
+var lerp_totalTime=3
+var lerp_startPos
+var lerp_endPos
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -111,30 +117,45 @@ func setPlayerGoesFirst(value: bool):
 
 func playerAttack(delta):
 	startedAttack=1
+	reachedTarget=false
 	var newPosition
-	var velocity=Vector3.ZERO
-	var target = enemy.transform.origin #attackPath_points[attackPath_index-1]
-	var position = player.transform.origin
-	if position.distance_to(target) < 4.5:
-		if reachedTarget==false:
-			if onceOnly == 1:
-				onceOnly = 0
-				velocity.x=1*player.speed*delta
-				velocity.y=player.jumpAmount
-				#player.move_and_slide(velocity)
-				#reachedTarget=1
-		else:
-			velocity.x = 0
-			velocity.y = 0
-			velocity.z = 0
-			player.direction=Vector3.ZERO
-			player.transform.origin = playerPos
-	else:
-		if reachedTarget == false:
-			var temp=Vector3(target.x-4.5,target.y,target.z)
-			newPosition=lerp(position,target,delta)
+	match plrAttackPhase:
+		-1:
+			lerp_startPos=player.transform.origin
+			lerp_endPos=enemy.transform.origin
+			lerp_endPos.x=lerp_endPos.x-4.5
 			
+			var amt=lerp_currentTime/lerp_totalTime
+			lerp_currentTime+=delta
+			amt=clamp(amt,0,1)
+			newPosition=lerp_startPos.linear_interpolate(lerp_endPos,amt)
+			if newPosition.distance_to(lerp_endPos)<0.5:
+				lerp_currentTime=0
+				plrAttackPhase += 1
+		0:
+			if lerp_currentTime==0:
+				lerp_startPos=player.transform.origin
+				lerp_endPos=player.transform.origin
+				lerp_endPos.y += enemy.scale.y
 			
+			var amt=lerp_currentTime/lerp_totalTime-1
+			lerp_currentTime+=delta
+			amt=clamp(amt,0,1)
+			newPosition=lerp_startPos.linear_interpolate(lerp_endPos,amt)
+			if newPosition.distance_to(lerp_endPos)<0:
+				plrAttackPhase +=1
+		1:
+			if lerp_currentTime==0:
+				lerp_startPos=player.transform.origin
+				lerp_endPos=enemy.transform.origin
+				lerp_endPos.y += enemy.scale.y
+			
+			var amt=lerp_currentTime/lerp_totalTime
+			lerp_currentTime+=delta
+			amt=clamp(amt,0,1)
+			newPosition=lerp_startPos.linear_interpolate(lerp_endPos,amt)
+			if newPosition.distance_to(lerp_endPos)<0:
+				plrAttackPhase +=1
 	return newPosition
 			
 	#if attackPath_index < attackPath_points.size():
@@ -161,16 +182,12 @@ func _process(delta):
 						yield()
 			if attackStarted:
 				var newPos = playerAttack(delta)
-				if newPos != null:
+				if plrAttackPhase <= 1:
 					player.transform.origin=newPos
 				else:
 					reachedTarget=false
-					var done = false
-					if done == false:
-						done = playerJump(delta)
-					if done:
-						player.move_and_slide(Vector3(0,player.gravity,0), Vector3.UP)
-						#reachedTarget=true
+					player.move_and_slide(Vector3(0,player.gravity,0), Vector3.UP)
+					#reachedTarget=true
 				if reachedTarget==true:
 					Globals.playerTurn=false
 					Globals.playerGoesFirst=false
@@ -179,35 +196,9 @@ func _process(delta):
 			yield()
 #	pass
 
-func playerJump(delta):
-	if plrJumpPhase ==-1:
-		plrJumpPhase = 1
-	var newPos
-	var origPos = -1
-	if origPos==-1:
-		origPos=playerPos
-	if plrJumpPhase == 1:
-		newPos=playerPos
-		newPos.y=newPos.y+enemy.scale.y # go up
-		if player.transform.origin != newPos:
-			player.transform.origin = \
-				lerp(origPos, newPos,delta*2)
-		else:
-			plrJumpPhase=2
-			origPos=-1
-	if plrJumpPhase == 2:
-		if origPos==-1:
-			origPos=player.transform.origin
-			newPos.x=enemy.transform.origin.x
-
-		if player.transform.origin != newPos:
-			print_debug(str(player.transform.origin)+"=>"+str(newPos))
-			player.transform.origin = \
-				lerp(origPos, newPos,delta*2)
-		else:
-			plrJumpPhase=3
-	if plrJumpPhase==3:
-		return true
+#func playerJump(delta):
+#	if plrJumpPhase==3:
+#		return true
 	
 
 func _on_BattleArena_startBattle(freeAttack):
