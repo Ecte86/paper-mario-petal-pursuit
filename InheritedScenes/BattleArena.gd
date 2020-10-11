@@ -12,6 +12,7 @@ var enemyAttackFinished=false
 var response=""
 var plrAttackPhase =-1
 var startJump: bool = false
+var doubleAttack: bool = false
 # Declare member variables here. Examples:
 # var a = 2
 # var b = "text"
@@ -126,8 +127,8 @@ func playerAttack(delta):
 	playerAttackStarted=true
 	reachedTarget=false
 	var newPosition
-	if $PlayerSpawn/AttackAnimPlayer.is_playing()==false:
-		$PlayerSpawn/AttackAnimPlayer.play("jump")
+	if $PlayerSpawn/PlayerAttack_AnimationPlayer.is_playing()==false:
+		$PlayerSpawn/PlayerAttack_AnimationPlayer.play("jump")
 		newPosition=$PlayerSpawn.transform.origin
 	else:
 		newPosition=$PlayerSpawn.transform.origin
@@ -139,8 +140,7 @@ func playerAttack(delta):
 			player.direction=Vector3(1,0,0)
 	if playerAttackFinished == true:
 	#if newPosition.x==5.887784: #enemy.transform.origin.x:
-		$HUD/BattlePanel3.popup()
-		#PAUSE FOR 3(?) SECONDS
+		yield(get_tree().create_timer(0.75), "timeout")
 		reachedTarget=true
 	return newPosition
 			
@@ -168,12 +168,20 @@ func _process(delta):
 						yield()
 			if playerAttackStarted:
 				var newPos = playerAttack(delta)
-				if reachedTarget==false:
+				if reachedTarget==false and playerAttackFinished==false:
 					player.set_positionV3(newPos)
 				else:
+					$HUD/BattlePanel3.popup()
+					yield(get_tree().create_timer(0.75), "timeout")
 					reachedTarget=false
-					player.move_and_slide(Vector3(0,player.gravity,0), Vector3.UP)
-					#reachedTarget=true
+					var numAttacks=1
+					var player_original_position = player.transform.origin
+					if doubleAttack==true:
+						numAttacks=2
+					for x in range(1, numAttacks):
+						player.transform.origin = player_original_position
+						player.move_and_slide(Vector3(0,player.gravity,0), Vector3.UP)
+					reachedTarget=true
 				if reachedTarget==true:
 					Globals.playerTurn=false
 					Globals.playerGoesFirst=false
@@ -209,6 +217,6 @@ func _on_BattleArena_endBattle(playerWins):
 	Globals.endBattle(playerWins)
 
 
-func _on_AttackAnimPlayer_animation_finished(anim_name):
+func _on_PlayerAttack_AnimationPlayer_animation_finished(anim_name):
 	playerAttackFinished = true
 	pass # Replace with function body.

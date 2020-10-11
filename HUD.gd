@@ -91,3 +91,25 @@ func _on_abilityList_gui_input(event):
 		if selected_item_idx>-1:
 			response=$BattlePanel2/abilityList.get_item_text(selected_item_idx)
 			$BattlePanel2.hide()
+
+
+func _on_BattlePanel3_about_to_show():
+	$BattlePanel3/NintendoAButton.focus_mode=2
+	$BattlePanel3/NintendoAButton.grab_focus()
+
+func _on_BattlePanel3_popup_hide():
+	$BattlePanel3/NintendoAButton.focus_mode=0
+	$BattlePanel3/NintendoAButton.release_focus()
+	 # Replace with function body.
+
+
+func _on_NintendoAButton_gui_input(event):
+	if Input.is_action_pressed("jump"):
+		$BattlePanel3/NintendoAButton.emit_signal("pressed")
+	 # Replace with function body.
+
+
+func _on_NintendoAButton_pressed():
+	get_parent().doubleAttack=true
+	$BattlePanel3/GratsMessage.show()
+	 # Replace with function body.

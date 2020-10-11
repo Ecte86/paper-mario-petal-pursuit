@@ -38,7 +38,7 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -4.684, 2.5, 0 )
 
 [node name="EditorOnlyPlaceholderMesh" parent="PlayerSpawn" instance=ExtResource( 2 )]
 
-[node name="AttackAnimPlayer" type="AnimationPlayer" parent="PlayerSpawn"]
+[node name="PlayerAttack_AnimationPlayer" type="AnimationPlayer" parent="PlayerSpawn"]
 anims/jump = SubResource( 1 )
 
 [node name="EnemyCamera" type="Camera" parent="."]
@@ -52,4 +52,4 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 5.785, 2.5, 0 )
 [node name="BattleStage" parent="." instance=ExtResource( 1 )]
 [connection signal="endBattle" from="." to="." method="_on_BattleArena_endBattle"]
 [connection signal="startBattle" from="." to="." method="_on_BattleArena_startBattle" binds= [ true ]]
-[connection signal="animation_finished" from="PlayerSpawn/AttackAnimPlayer" to="." method="_on_AttackAnimPlayer_animation_finished"]
+[connection signal="animation_finished" from="PlayerSpawn/PlayerAttack_AnimationPlayer" to="." method="_on_PlayerAttack_AnimationPlayer_animation_finished"]

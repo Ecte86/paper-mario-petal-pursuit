@@ -1,6 +1,6 @@
 extends RigidBody
 
-export (int) var hp
+export (int) var hp = 2
 
 var originalPos
 
