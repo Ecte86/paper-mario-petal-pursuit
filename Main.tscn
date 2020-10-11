@@ -36,3 +36,4 @@ collision_mask = 3
 [node name="BackgroundMusic" parent="." instance=ExtResource( 7 )]
 
 [node name="Camera" parent="." instance=ExtResource( 3 )]
+visible = false
