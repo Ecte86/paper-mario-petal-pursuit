@@ -7,6 +7,21 @@ var gravity = -9.8
 var velocity = Vector3()
 var jumpAmount = 10
 
+enum states {
+	IDLE = 0
+	NW = 1
+	SW = 2
+	SE = 3
+	NE = 4
+	N = 5
+	S = 6
+	E = 7
+	W = 8
+	JUMP = 9
+}
+
+var state = states.IDLE
+
 var onceOnly=1
 
 var idleTime=0
@@ -75,7 +90,12 @@ func set_position(x=self.transform.origin.x,y=self.transform.origin.y,z=self.tra
 	self.transform.origin.x=x
 	self.transform.origin.y=y
 	self.transform.origin.z=z
-	
+
+func hflip(dir: bool):
+	$AnimatedSprite3D.flip_h=dir
+
+func set_positionV3(newPos):
+	self.transform.origin=newPos
 
 func new_game():
 	setHeartPoints(max_Heart_Points)
@@ -129,24 +149,24 @@ func _process(delta):
 	
 	var mario_direction # Possible values: N, S, E, W, NW, SW, NE, SE and Idle
 
-	if direction.z==0 and direction.x==0:
+	if direction.z==0 and direction.x==0 or state == states.IDLE:
 		mario_direction="Idle"
-	if direction.z<0 and direction.x<0:
+	if direction.z<0 and direction.x<0 or state == states.NW:
 		mario_direction="NW"
-	if direction.z>0 and direction.x<0:
+	if direction.z>0 and direction.x<0 or state == states.SW:
 		mario_direction="SW"
-	if direction.z>0 and direction.x>0:
+	if direction.z>0 and direction.x>0 or state == states.SE:
 		mario_direction="SE"
-	if direction.z<0 and direction.x>0:
+	if direction.z<0 and direction.x>0 or state == states.NE:
 		mario_direction="NE"
 		
-	if direction.z<0 and direction.x==0:
+	if direction.z<0 and direction.x==0 or state == states.N:
 		mario_direction="N"
-	if direction.z>0 and direction.x==0:
+	if direction.z>0 and direction.x==0 or state == states.S:
 		mario_direction="S"
-	if direction.z==0 and direction.x>0:
+	if direction.z==0 and direction.x>0 or state == states.E:
 		mario_direction="E"
-	if direction.z==0 and direction.x<0:
+	if direction.z==0 and direction.x<0 or state == states.W:
 		mario_direction="W"
 		
 	#$AnimatedSprite3D.flip_h=false
@@ -179,7 +199,7 @@ func _process(delta):
 			$AnimatedSprite3D.play("walkDown")
 			$AnimatedSprite3D.flip_h=true
 			
-	if !is_on_floor() and self.transform.origin.y>groundLevel: # If mario is in the air, jump
+	if !is_on_floor() and self.transform.origin.y>groundLevel or state == states.JUMP: # If mario is in the air, jump
 		$AnimatedSprite3D.play("jump")
 		if direction.x>0: # flip if we are heading right
 			$AnimatedSprite3D.flip_h=true
@@ -299,6 +319,7 @@ func _on_Area_body_entered(body):
 				#self.get_parent().enemy.receiveDamage(1)
 				get_parent().reachedTarget=1
 				self.velocity.x=0
+				get_parent().resetCombatants()
 		else:
 			if self.is_on_floor():
 				get_parent().emit_signal("main_startBattle",false)

@@ -5,7 +5,10 @@ signal endBattle(playerWins)
 var onceOnly=1
 var reachedTarget=false
 var startedAttack=0
-var attackStarted=false
+var playerAttackStarted=false
+var enemyAttackStarted=false
+var playerAttackFinished=false
+var enemyAttackFinished=false
 var response=""
 var plrAttackPhase =-1
 var startJump: bool = false
@@ -39,6 +42,7 @@ func _ready():
 	load_and_setup_cameras()
 	position_players_and_enemies()
 	setupHUD()
+	print_debug(player.transform.origin)
 	
 func setupHUD():
 	$HUD.startBattle(true)
@@ -115,47 +119,29 @@ func getEnemy():
 func setPlayerGoesFirst(value: bool):
 	Globals.setPlayerGoesFirst(value)
 
+func resetCombatants():
+	position_players_and_enemies()
+
 func playerAttack(delta):
-	startedAttack=1
+	playerAttackStarted=true
 	reachedTarget=false
 	var newPosition
-	match plrAttackPhase:
-		-1:
-			lerp_startPos=player.transform.origin
-			lerp_endPos=enemy.transform.origin
-			lerp_endPos.x=lerp_endPos.x-4.5
-			
-			var amt=lerp_currentTime/lerp_totalTime
-			lerp_currentTime+=delta
-			amt=clamp(amt,0,1)
-			newPosition=lerp_startPos.linear_interpolate(lerp_endPos,amt)
-			if newPosition.distance_to(lerp_endPos)<0.5:
-				lerp_currentTime=0
-				plrAttackPhase += 1
-		0:
-			if lerp_currentTime==0:
-				lerp_startPos=player.transform.origin
-				lerp_endPos=player.transform.origin
-				lerp_endPos.y += enemy.scale.y
-			
-			var amt=lerp_currentTime/lerp_totalTime-1
-			lerp_currentTime+=delta
-			amt=clamp(amt,0,1)
-			newPosition=lerp_startPos.linear_interpolate(lerp_endPos,amt)
-			if newPosition.distance_to(lerp_endPos)<0:
-				plrAttackPhase +=1
-		1:
-			if lerp_currentTime==0:
-				lerp_startPos=player.transform.origin
-				lerp_endPos=enemy.transform.origin
-				lerp_endPos.y += enemy.scale.y
-			
-			var amt=lerp_currentTime/lerp_totalTime
-			lerp_currentTime+=delta
-			amt=clamp(amt,0,1)
-			newPosition=lerp_startPos.linear_interpolate(lerp_endPos,amt)
-			if newPosition.distance_to(lerp_endPos)<0:
-				plrAttackPhase +=1
+	if $PlayerSpawn/AttackAnimPlayer.is_playing()==false:
+		$PlayerSpawn/AttackAnimPlayer.play("jump")
+		newPosition=$PlayerSpawn.transform.origin
+	else:
+		newPosition=$PlayerSpawn.transform.origin
+		if player.transform.origin.y>2.5015:
+			player.state=player.states.JUMP
+			player.hflip(true)
+		else:
+			player.state=player.states.E
+			player.direction=Vector3(1,0,0)
+	if playerAttackFinished == true:
+	#if newPosition.x==5.887784: #enemy.transform.origin.x:
+		$HUD/BattlePanel3.popup()
+		#PAUSE FOR 3(?) SECONDS
+		reachedTarget=true
 	return newPosition
 			
 	#if attackPath_index < attackPath_points.size():
@@ -173,17 +159,17 @@ func playerAttack(delta):
 func _process(delta):
 	if Globals.battleStatus==1:
 		if Globals.playerTurn==true:
-			if response=="Jump" and attackStarted!=true:
-				attackStarted=true
+			if response=="Jump" and playerAttackStarted!=true:
+				playerAttackStarted=true
 			else:
 				while response=="":
 					response = $HUD.showTurnPanel()
 					if response=="": 
 						yield()
-			if attackStarted:
+			if playerAttackStarted:
 				var newPos = playerAttack(delta)
-				if plrAttackPhase <= 1:
-					player.transform.origin=newPos
+				if reachedTarget==false:
+					player.set_positionV3(newPos)
 				else:
 					reachedTarget=false
 					player.move_and_slide(Vector3(0,player.gravity,0), Vector3.UP)
@@ -191,7 +177,7 @@ func _process(delta):
 				if reachedTarget==true:
 					Globals.playerTurn=false
 					Globals.playerGoesFirst=false
-					attackStarted=false
+					playerAttackStarted=false
 		else:
 			yield()
 #	pass
@@ -221,3 +207,8 @@ func _on_BattleArena_startBattle(freeAttack):
 
 func _on_BattleArena_endBattle(playerWins):
 	Globals.endBattle(playerWins)
+
+
+func _on_AttackAnimPlayer_animation_finished(anim_name):
+	playerAttackFinished = true
+	pass # Replace with function body.
