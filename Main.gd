@@ -73,6 +73,7 @@ func load_players_and_enemies():
 	self.add_child(player)
 	#Player is now Mario
 	player = self.get_node(player.get_path())
+	#Note: Player position is set to the middle of the Scene
 
 func getWorldEdge():
 	# The floor's size, so we can refer to it with less typing
@@ -101,6 +102,10 @@ func setPlayerSettings(player, settings: Array):
 	player.setCoins(settings[7])
 
 func _on_Main_main_startBattle(playerGoesFirst):
+	# playerGoesFirst is a variable that gets set true or false depending on
+	# whether we made an attack (in which case it'd be true) or whether we were
+	# attacked (in which case it'd be false)
+	
 	# Set up a new Scene in a variable
 	var arenaScene = battleArena.instance()
 	# If we attacked first...
@@ -121,33 +126,81 @@ func _on_Main_main_startBattle(playerGoesFirst):
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	if Input.is_action_just_pressed("ui_focus_next"):
-		showGUI()
-	var oldCameraPos = self.to_global(MarioCamera.transform.origin)
-	var playerPos = self.to_global(player.transform.origin)
-	if player.transform.origin.y > oldCameraPos.y:
-		MarioCamera.look_at(player.transform.origin, Vector3.UP)
-		if player.velocity.y == 0:
-			MarioCamera.translate(Vector3(0, playerPos.y - oldCameraPos.y, 0))
-	if player.transform.origin.y < MarioCamera.transform.origin.y:
-		MarioCamera.look_at(player.transform.origin, Vector3.UP)
-	MarioCamera.transform.origin.x = player.transform.origin.x
-	var edge = getWorldEdge()
-	MarioCamera.global_transform.origin.x = clamp(MarioCamera.global_transform.origin.x, -edge.x / 2, edge.x / 2)
+	# This is a badly designed method, I know, since its got a lot of stuff 
+	# mixed together
+	
+	# Check for user input (besides movement)
+	_processUserInput(delta)
+	
+	# Make sure camera follows player
+	_processCamera(delta)
+	
+	# Again, this is poorly designed, but check if player is colliding with 
+	# stuff
+	_processPlayerCollisions(delta)
+	
+func _processPlayerCollisions(delta):
+	# Loop through any objects player is colliding with
 	for i in player.get_slide_count():
+		# put them into collider variable
 		var collider = player.get_slide_collision(i)
+		# if we find any, get the most recent one and run the collision event
 		if collider:
 			_on_Mario_hit(player.get_last_collision_partner())
 
+func _processCamera(delta):
+	# Try to get the camera to follow the player, but not follow them off the 
+	# edge of the level.
+	# This is a WORK IN PROGRESS. Its a bit janky atm.
+	
+	# Get camera's current position in the Scene
+	var oldCameraPos = self.to_global(MarioCamera.transform.origin)
+	# Get player's current position in the Scene
+	var playerPos = self.to_global(player.transform.origin)
+	# If the player is higher than the camera:
+	if player.transform.origin.y > oldCameraPos.y:
+		# look at them
+		MarioCamera.look_at(player.transform.origin, Vector3.UP)
+		if player.velocity.y == 0:
+			# if they arent moving they must be on the ground so move camera up
+			# (THIS ISNT ALWAYS THE CASE! What if player is at top of a jump?)
+			MarioCamera.translate(Vector3(0, playerPos.y - oldCameraPos.y, 0))
+	# If the player is lower than the camera:
+	if player.transform.origin.y < MarioCamera.transform.origin.y:
+		# Move down to player
+		MarioCamera.transform.origin.y=player.transform.origin.y
+	# Follow player left & right
+	MarioCamera.transform.origin.x = player.transform.origin.x
+	# Get the edge of the world
+	var edge = getWorldEdge()
+	# Stop the camera if we reach the edge
+	MarioCamera.global_transform.origin.x = clamp(MarioCamera.global_transform.origin.x, -edge.x / 2, edge.x / 2)
+
+
+func _processUserInput(delta):
+	# If user presses tab, show the stats GUI 
+	# TODO: add a check for the equivalent button on a Nintendo controller
+	if Input.is_action_just_pressed("ui_focus_next"):
+		showGUI()
+
 func showGUI(duration = 3, forever = false):
+	# A general function that shows the gui for as long as specified.
+	# Default = 3.
+	# If forever = true, don't hide it.
 	$HUD.showGUI(duration, forever)
 
 func hideGUI():
+	# Hide the GUI.
 	$HUD.hideGUI()
 
 func _on_Mario_hit(body):
-	if body.is_in_group("Enemies"): # NEED TO FIND OUT HOW TO CHECK WHAT WE COLLIDING WITH
+	# if the thing we collided with (body) is in the group "Enemies"...
+	if body.is_in_group("Enemies"): # (NEED TO FIND OUT HOW TO CHECK WHAT WE COLLIDING WITH)
+		# ...and if Mario is on the floor
 		if (player.isOnFloor()):
+			#...then start a battle, but we don't get first attack
 			_on_Main_main_startBattle(false)
+		#...otherwise, we attacked the enemy...
 		else :
+			#...so start a battle, we get first attack
 			_on_Main_main_startBattle(true)
