@@ -13,6 +13,7 @@ var response=""
 var plrAttackPhase =-1
 var startJump: bool = false
 var doubleAttack: bool = false
+var battleStatus: bool
 # Declare member variables here. Examples:
 # var a = 2
 # var b = "text"
@@ -157,7 +158,7 @@ func playerAttack(delta):
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	if Globals.battleStatus==1:
+	if self.battleStatus==true:
 		if Globals.playerTurn==true:
 			if response=="Jump" and playerAttackStarted!=true:
 				playerAttackStarted=true
@@ -199,7 +200,7 @@ func _on_BattleArena_startBattle(freeAttack):
 	#breakpoint
 	if freeAttack:
 		setPlayerGoesFirst(true)
-	Globals.battleStatus=1
+	self.battleStatus=true
 
 		
 		#attack($Mario)
