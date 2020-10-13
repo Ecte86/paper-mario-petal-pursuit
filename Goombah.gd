@@ -10,16 +10,18 @@ var originalPos: Vector3
 # var a = 2
 # var b = "text"
 
-# Our room's root node; the scene we are in.
-var Parent = get_parent()
+# Declaration of our Parent
+var Parent
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	# Setting the Parent to Our room's root node; the scene we are in.
+	Parent = get_parent()
 	# This function sets up our location and rotation when this object is first
 	# created
 	
 	# If we're in the BattleArena scene...
-	if Parent.name!="Main":
+	if Parent.name != "Main":
 		#... set our initial position to wherever our spawn point is
 		originalPos=Parent.get_node("EnemySpawn").global_transform.origin
 		#...and rotate so we are pointing up.
@@ -93,7 +95,7 @@ func _on_Area_body_entered(body):
 	topEdge = topEdge + get_tree().get_root().get_child(1).getWorldEdge().y
 	
 	# If we are in battle
-	if Parent.battleStatus==true:
+	if Globals.battleStatus==true:
 		# And its not our turn
 		if Globals.playerTurn==true:
 			# and the colliding object is in the group of "Player"
