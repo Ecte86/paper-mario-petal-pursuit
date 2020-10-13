@@ -44,8 +44,8 @@ func preload_BattleArena_and_setup_HUD():
 	$HUD.update(getPlayerSettings(player))
 	# Show the GUI, briefly. This is optional, but I included it as a test 
 	$HUD.showGUI()
-	# We aren't in a battle so set battleStatus to 0
-	Globals.battleStatus = 0
+	# We aren't in a battle so set battleStatus to false
+	Globals.battleStatus = false
 	# Start the Background Music
 	$BackgroundMusic.play()
 	# Load the Battle Arena, ready for displaying
