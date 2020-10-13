@@ -269,7 +269,7 @@ func _physics_process(delta):
 				velocity = move_and_slide(velocity, Vector3(0,1,0))
 				
 	else:
-		if Globals.battleStatus==0:
+		if Globals.battleStatus==false:
 			direction=Vector3(0,0,0)
 			if Input.is_action_pressed("ui_left"):
 				direction.x -= 1 # subtract 1 from direction.x
