@@ -25,9 +25,9 @@ func _ready():
 		#... set our initial position to wherever our spawn point is
 		originalPos=Parent.get_node("EnemySpawn").global_transform.origin
 		#...and rotate so we are pointing up.
-		self.rotate_x(90)
-		self.rotate_y(0)
-		self.rotate_z(0)
+		#self.global_rotate(Vector3(90,0,0), 90)
+	#	self.rotate_y(0)
+	#	self.rotate_z(0)
 	else:
 		#...if we are in the Main scene, set our initial position to wherever
 		#   we currently are
@@ -48,6 +48,11 @@ func lock(position: bool, angle: bool):
 	self.axis_lock_angular_x=angle
 	self.axis_lock_angular_y=angle
 	self.axis_lock_angular_z=angle
+
+func flash():
+	self.hide()
+	yield(get_tree().create_timer(0.2), "timeout")
+	self.show()
 
 ### Commented out due to not (at this stage) being required ###
 ## Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -73,12 +78,12 @@ func receiveDamage(damage):
 		# Scene's tree after/before death)
 		self.hide()
 		# If we are in battle...
-		if Parent.name == "BattleArena":
+#		if Parent.name == "BattleArena":
 			# See if we can end battle yet?
-			Parent.emit_signal("endBattle", true)
+#			Parent.emit_signal("endBattle", true)
 			# Reset player's position (this may be unnecessary; will need to 
 			# check
-			Parent.reachedTarget=true
+#			Parent.reachedTarget=true
 	
 func set_Heart_Points(Heart_Points: int):
 	# Set H.P. to given value

@@ -38,6 +38,8 @@ export (int) var max_Petal_Power = 7
 
 export (int) var max_Coins = 100
 
+export (bool) var enemy_turn_finished= false
+
 
 var current_scene = null
 

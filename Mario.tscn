@@ -23,10 +23,10 @@ region = Rect2( 0, 602, 196, 301 )
 
 [sub_resource type="SpriteFrames" id=2]
 animations = [ {
-"frames": [ ExtResource( 7 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 6 ), ExtResource( 4 ), ExtResource( 6 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 4 ), ExtResource( 6 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 6 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 6 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 4 ) ],
+"frames": [ ExtResource( 11 ), ExtResource( 9 ), ExtResource( 2 ), ExtResource( 9 ) ],
 "loop": true,
-"name": "idleDown",
-"speed": 4.0
+"name": "walkUp",
+"speed": 10.0
 }, {
 "frames": [ SubResource( 1 ) ],
 "loop": true,
@@ -43,10 +43,10 @@ animations = [ {
 "name": "jump",
 "speed": 2.0
 }, {
-"frames": [ ExtResource( 11 ), ExtResource( 9 ), ExtResource( 2 ), ExtResource( 9 ) ],
+"frames": [ ExtResource( 7 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 6 ), ExtResource( 4 ), ExtResource( 6 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 4 ), ExtResource( 6 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 6 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 6 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 4 ) ],
 "loop": true,
-"name": "walkUp",
-"speed": 10.0
+"name": "idleDown",
+"speed": 4.0
 } ]
 
 [sub_resource type="CapsuleMesh" id=3]
@@ -70,7 +70,7 @@ script = ExtResource( 1 )
 offset = Vector2( 0, 25 )
 frames = SubResource( 2 )
 animation = "idleDown"
-frame = 8
+frame = 26
 playing = true
 __meta__ = {
 "_edit_group_": true

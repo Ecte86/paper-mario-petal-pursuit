@@ -74,7 +74,9 @@ func _process(delta):
 
 
 func _on_abilityList_gui_input(event):
+	var input_valid = false
 	if Input.is_action_pressed("ui_down"):
+		input_valid=true
 		for x in $BattlePanel2/abilityList.get_item_count():
 			if $BattlePanel2/abilityList.is_selected(x):
 				if x+1 > $BattlePanel2/abilityList.get_item_count():
@@ -83,6 +85,7 @@ func _on_abilityList_gui_input(event):
 				else:
 					$BattlePanel2/abilityList.select(x+1)
 	if Input.is_action_pressed("ui_accept"):
+		input_valid=true
 		var selected_item_idx = -1
 		for x in $BattlePanel2/abilityList.get_item_count():
 			if $BattlePanel2/abilityList.is_selected(x):
@@ -91,6 +94,11 @@ func _on_abilityList_gui_input(event):
 		if selected_item_idx>-1:
 			response=$BattlePanel2/abilityList.get_item_text(selected_item_idx)
 			$BattlePanel2.hide()
+	if input_valid==false:
+		if $BattlePanel2.visible==true:
+			$BattlePanel2/abilityList.focus_mode=2
+			$BattlePanel2/abilityList.grab_focus()
+			response=""
 
 
 func _on_BattlePanel3_about_to_show():

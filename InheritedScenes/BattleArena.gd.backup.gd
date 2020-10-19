@@ -14,8 +14,6 @@ var plrAttackPhase =-1
 var startJump: bool = false
 var doubleAttack: bool = false
 var battleStatus: bool
-
-var finishedDrop: bool = false
 # Declare member variables here. Examples:
 # var a = 2
 # var b = "text"
@@ -42,10 +40,6 @@ var lerp_endPos
 var time_limited_input_check
 var input_timer = 0
 var input_timer_max = 0.750
-
-signal get_player_move
-
-signal player_attack
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -151,7 +145,7 @@ func resetCombatants():
 	$PlayerSpawn/PlayerAttack_AnimationPlayer.seek(0,true)
 	position_players_and_enemies()
 
-func start_player_attack_animation(delta):
+func playerAttack(delta):
 	playerAttackStarted=true
 	reachedTarget=false
 	var newPosition
@@ -175,10 +169,61 @@ func start_player_attack_animation(delta):
 func _process(delta):
 	if Globals.battleStatus==true:
 		if Globals.playerTurn==true:
-			emit_signal("get_player_move")
+			if response=="Jump" and playerAttackStarted!=true:
+				playerAttackStarted=true
+			else:
+				while response=="":
+					response = $HUD.showTurnPanel()
+					break
 			if playerAttackStarted:
-				# player attack
-				emit_signal("player_attack", delta)
+				var newPos = playerAttack(delta)
+				if reachedTarget==false and playerAttackFinished==false:
+					player.set_positionV3(newPos)
+				else:
+					var doubleAttack = false
+					time_limited_input_check=true
+					while input_timer<input_timer_max: 
+						input_timer+=delta
+						$HUD/BattlePanel3.popup()
+						doubleAttack=player.checkforAttackInput()
+						if doubleAttack==false:
+							if input_timer>=input_timer_max:
+								$HUD/BattlePanel3.hide()
+								break
+							yield()
+						else:
+							$HUD/BattlePanel3/GratsMessage.show()
+							$HUD/BattlePanel3/NintendoAButton.hide()
+							break
+					input_timer=0
+					reachedTarget=false
+					var numAttacks=1
+					var player_original_position = player.transform.origin
+					if doubleAttack==true:
+						numAttacks=2
+					var hitEnemy=false
+					if input_timer==0:
+						for x in range(1, numAttacks+1): # we count to max - 1, so
+													 # we add 1 to max 
+#						if x > 1:
+#							breakpoint
+							if player.transform.origin != player_original_position:
+								player.transform.origin = player_original_position
+								yield()
+							var playersFeet=player.transform.origin.y-player.scale.y
+							var enemyHead=enemy.transform.origin.y+enemy.scale.y
+							
+							if $PlayerSpawn/PlayerAttack_AnimationPlayer.get_current_animation()!="jump_on":
+								$PlayerSpawn/PlayerAttack_AnimationPlayer.play("jump_on")
+							while $PlayerSpawn/PlayerAttack_AnimationPlayer.is_playing():
+								yield()
+						reachedTarget=true
+						$HUD/BattlePanel3.hide()
+					if reachedTarget==true:
+						Globals.playerGoesFirst=false
+						playerAttackStarted=false
+						reachedTarget=false
+						resetCombatants()
 		else: # Its npt players turn
 			if $PlayerSpawn/PlayerAttack_AnimationPlayer.is_playing():
 				$PlayerSpawn/PlayerAttack_AnimationPlayer.stop(true)
@@ -222,80 +267,9 @@ func _on_BattleArena_endBattle(playerWins):
 
 
 func _on_PlayerAttack_AnimationPlayer_animation_finished(anim_name):
-	if anim_name=="run_and_jump_up":
-		playerAttackFinished = true
-	else:
-		finishedDrop=true
+	playerAttackFinished = true
+	pass # Replace with function body.
 
 
 func _on_AttackInputTimer_timeout():
 	time_limited_input_check=false
-
-
-func _on_BattleArena_get_player_move():
-	if response=="Jump" and playerAttackStarted!=true:
-		playerAttackStarted=true
-	else:
-		response = $HUD.showTurnPanel()
-
-
-func _on_BattleArena_player_attack(delta):
-	var setupVariables = false
-	if playerAttackFinished==false:
-		player.direction=Vector3.RIGHT
-		$PlayerSpawn/PlayerAttack_AnimationPlayer.play("run_and_jump_up")
-	if player.transform.origin.y>2.5:
-		player.state=player.states.JUMP
-	if playerAttackFinished:
-		var doubleAttack
-		if !setupVariables:
-			doubleAttack = false
-		time_limited_input_check=true
-		while input_timer<input_timer_max: 
-			input_timer+=delta
-			$HUD/BattlePanel3.popup()
-			doubleAttack=player.checkforAttackInput()
-			if doubleAttack==false:
-				if input_timer>=input_timer_max:
-					$HUD/BattlePanel3.hide()
-					break
-				yield()
-			else:
-				doubleAttack=true
-				$HUD/BattlePanel3/GratsMessage.show()
-				$HUD/BattlePanel3/NintendoAButton.hide()
-				break
-		input_timer=0
-		reachedTarget=false
-		var numAttacks=-1
-
-		if !setupVariables:
-			numAttacks=1
-		#var player_original_position = player.transform.origin
-		if doubleAttack==true and !setupVariables:
-			numAttacks=2
-			setupVariables=true
-		#var hitEnemy=false
-		if input_timer==0:
-			if numAttacks>0:
-				if !finishedDrop:
-					$PlayerSpawn/PlayerAttack_AnimationPlayer.play("jump_on")
-					numAttacks-=1
-					yield()
-				$PlayerSpawn/PlayerAttack_AnimationPlayer.stop(true)
-
-			else:
-				$PlayerSpawn/PlayerAttack_AnimationPlayer.stop(true)
-				$PlayerSpawn/PlayerAttack_AnimationPlayer.set_current_animation("run_and_jump_up")
-
-
-		if numAttacks==0 and finishedDrop:		
-			reachedTarget=true
-			$HUD/BattlePanel3.hide()
-		if reachedTarget==true:
-			$PlayerSpawn/PlayerAttack_AnimationPlayer.stop(true)
-			$PlayerSpawn/PlayerAttack_AnimationPlayer.set_current_animation("run_and_jump_up")
-			Globals.playerGoesFirst=false
-			playerAttackStarted=false
-			reachedTarget=false
-			resetCombatants()

@@ -20,6 +20,8 @@ enum states {
 	JUMP = 9
 }
 
+var doubleAttack = false
+
 var state = states.IDLE
 
 var onceOnly=1
@@ -68,23 +70,31 @@ var collision_partner
 
 var position: Vector3
 
-
 func _ready():
+	setup()
+	
+func setup():
 	self.set_position(self.position.x,1,self.position.z)
 	setHeartPoints(max_Heart_Points)
 	if attack_path:
 		velocity=Vector3.ZERO
 		attackPath_points = get_node(attack_path).curve.get_baked_points()
-	SceneRoot=get_tree().get_root().get_child(1)
+	SceneRoot=get_parent()
 	self.move_and_slide_with_snap(Vector3(0,5,0),Vector3.DOWN,Vector3.UP)
-	#if self.position.y<=0:
-	#	self.move_and_slide_with_snap(Vector3(0,5,0),Vector3.DOWN,Vector3.UP)
-		#$Shadow.translate(Vector3(0,-1,0))
 	self.move_and_slide_with_snap(Vector3(0,-5,0),Vector3.DOWN,Vector3.UP)
 	groundLevel=self.transform.origin.y-self.scale.y
 
 func get_position():
 	return self.transform.origin
+
+func checkforAttackInput():
+	if SceneRoot.time_limited_input_check:
+		if Input.is_action_pressed("jump"): # Spacebar on PC, A on Nintendo
+			return true
+		else:
+			return false
+	else:
+		return false
 
 func set_position(x=self.transform.origin.x,y=self.transform.origin.y,z=self.transform.origin.z):
 	self.transform.origin.x=x
@@ -223,51 +233,20 @@ func _process(delta):
 	#if Input.is_action_just_released("ui_up"):
 		#$AnimatedSprite3D.play("idleUp")
 
-func attack(delta):
-#	var target = get_parent().getEnemy().transform.origin #attackPath_points[attackPath_index-1]
-#	var position = self.transform.origin
-#	if position.distance_to(target) < 4.5:
-#		if reachedTarget==0:
-#			reachedTarget=1
-#			if onceOnly == 1:
-#				onceOnly = 0
-#				velocity.x=1*speed*delta
-#				velocity.y=jumpAmount
-#			else:
-#				velocity.x = 0
-#	else:
-#		if reachedTarget == 0:
-#			velocity = (target - position).normalized() * speed * delta
-#	#if attackPath_index < attackPath_points.size():
-#	#	attackPath_index=attackPath_index+1
-#	#else:
-#	#	if onceOnly == 1:
-#	#		onceOnly=0
-#
-#	#	else:
-#	#		velocity.x=0
-#
-	return
-
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta):
 	var edge=get_parent().getWorldEdge()
 	var EdgeLocationsX=[-edge.x,edge.x]
 	var EdgeLocationsZ=[-edge.z,edge.z]
-	if self.global_transform.origin.y<0:
-		print_debug( "wtf:"+str(self.global_transform.origin))
 	self.global_transform.origin.x = clamp(self.global_transform.origin.x,-edge.x,edge.x)
 	self.global_transform.origin.z = clamp(self.global_transform.origin.z,-(edge.z)/2,edge.z/2)
 	var gravity_modified = gravity * 1.5
 	if attack_path:
-		if Globals.battleStatus==1:
+		if Globals.battleStatus==true:
 			if Globals.playerTurn==true:
-				
 				direction.x=velocity.x
-				#direction.z=velocity.z
 				velocity.y += gravity_modified*delta
 				velocity = move_and_slide(velocity, Vector3(0,1,0))
-				
 	else:
 		if Globals.battleStatus==false:
 			direction=Vector3(0,0,0)
@@ -275,7 +254,6 @@ func _physics_process(delta):
 				direction.x -= 1 # subtract 1 from direction.x
 			if Input.is_action_pressed("ui_right"):
 				direction.x += 1 # add 1 from direction.x
-				#$AnimationPlayer.play("Walk Down")
 			if Input.is_action_pressed("ui_down"):
 				direction.z += 1 # add 1 from direction.z
 			if Input.is_action_pressed("ui_up"):
@@ -317,9 +295,9 @@ func _on_Area_body_entered(body):
 				self.setHeartPoints(self.getHeartPoints()-1)
 			else:
 				#self.get_parent().enemy.receiveDamage(1)
-				get_parent().reachedTarget=1
+				#get_parent().reachedTarget=1
 				self.velocity.x=0
-				get_parent().resetCombatants()
+				#get_parent().resetCombatants()
 		else:
 			if self.is_on_floor():
 				get_parent().emit_signal("main_startBattle",false)
