@@ -18,6 +18,7 @@ enum states {
 	E = 7
 	W = 8
 	JUMP = 9
+	IGNORE = 99
 }
 
 var doubleAttack = false

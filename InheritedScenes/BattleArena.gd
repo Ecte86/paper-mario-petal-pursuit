@@ -47,6 +47,8 @@ signal get_player_move
 
 signal player_attack
 
+var player_jump_num = -1
+var player_jump_max = -1
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	setupBattleSettings()
@@ -72,11 +74,16 @@ func position_players_and_enemies():
 	enemy.transform.origin.y=$EnemySpawn.transform.origin.y
 	enemy.transform.origin.z=$EnemySpawn.transform.origin.z
 
+	$PlayerSpawn/PlayerAttack_AnimationPlayer.set_current_animation("run_and_jump_up")
+	$PlayerSpawn/PlayerAttack_AnimationPlayer.stop(true)
+
 	#playerPos=player.transform.origin
 	#enemyPos=enemy.transform.origin
 	#player.get_child(0).flip_h=true
 	
+	player.state=player.states.IGNORE
 	player.get_child(0).play("idleDown")
+	player.hflip(true)
 	
 #	player.move_and_slide_with_snap(Vector3(0,5,0),Vector3.DOWN,Vector3.UP)
 #	player.move_and_slide_with_snap(Vector3(0,-5,0),Vector3.DOWN,Vector3.UP)
@@ -138,37 +145,38 @@ func getEnemy():
 func setPlayerGoesFirst(value: bool):
 	Globals.setPlayerGoesFirst(value)
 
-func resetCombatants():
-	if Globals.playerTurn:
+func resetCombatants(end_of_turn=true): # if not false, we assume end of turn
+	if Globals.playerTurn and end_of_turn==true:
 		Globals.playerTurn=false
 		Globals.playerGoesFirst=false
 	else:
-		if Globals.enemy_turn_finished==true:
+		if Globals.enemy_turn_finished==true and end_of_turn==true:
 			Globals.playerTurn=true
 		
 	player.direction=Vector3.ZERO
 	player.velocity=Vector3.ZERO
+	$PlayerSpawn/PlayerAttack_AnimationPlayer.stop()
 	$PlayerSpawn/PlayerAttack_AnimationPlayer.seek(0,true)
 	position_players_and_enemies()
 
-func start_player_attack_animation(delta):
-	playerAttackStarted=true
-	reachedTarget=false
-	var newPosition
-	if $PlayerSpawn/PlayerAttack_AnimationPlayer.is_playing()==false:
-		$PlayerSpawn/PlayerAttack_AnimationPlayer.play("run_and_jump_up")
-		newPosition=$PlayerSpawn.transform.origin
-	else:
-		newPosition=$PlayerSpawn.transform.origin
-		if player.transform.origin.y>2.5015:
-			player.state=player.states.JUMP
-			player.hflip(true)
-		else:
-			player.state=player.states.E
-			player.direction=Vector3(1,0,0)
-	if playerAttackFinished == true:
-		reachedTarget=true
-	return newPosition
+#func start_player_attack_animation(delta):
+#	playerAttackStarted=true
+#	reachedTarget=false
+#	var newPosition
+#	if $PlayerSpawn/PlayerAttack_AnimationPlayer.is_playing()==false:
+#		$PlayerSpawn/PlayerAttack_AnimationPlayer.play("run_and_jump_up")
+#		newPosition=$PlayerSpawn.transform.origin
+#	else:
+#		newPosition=$PlayerSpawn.transform.origin
+#		if player.transform.origin.y>2.5015:
+#			player.state=player.states.JUMP
+#			player.hflip(true)
+#		else:
+#			player.state=player.states.E
+#			player.direction=Vector3(1,0,0)
+#	if playerAttackFinished == true:
+#		reachedTarget=true
+#	return newPosition
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -180,8 +188,8 @@ func _process(delta):
 				# player attack
 				emit_signal("player_attack", delta)
 		else: # Its npt players turn
-			if $PlayerSpawn/PlayerAttack_AnimationPlayer.is_playing():
-				$PlayerSpawn/PlayerAttack_AnimationPlayer.stop(true)
+			$PlayerSpawn/PlayerAttack_AnimationPlayer.set_current_animation("run_and_jump_up")
+			$PlayerSpawn/PlayerAttack_AnimationPlayer.stop(true)
 			
 			if enemy.get_Heart_Points(): # If Enemy is alive
 				if enemy.visible==false:
@@ -267,29 +275,37 @@ func _on_BattleArena_player_attack(delta):
 				break
 		input_timer=0
 		reachedTarget=false
-		var numAttacks=-1
 
-		if !setupVariables:
-			numAttacks=1
+		if doubleAttack==false and player_jump_max==-1:
+			player_jump_max=1
 		#var player_original_position = player.transform.origin
-		if doubleAttack==true and !setupVariables:
-			numAttacks=2
-			setupVariables=true
+		if doubleAttack==true and player_jump_max==-1:
+			player_jump_max=2
+
 		#var hitEnemy=false
+		var temp_started = null
+		if temp_started == null and player_jump_num==-1:
+			temp_started=false
+			player_jump_num=0
 		if input_timer==0:
-			if numAttacks>0:
+			if player_jump_num<=player_jump_max:
+				temp_started=true
 				if !finishedDrop:
 					$PlayerSpawn/PlayerAttack_AnimationPlayer.play("jump_on")
-					numAttacks-=1
 					yield()
 				$PlayerSpawn/PlayerAttack_AnimationPlayer.stop(true)
-
+				$PlayerSpawn/PlayerAttack_AnimationPlayer.seek(0, true)
+				player_jump_num+=1
+				print_debug(player_jump_max)
+				if player_jump_max-player_jump_num==1: # we need to update player position if we 
+								  # still have another attack to go
+					finishedDrop=false
+					yield()
 			else:
 				$PlayerSpawn/PlayerAttack_AnimationPlayer.stop(true)
 				$PlayerSpawn/PlayerAttack_AnimationPlayer.set_current_animation("run_and_jump_up")
 
-
-		if numAttacks==0 and finishedDrop:		
+		if player_jump_max-player_jump_num==0 and finishedDrop:
 			reachedTarget=true
 			$HUD/BattlePanel3.hide()
 		if reachedTarget==true:
@@ -299,3 +315,7 @@ func _on_BattleArena_player_attack(delta):
 			playerAttackStarted=false
 			reachedTarget=false
 			resetCombatants()
+
+
+func _on_PlayerAttack_AnimationPlayer_animation_changed(old_name, new_name):
+	player.transform.origin=$PlayerSpawn.transform.origin

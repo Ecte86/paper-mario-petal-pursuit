@@ -1,7 +1,7 @@
 extends RigidBody
 
 # Our H.P.
-export (int) var Heart_Points = 2
+export (int) var Heart_Points = 10
 
 # Our initial position when we entered the room.
 var originalPos: Vector3
