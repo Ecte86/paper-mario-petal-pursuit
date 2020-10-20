@@ -24,6 +24,10 @@ enum MarioStats{
 	COINS = 7
 }
 
+enum EnemyHP {
+	Goomba = 2
+}
+
 export(int) var max_Heart_Points = 10 # Maximum Heart Points == Hit Points == Life
 
 export (int) var max_Flower_Points = 10 # Max FP = Mana
