@@ -33,15 +33,15 @@ animations = [ {
 "name": "idleUp",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 14 ), ExtResource( 13 ), ExtResource( 12 ), ExtResource( 13 ) ],
-"loop": true,
-"name": "walkDown",
-"speed": 10.0
-}, {
 "frames": [ ExtResource( 15 ), ExtResource( 10 ), ExtResource( 8 ) ],
 "loop": false,
 "name": "jump",
 "speed": 2.0
+}, {
+"frames": [ ExtResource( 14 ), ExtResource( 13 ), ExtResource( 12 ), ExtResource( 13 ) ],
+"loop": true,
+"name": "walkDown",
+"speed": 10.0
 }, {
 "frames": [ ExtResource( 7 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 6 ), ExtResource( 4 ), ExtResource( 6 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 4 ), ExtResource( 6 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 6 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 6 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 4 ) ],
 "loop": true,
@@ -59,7 +59,7 @@ albedo_color = Color( 0, 0, 0, 0.498039 )
 
 [sub_resource type="CapsuleShape" id=5]
 
-[node name="Player" type="KinematicBody" groups=[
+[node name="Mario" type="KinematicBody" groups=[
 "Player",
 ]]
 collision_layer = 2
@@ -70,7 +70,7 @@ script = ExtResource( 1 )
 offset = Vector2( 0, 25 )
 frames = SubResource( 2 )
 animation = "idleDown"
-frame = 26
+frame = 51
 playing = true
 __meta__ = {
 "_edit_group_": true

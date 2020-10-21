@@ -94,6 +94,8 @@ func _on_abilityList_gui_input(event):
 		if selected_item_idx>-1:
 			response=$BattlePanel2/abilityList.get_item_text(selected_item_idx)
 			$BattlePanel2.hide()
+	if Input.is_action_pressed("ui_focus_next"):
+		showGUI()
 	if input_valid==false:
 		if $BattlePanel2.visible==true:
 			$BattlePanel2/abilityList.focus_mode=2

@@ -36,6 +36,7 @@ func _ready():
 	# 3. setup the cameras (still a Work in Progress.
 	#	 Cameras are a bit wierd atm) 
 	self.setup_cameras()
+	# 4. if we just won a battle, hide the enemy
 
 func preload_BattleArena_and_setup_HUD():
 	# Tell Mario to reset stats 
@@ -74,6 +75,8 @@ func load_players_and_enemies():
 	#Player is now Mario
 	player = self.get_node(player.get_path())
 	#Note: Player position is set to the middle of the Scene
+	$Goomba.set_Heart_Points(5)
+	player.setHeartPoints(8)
 
 func getWorldEdge():
 	# The floor's size, so we can refer to it with less typing
@@ -114,6 +117,8 @@ func _on_Main_main_startBattle(playerGoesFirst):
 		arenaScene.setPlayerGoesFirst(true)
 		# setup a new version of Mario with our current Mario's stats
 		arenaScene.setPlayerSettings(player, self.getPlayerSettings(player))
+		# and setup the enemies' settings
+		arenaScene.setEnemySettings($Goomba, $Goomba.getSettings())
 	else :
 		# otherwise it'd not our turn
 		arenaScene.setPlayerGoesFirst(false)
@@ -178,9 +183,7 @@ func _processCamera(delta):
 
 
 func _processUserInput(delta):
-	# If user presses tab, show the stats GUI 
-	# TODO: add a check for the equivalent button on a Nintendo controller
-	if Input.is_action_just_pressed("ui_focus_next"):
+	if Globals._processUserInput(delta):
 		showGUI()
 
 func showGUI(duration = 3, forever = false):
@@ -204,3 +207,5 @@ func _on_Mario_hit(body):
 		else :
 			#...so start a battle, we get first attack
 			_on_Main_main_startBattle(true)
+	else:
+		pass

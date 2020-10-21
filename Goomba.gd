@@ -1,7 +1,12 @@
 extends RigidBody
 
+# Our ID Number, so we can refer to *this* Goomba
+export (int) var ID = -1
+
 # Our H.P.
-export (int) var Heart_Points = Globals.EnemyHP.Goomba
+export (int) var Heart_Points
+
+
 
 # Our initial position when we entered the room.
 var originalPos: Vector3
@@ -22,6 +27,8 @@ func _ready():
 	
 	# If we're in the BattleArena scene...
 	if Parent.name != "Main":
+		if Heart_Points == 0:
+			Heart_Points=Globals.EnemyHP.Goomba	
 		#... set our initial position to wherever our spawn point is
 		originalPos=Parent.get_node("EnemySpawn").global_transform.origin
 		#...and rotate so we are pointing up.
@@ -30,8 +37,11 @@ func _ready():
 	#	self.rotate_z(0)
 	else:
 		#...if we are in the Main scene, set our initial position to wherever
-		#   we currently are
+			#we currently are
 		originalPos=self.global_transform.origin
+		# Set our ID to a random number.
+		# Globals will be generating it, and we will get it from there
+		self.ID=Globals.generate_enemyID(Globals.EnemyTypes.Goomba)
 		
 	# Lock our movement unless we plan to move somewhere
 	lock(true,true)
@@ -53,6 +63,11 @@ func flash():
 	self.hide()
 	yield(get_tree().create_timer(0.2), "timeout")
 	self.show()
+	
+func getSettings():
+	# Get all Mario's settings and stuff it into an array
+	return [self.ID,
+		self.get_Heart_Points()]
 
 ### Commented out due to not (at this stage) being required ###
 ## Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -108,4 +123,6 @@ func _on_Area_body_entered(body):
 				# and if its higher than our top edge...
 				if body.transform.origin.y >= topEdge:
 					# get hurt
-					receiveDamage(1)
+					receiveDamage(Globals.get_damage(body.name))
+					print_debug("G: Hurt for"+str(Globals.get_damage(body.name)))
+					print_debug("G: HP:" + str(Heart_Points))

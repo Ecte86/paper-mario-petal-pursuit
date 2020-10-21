@@ -2,7 +2,6 @@
 
 [ext_resource path="res://Goomba.gd" type="Script" id=1]
 
-
 [sub_resource type="SpatialMaterial" id=1]
 albedo_color = Color( 0.956863, 0.643137, 0.376471, 1 )
 
@@ -11,7 +10,7 @@ material = SubResource( 1 )
 
 [sub_resource type="CapsuleShape" id=3]
 
-[node name="Goombah" type="RigidBody" groups=[
+[node name="Goomba" type="RigidBody" groups=[
 "Enemies",
 ]]
 transform = Transform( 1, 0, 0, 0, -1.62921e-07, -1, 0, 1, -1.62921e-07, 0, 0, 0 )
