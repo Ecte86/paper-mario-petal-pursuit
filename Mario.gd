@@ -72,40 +72,15 @@ var collision_partner
 var position: Vector3
 
 func _ready():
-	setup_position()
+	setup()
 	
-func setup_vars():
-	 Heart_Points = Globals.Heart_Points # Heart Points == Hit Points == Life
-	 max_Heart_Points = Globals.max_Heart_Points # Maximum Heart Points == Hit Points == Life
-	
-	 Flower_Points = Globals.Flower_Points # FP = Mana
-	 max_Flower_Points = Globals.max_Flower_Points # Max FP = Mana
-	
-	 Badge_Points = Globals.Badge_Points # Points to use for "Equipment" I guess
-	 max_Badge_Points = Globals.max_Badge_Points # 
-	
-	 Star_Points = Globals.Star_Points # XP
-	 max_Star_Points = Globals.max_Star_Points # XP
-	
-	 Level = Globals.Level
-	 max_Level = Globals.max_Level
-	
-	 Petal_Power = Globals.Petal_Power
-	 max_Petal_Power = Globals.max_Petal_Power
-	
-	 Coins = Globals.Coins
-	 max_Coins = Globals.max_Coins
-
-	
-func setup_position():
+func setup():
 	self.set_position(self.position.x,1,self.position.z)
-	if attack_path:
-		velocity=Vector3.ZERO
-		attackPath_points = get_node(attack_path).curve.get_baked_points()
 	SceneRoot=get_parent()
 	self.move_and_slide_with_snap(Vector3(0,5,0),Vector3.DOWN,Vector3.UP)
 	self.move_and_slide_with_snap(Vector3(0,-5,0),Vector3.DOWN,Vector3.UP)
 	groundLevel=self.transform.origin.y-self.scale.y
+	print_debug(str(self.get_position()))
 
 func get_position():
 	return self.transform.origin
@@ -131,7 +106,7 @@ func set_positionV3(newPos):
 	self.transform.origin=newPos
 
 func new_game():
-	setHeartPoints(Heart_Points)
+	setHeartPoints(max_Heart_Points)
 	
 func getFlowerPoints():
 	return Flower_Points

@@ -1,19 +1,14 @@
 extends RigidBody
 
-# Our ID Number, so we can refer to *this* Goomba
-export (int) var ID = -1
-
 # Our H.P.
-export (int) var Heart_Points
-
-
+export (int) var Heart_Points = Globals.EnemyHP.Goomba
 
 # Our initial position when we entered the room.
 var originalPos: Vector3
 
-# Declare member variables here. Examples:
-# var a = 2
-# var b = "text"
+# The ground level (just the Y dimension) - may not be zero if we are standing 
+# on a surface higher than the ground
+var groundLevel: float
 
 # Declaration of our Parent
 var Parent
@@ -27,25 +22,35 @@ func _ready():
 	
 	# If we're in the BattleArena scene...
 	if Parent.name != "Main":
-		if Heart_Points == 0:
-			Heart_Points=Globals.EnemyHP.Goomba	
 		#... set our initial position to wherever our spawn point is
 		originalPos=Parent.get_node("EnemySpawn").global_transform.origin
-		#...and rotate so we are pointing up.
-		#self.global_rotate(Vector3(90,0,0), 90)
-	#	self.rotate_y(0)
-	#	self.rotate_z(0)
 	else:
 		#...if we are in the Main scene, set our initial position to wherever
-			#we currently are
+		#   we currently are
 		originalPos=self.global_transform.origin
-		# Set our ID to a random number.
-		# Globals will be generating it, and we will get it from there
-		self.ID=Globals.generate_enemyID(Globals.EnemyTypes.Goomba)
 		
 	# Lock our movement unless we plan to move somewhere
 	lock(true,true)
+	setup()
 	
+func setup():
+	
+	groundLevel=Parent.get_child(1).scale.y
+	self.set_position(self.get_position().x,groundLevel+(self.scale.y/2),self.get_position().z)
+	print_debug(self.transform.origin.y)
+	print_debug(groundLevel)
+
+func get_position():
+	return self.transform.origin
+
+func set_position(x=self.transform.origin.x,y=self.transform.origin.y,z=self.transform.origin.z):
+	self.transform.origin.x=x
+	self.transform.origin.y=y
+	self.transform.origin.z=z
+
+func set_positionV3(newPos):
+	self.transform.origin=newPos
+
 func lock(position: bool, angle: bool):
 	# General function that locks/unlocks movement, or rotation, or both.
 	
@@ -60,14 +65,10 @@ func lock(position: bool, angle: bool):
 	self.axis_lock_angular_z=angle
 
 func flash():
+	# unsure if needed
 	self.hide()
 	yield(get_tree().create_timer(0.2), "timeout")
 	self.show()
-	
-func getSettings():
-	# Get all Mario's settings and stuff it into an array
-	return [self.ID,
-		self.get_Heart_Points()]
 
 ### Commented out due to not (at this stage) being required ###
 ## Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -123,6 +124,11 @@ func _on_Area_body_entered(body):
 				# and if its higher than our top edge...
 				if body.transform.origin.y >= topEdge:
 					# get hurt
-					receiveDamage(Globals.get_damage(body.name))
-					print_debug("G: Hurt for"+str(Globals.get_damage(body.name)))
-					print_debug("G: HP:" + str(Heart_Points))
+					receiveDamage(1)
+
+func _process(delta):
+	$CollisionShape/AnimatedSprite3D/Shadow.global_transform.origin.y=groundLevel
+	$CollisionShape/AnimatedSprite3D/Shadow.global_transform.origin.x= \
+		self.get_position().x
+	#$CollisionShape/AnimatedSprite3D/Shadow.global_transform.origin.x= \
+	#	self.get_position().z

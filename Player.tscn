@@ -1,10 +1,11 @@
 [gd_scene load_steps=19 format=2]
 
-[ext_resource path="res://Player.gd" type="Script" id=1]
+[ext_resource path="res://Mario.gd" type="Script" id=1]
 [ext_resource path="res://Paper_Mario_Walk_Forward2.png" type="Texture" id=2]
 [ext_resource path="res://jump.png" type="Texture" id=3]
 [ext_resource path="res://Paper_Mario_Run_Back.png" type="Texture" id=4]
 [ext_resource path="res://Paper_Mario_Back.png" type="Texture" id=5]
+
 
 [sub_resource type="AtlasTexture" id=2]
 flags = 23

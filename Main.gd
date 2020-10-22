@@ -23,6 +23,10 @@ var MarioCamera: Camera
 
 var CurrentPlayerPosition: Vector3 = Vector3.ZERO
 
+var cameraDistance: float
+
+var prev_cameraDistance: float
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	# This is all self explanatory, sort of, but:
@@ -36,7 +40,6 @@ func _ready():
 	# 3. setup the cameras (still a Work in Progress.
 	#	 Cameras are a bit wierd atm) 
 	self.setup_cameras()
-	# 4. if we just won a battle, hide the enemy
 
 func preload_BattleArena_and_setup_HUD():
 	# Tell Mario to reset stats 
@@ -58,11 +61,11 @@ func setup_cameras():
 	# Give it a variable so we can refer to it
 	MarioCamera = self.get_child(self.get_child_count() - 1)
 	# Move it to a new position
-	MarioCamera.translate(Vector3(0, 5, 9))
+	MarioCamera.translate(Vector3(0, 5, CurrentPlayerPosition.z+9))
 	# Set our view to it.
 	MarioCamera.current = true
 	# Tell camera to look at player's position
-	CurrentPlayerPosition = player.transform.origin
+	CurrentPlayerPosition = player.transform.origin + Vector3(0,2,0)
 	MarioCamera.look_at(CurrentPlayerPosition, Vector3.UP)
 
 func load_players_and_enemies():
@@ -75,8 +78,6 @@ func load_players_and_enemies():
 	#Player is now Mario
 	player = self.get_node(player.get_path())
 	#Note: Player position is set to the middle of the Scene
-	$Goomba.set_Heart_Points(5)
-	player.setHeartPoints(8)
 
 func getWorldEdge():
 	# The floor's size, so we can refer to it with less typing
@@ -117,8 +118,6 @@ func _on_Main_main_startBattle(playerGoesFirst):
 		arenaScene.setPlayerGoesFirst(true)
 		# setup a new version of Mario with our current Mario's stats
 		arenaScene.setPlayerSettings(player, self.getPlayerSettings(player))
-		# and setup the enemies' settings
-		arenaScene.setEnemySettings($Goomba, $Goomba.getSettings())
 	else :
 		# otherwise it'd not our turn
 		arenaScene.setPlayerGoesFirst(false)
@@ -162,28 +161,31 @@ func _processCamera(delta):
 	var oldCameraPos = self.to_global(MarioCamera.transform.origin)
 	# Get player's current position in the Scene
 	var playerPos = self.to_global(player.transform.origin)
-	# If the player is higher than the camera:
-	if player.transform.origin.y > oldCameraPos.y:
-		# look at them
-		MarioCamera.look_at(player.transform.origin, Vector3.UP)
-		if player.velocity.y == 0:
-			# if they arent moving they must be on the ground so move camera up
-			# (THIS ISNT ALWAYS THE CASE! What if player is at top of a jump?)
-			MarioCamera.translate(Vector3(0, playerPos.y - oldCameraPos.y, 0))
-	# If the player is lower than the camera:
-	if player.transform.origin.y < MarioCamera.transform.origin.y:
-		# Move down to player
-		MarioCamera.transform.origin.y=player.transform.origin.y
+	# look at them
+	MarioCamera.look_at(player.transform.origin, Vector3.UP)
 	# Follow player left & right
 	MarioCamera.transform.origin.x = player.transform.origin.x
 	# Get the edge of the world
 	var edge = getWorldEdge()
 	# Stop the camera if we reach the edge
 	MarioCamera.global_transform.origin.x = clamp(MarioCamera.global_transform.origin.x, -edge.x / 2, edge.x / 2)
+	# Follow player forward & back if they get too far
+	var distanceTo=playerPos.distance_to(oldCameraPos)
+	if distanceTo>9 or distanceTo<5:
+		if playerPos.distance_to(oldCameraPos)>9:
+			while playerPos.distance_to(oldCameraPos)>9:
+				MarioCamera.translate_object_local(Vector3.FORWARD*delta)
+				yield()
+		if playerPos.distance_to(oldCameraPos)<5:
+			while playerPos.distance_to(oldCameraPos)<5:
+				MarioCamera.translate_object_local(Vector3.BACK*delta)
+				yield()
 
 
 func _processUserInput(delta):
-	if Globals._processUserInput(delta):
+	# If user presses tab, show the stats GUI 
+	# TODO: add a check for the equivalent button on a Nintendo controller
+	if Input.is_action_just_pressed("ui_focus_next"):
 		showGUI()
 
 func showGUI(duration = 3, forever = false):
@@ -207,5 +209,3 @@ func _on_Mario_hit(body):
 		else :
 			#...so start a battle, we get first attack
 			_on_Main_main_startBattle(true)
-	else:
-		pass

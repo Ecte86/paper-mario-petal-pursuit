@@ -27,8 +27,8 @@ transform = Transform( -1.62921e-07, 0, 2, 0, 1, 0, -1, 0, -3.25841e-07, 0, 0.5,
 [node name="Walls4" parent="Floor" instance=ExtResource( 1 )]
 transform = Transform( -1.62921e-07, 0, 2, 0, 1, 0, -1, 0, -3.25841e-07, 0, 0.5, -10 )
 
-[node name="Goomba" parent="." instance=ExtResource( 4 )]
-transform = Transform( 1, 0, 0, 0, -1.62921e-07, -1, 0, 1, -1.62921e-07, 3, 2.2, 0 )
+[node name="Goombah" parent="." instance=ExtResource( 4 )]
+transform = Transform( 1, 0, 0, 0, -1.62921e-07, -1, 0, 1, -1.62921e-07, 3, 2.001, 0 )
 collision_mask = 3
 
 [node name="HUD" parent="." instance=ExtResource( 5 )]
@@ -36,4 +36,6 @@ collision_mask = 3
 [node name="BackgroundMusic" parent="." instance=ExtResource( 7 )]
 
 [node name="Camera" parent="." instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 9 )
 visible = false
+script = null

@@ -133,10 +133,6 @@ func setPlayerSettings(player, settings: Array):
 	player.setLevel(settings[5])
 	player.setPetalPower(settings[6])
 	player.setCoins(settings[7])
-
-func setEnemySettings(enemy, settings: Array):
-	enemy.ID=settings[0]
-	enemy.set_Heart_Points(settings[1])
 		
 func getWorldEdge():
 	return $BattleStage.get_child(0).scale
@@ -194,16 +190,6 @@ func _on_BattleArena_startBattle(freeAttack):
 		setPlayerGoesFirst(true)
 	self.battleStatus=true
 	Globals.battleStatus=self.battleStatus
-	
-func _processUserInput(delta):
-	if Globals._processUserInput(delta):
-		showGUI()
-
-func showGUI(duration = 3, forever = false):
-	# A general function that shows the gui for as long as specified.
-	# Default = 3.
-	# If forever = true, don't hide it.
-	$HUD.showGUI(duration, forever)
 
 		
 		#attack($Mario)
@@ -218,11 +204,6 @@ func showGUI(duration = 3, forever = false):
 
 
 func _on_BattleArena_endBattle(playerWins):
-	if typeof(playerWins) == TYPE_STRING:
-		if playerWins=="true":
-			playerWins=true
-		else:
-			playerWins=false
 	Globals.endBattle(playerWins)
 
 
