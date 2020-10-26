@@ -71,6 +71,8 @@ var collision_partner
 
 var position: Vector3
 
+onready var battle_status = Globals.battleStatus
+
 func _ready():
 	setup()
 	
@@ -153,6 +155,8 @@ func getHeartPoints():
 
 func _process(delta):
 
+	if get_parent().name=="Globals":
+		return
 	# Animation processing!
 	
 	var mario_direction # Possible values: N, S, E, W, NW, SW, NE, SE and Idle
@@ -233,6 +237,9 @@ func _process(delta):
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta):
+	if get_parent().name=="Globals":
+		return
+	
 	var edge=get_parent().getWorldEdge()
 	var EdgeLocationsX=[-edge.x,edge.x]
 	var EdgeLocationsZ=[-edge.z,edge.z]

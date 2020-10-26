@@ -10,6 +10,9 @@ var originalPos: Vector3
 # on a surface higher than the ground
 var groundLevel: float
 
+onready var battle_status = Globals.battleStatus
+onready var playerTurn = Globals.playerTurn
+
 # Declaration of our Parent
 var Parent
 
@@ -111,17 +114,18 @@ func get_Heart_Points():
 
 # Someone collided with us!
 func _on_Area_body_entered(body):
-	# Calculate where our top edge is:
-	var topEdge=self.get_child(0).scale.y
-	topEdge = topEdge + get_tree().get_root().get_child(1).getWorldEdge().y
 	
 	# If we are in battle
-	if Globals.battleStatus==true:
+	if battle_status==true:
 		# And its not our turn
-		if Globals.playerTurn==true:
+		if playerTurn==true:
 			# and the colliding object is in the group of "Player"
 			if body.is_in_group("Player"):
 				# and if its higher than our top edge...
+				# (Calculate where our top edge is:)
+				var topEdge=self.get_child(0).scale.y
+				topEdge = topEdge + get_tree().get_root().get_child(1).getWorldEdge().y
+
 				if body.transform.origin.y >= topEdge:
 					# get hurt
 					receiveDamage(1)

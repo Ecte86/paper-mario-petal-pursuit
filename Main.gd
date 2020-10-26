@@ -1,6 +1,8 @@
 extends Spatial
 export (PackedScene) var Mob
 
+const CONST_DEBUG = true # Switch this to off later?
+
 #signal startBattle
 
 signal main_startBattle(playerGoesFirst)
@@ -17,7 +19,7 @@ var playerSettings = []
 
 export (PackedScene) var PlayerScene
 
-var player: KinematicBody
+var player
 
 var MarioCamera: Camera
 
@@ -42,8 +44,6 @@ func _ready():
 	self.setup_cameras()
 
 func preload_BattleArena_and_setup_HUD():
-	# Tell Mario to reset stats 
-	player.new_game()
 	# Update the GUI's stats from the player
 	$HUD.update(getPlayerSettings(player))
 	# Show the GUI, briefly. This is optional, but I included it as a test 
@@ -70,14 +70,14 @@ func setup_cameras():
 
 func load_players_and_enemies():
 	#Load Mario.
-	PlayerScene = preload("res://Mario.tscn")
-	#Instance Mario
+	PlayerScene=load("res://Mario.tscn")
 	player = PlayerScene.instance()
 	#Add Mario at the bottom of Main's tree
 	self.add_child(player)
 	#Player is now Mario
 	player = self.get_node(player.get_path())
 	#Note: Player position is set to the middle of the Scene
+	player.setHeartPoints(8)
 
 func getWorldEdge():
 	# The floor's size, so we can refer to it with less typing
@@ -115,14 +115,14 @@ func _on_Main_main_startBattle(playerGoesFirst):
 	# If we attacked first...
 	if playerGoesFirst == true:
 		# ... then we get to have first attack
-		arenaScene.setPlayerGoesFirst(true)
-		# setup a new version of Mario with our current Mario's stats
-		arenaScene.setPlayerSettings(player, self.getPlayerSettings(player))
+		Globals.setPlayerGoesFirst(true)
+		# update Global Mario with our current Mario's stats
+		Globals.set_Mario(player.duplicate())
 	else :
 		# otherwise it'd not our turn
-		arenaScene.setPlayerGoesFirst(false)
-		# we still need to setup a new version of Mario tho
-		arenaScene.setPlayerSettings(player, self.getPlayerSettings(player))
+		Globals.setPlayerGoesFirst(false)
+		# we still need to update Global Mario tho
+		Globals.set_Mario(player.duplicate())
 	# Add our new Scene to the tree when we are all done here, and show it
 	get_tree().root.call_deferred("add_child", arenaScene)
 	# Clear up memory/other events
@@ -187,6 +187,11 @@ func _processUserInput(delta):
 	# TODO: add a check for the equivalent button on a Nintendo controller
 	if Input.is_action_just_pressed("ui_focus_next"):
 		showGUI()
+	if Input.is_action_pressed("ui_home") and CONST_DEBUG==true:
+		if $BackgroundMusic.playing==true:
+			$BackgroundMusic.stop()
+		else:
+			$BackgroundMusic.play()
 
 func showGUI(duration = 3, forever = false):
 	# A general function that shows the gui for as long as specified.

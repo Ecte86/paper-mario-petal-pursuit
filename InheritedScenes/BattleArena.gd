@@ -11,17 +11,15 @@ var enemy_Attack_Finished=false
 var player_response=""
 var plrAttackPhase =-1 ### Maybe refactor attack code to use this ###
 var double_Attack: bool = false
-var battleStatus: bool
+onready var battleStatus: bool = Globals.battleStatus
+onready var playerTurn: bool = Globals.playerTurn
 
 var finished_Drop_Movement: bool = false
 # Declare member variables here. Examples:
 # var a = 2
 # var b = "text"
 
-var globals = true ### ???
-export (PackedScene) var PlayerScene
-
-var player: KinematicBody
+onready var Mario = Globals.get_Mario()
 
 export (PackedScene) var EnemyScene
 
@@ -41,6 +39,7 @@ var time_limited_input_check
 var input_timer = 0
 var input_timer_max = 0.750
 
+
 signal get_player_move
 
 signal player_attack
@@ -49,24 +48,26 @@ var player_jump_num = -1
 var player_jump_max = -1
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	
 	setupBattleSettings()
 	load_players_and_enemies()
 	load_and_setup_cameras()
 	position_players_and_enemies()
 	setupHUD()
-	print_debug(player.transform.origin)
+	print_debug(Mario.transform.origin)
 	
 func setupHUD():
 	$HUD.startBattle(true)
 	yield(get_tree().create_timer(3.0), "timeout")
-	$HUD.update(getPlayerSettings(player))
+	print_debug(print_tree_pretty())
+	$HUD.update(getPlayerSettings(Mario))
 	$HUD.showGUI(0)
 
 func position_players_and_enemies():
 	#player.setup()
-	player.transform.origin.x=$PlayerSpawn.transform.origin.x
-	player.transform.origin.y=$PlayerSpawn.transform.origin.y
-	player.transform.origin.z=$PlayerSpawn.transform.origin.z
+	Mario.transform.origin.x=$PlayerSpawn.transform.origin.x
+	Mario.transform.origin.y=$PlayerSpawn.transform.origin.y
+	Mario.transform.origin.z=$PlayerSpawn.transform.origin.z
 	
 	enemy.transform.origin.x=$EnemySpawn.transform.origin.x
 	enemy.transform.origin.y=$EnemySpawn.transform.origin.y
@@ -79,30 +80,28 @@ func position_players_and_enemies():
 	#enemy_Pos=enemy.transform.origin
 	#player.get_child(0).flip_h=true
 	
-	player.state=player.states.IGNORE
-	player.get_child(0).play("idleDown")
-	player.hflip(true)
-	
-#	player.move_and_slide_with_snap(Vector3(0,5,0),Vector3.DOWN,Vector3.UP)
-#	player.move_and_slide_with_snap(Vector3(0,-5,0),Vector3.DOWN,Vector3.UP)
+	Mario.state=Mario.states.IGNORE
+	Mario.get_child(0).play("idleDown")
+	Mario.hflip(true)
 
 func load_and_setup_cameras():
-	player.add_child(player_camera)
+	while typeof(enemy) == TYPE_NIL:
+		load_players_and_enemies()
+	Mario.add_child(player_camera)
 	enemy.add_child(enemy_camera)
-	player_camera=player.get_child(player.get_child_count()-1)
+	player_camera=Mario.get_child(Mario.get_child_count()-1)
 	enemy_camera=enemy.get_child(enemy.get_child_count()-1)
 	player_camera.translate(Vector3(0,5,12))
 	enemy_camera.translate(Vector3(0,5,9))
 	player_camera.current=true
-	player_camera.look_at(player.transform.origin,Vector3.UP)
+	player_camera.look_at(Mario.transform.origin,Vector3.UP)
 
 
 func load_players_and_enemies():
-	var playerR=load("res://Mario.tscn")
+	#Mario = Globals.get_Mario()
 	var enemyR=load("res://Goomba.tscn")
-	player=playerR.instance()
 	enemy=enemyR.instance()
-	add_child(player)
+	add_child(Mario)
 	add_child(enemy)
 
 
@@ -151,20 +150,20 @@ func resetCombatants(end_of_turn=true): # if not false, we assume end of turn
 		if Globals.enemy_turn_finished==true and end_of_turn==true:
 			Globals.playerTurn=true
 		
-	player.direction=Vector3.ZERO
-	player.velocity=Vector3.ZERO
+	Mario.direction=Vector3.ZERO
+	Mario.velocity=Vector3.ZERO
 	$PlayerSpawn/PlayerAttack_AnimationPlayer.stop()
 	$PlayerSpawn/PlayerAttack_AnimationPlayer.seek(0,true)
 	position_players_and_enemies()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	if Globals.battleStatus==true:
-		if Globals.playerTurn==true:
+	if Globals.battleStatus ==true:
+		if Globals.playerTurn ==true:
 			emit_signal("get_player_move")
 			if player_Attack_Started:
 				# player attack
-				emit_signal("player_attack", delta)
+				_on_BattleArena_player_attack(delta)#emit_signal("player_attack", delta)
 		else: # Its npt players turn
 			$PlayerSpawn/PlayerAttack_AnimationPlayer.set_current_animation("run_and_jump_up")
 			$PlayerSpawn/PlayerAttack_AnimationPlayer.stop(true)
@@ -204,6 +203,10 @@ func _on_BattleArena_startBattle(freeAttack):
 
 
 func _on_BattleArena_endBattle(playerWins):
+	if playerWins=="true":
+		playerWins = true
+	else:
+		playerWins = false
 	Globals.endBattle(playerWins)
 
 
@@ -228,10 +231,10 @@ func _on_BattleArena_get_player_move():
 func _on_BattleArena_player_attack(delta):
 	var setupVariables = false
 	if player_Attack_Finished==false:
-		player.direction=Vector3.RIGHT
+		Mario.direction=Vector3.RIGHT
 		$PlayerSpawn/PlayerAttack_AnimationPlayer.play("run_and_jump_up")
-	if player.transform.origin.y>2.5:
-		player.state=player.states.JUMP
+	if Mario.transform.origin.y>2.5:
+		Mario.state=Mario.states.JUMP
 	if player_Attack_Finished:
 		var double_Attack
 		if !setupVariables:
@@ -240,7 +243,7 @@ func _on_BattleArena_player_attack(delta):
 		while input_timer<input_timer_max: 
 			input_timer+=delta
 			$HUD/BattlePanel3.popup()
-			double_Attack=player.checkforAttackInput()
+			double_Attack=Mario.checkforAttackInput()
 			if double_Attack==false:
 				if input_timer>=input_timer_max:
 					$HUD/BattlePanel3.hide()
@@ -296,4 +299,4 @@ func _on_BattleArena_player_attack(delta):
 
 
 func _on_PlayerAttack_AnimationPlayer_animation_changed(old_name, new_name):
-	player.transform.origin=$PlayerSpawn.transform.origin
+	Mario.transform.origin=$PlayerSpawn.transform.origin

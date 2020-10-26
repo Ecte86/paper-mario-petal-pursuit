@@ -14,5 +14,5 @@ func _ready():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	if self.is_playing():
-		get_parent().get_parent().player.transform.origin= \
+		get_parent().get_parent().Mario.transform.origin= \
 												get_parent().transform.origin
