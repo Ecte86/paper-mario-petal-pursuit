@@ -48,7 +48,7 @@ func update_camera(character_pos):
 	#update_viewport()
 	pass
 
-func _process(delta):
+func _process(_delta):
 	var charPos = root.get_child(1).player
 	if charPos == null:
 		print_debug("Hmm.")
