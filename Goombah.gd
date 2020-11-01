@@ -1,14 +1,17 @@
 extends RigidBody
 
 # Our H.P.
-export (int) var Heart_Points = 10
+export (int) var Heart_Points = Globals.EnemyHP.Goomba
 
 # Our initial position when we entered the room.
 var originalPos: Vector3
 
-# Declare member variables here. Examples:
-# var a = 2
-# var b = "text"
+# The ground level (just the Y dimension) - may not be zero if we are standing 
+# on a surface higher than the ground
+var groundLevel: float
+
+onready var battle_status = Globals.battleStatus
+onready var playerTurn = Globals.playerTurn
 
 # Declaration of our Parent
 var Parent
@@ -24,10 +27,6 @@ func _ready():
 	if Parent.name != "Main":
 		#... set our initial position to wherever our spawn point is
 		originalPos=Parent.get_node("EnemySpawn").global_transform.origin
-		#...and rotate so we are pointing up.
-		#self.global_rotate(Vector3(90,0,0), 90)
-	#	self.rotate_y(0)
-	#	self.rotate_z(0)
 	else:
 		#...if we are in the Main scene, set our initial position to wherever
 		#   we currently are
@@ -35,7 +34,26 @@ func _ready():
 		
 	# Lock our movement unless we plan to move somewhere
 	lock(true,true)
+	setup()
 	
+func setup():
+	
+	groundLevel=Parent.get_child(1).scale.y
+	self.set_position(self.get_position().x,groundLevel+(self.scale.y/2),self.get_position().z)
+	print_debug(self.transform.origin.y)
+	print_debug(groundLevel)
+
+func get_position():
+	return self.transform.origin
+
+func set_position(x=self.transform.origin.x,y=self.transform.origin.y,z=self.transform.origin.z):
+	self.transform.origin.x=x
+	self.transform.origin.y=y
+	self.transform.origin.z=z
+
+func set_positionV3(newPos):
+	self.transform.origin=newPos
+
 func lock(position: bool, angle: bool):
 	# General function that locks/unlocks movement, or rotation, or both.
 	
@@ -50,6 +68,7 @@ func lock(position: bool, angle: bool):
 	self.axis_lock_angular_z=angle
 
 func flash():
+	# unsure if needed
 	self.hide()
 	yield(get_tree().create_timer(0.2), "timeout")
 	self.show()
@@ -95,17 +114,25 @@ func get_Heart_Points():
 
 # Someone collided with us!
 func _on_Area_body_entered(body):
-	# Calculate where our top edge is:
-	var topEdge=self.get_child(0).scale.y
-	topEdge = topEdge + get_tree().get_root().get_child(1).getWorldEdge().y
 	
 	# If we are in battle
-	if Globals.battleStatus==true:
+	if battle_status==true:
 		# And its not our turn
-		if Globals.playerTurn==true:
+		if playerTurn==true:
 			# and the colliding object is in the group of "Player"
 			if body.is_in_group("Player"):
 				# and if its higher than our top edge...
+				# (Calculate where our top edge is:)
+				var topEdge=self.get_child(0).scale.y
+				topEdge = topEdge + get_tree().get_root().get_child(1).getWorldEdge().y
+
 				if body.transform.origin.y >= topEdge:
 					# get hurt
 					receiveDamage(1)
+
+func _process(_delta):
+	$CollisionShape/AnimatedSprite3D/Shadow.global_transform.origin.y=groundLevel
+	$CollisionShape/AnimatedSprite3D/Shadow.global_transform.origin.x= \
+		self.get_position().x
+	#$CollisionShape/AnimatedSprite3D/Shadow.global_transform.origin.x= \
+	#	self.get_position().z
