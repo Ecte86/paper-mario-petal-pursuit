@@ -143,7 +143,7 @@ func _process(delta):
 	# stuff
 	_processPlayerCollisions(delta)
 	
-func _processPlayerCollisions(delta):
+func _processPlayerCollisions(_delta):
 	# Loop through any objects player is colliding with
 	for i in player.get_slide_count():
 		# put them into collider variable
@@ -182,7 +182,7 @@ func _processCamera(delta):
 				yield()
 
 
-func _processUserInput(delta):
+func _processUserInput(_delta):
 	# If user presses tab, show the stats GUI 
 	# TODO: add a check for the equivalent button on a Nintendo controller
 	if Input.is_action_just_pressed("ui_focus_next"):
