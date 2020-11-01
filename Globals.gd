@@ -13,34 +13,11 @@ var playerGoesFirst = null
 var playerTurn=null
 onready var battleStatus=false
 
-enum MarioStats{
-	NAME = 0,
-	HEART_POINTS = 1,
-	FLOWER_POINTS = 2,
-	BADGE_POINTS = 3,
-	STAR_POINTS = 4,
-	LEVEL = 5,
-	PETAL_POWER = 6,
-	COINS = 7
-}
-
 enum EnemyHP {
 	Goomba = 2
 }
 
-export(int) var max_Heart_Points = 10 # Maximum Heart Points == Hit Points == Life
 
-export (int) var max_Flower_Points = 10 # Max FP = Mana
-
-export (int) var max_Badge_Points = 10 # 
-
-export (int) var max_Star_Points = 99 # XP
-
-export (int) var max_Level = 10
-
-export (int) var max_Petal_Power = 7
-
-export (int) var max_Coins = 100
 
 export (bool) var enemy_turn_finished = false
 
@@ -54,7 +31,7 @@ var current_scene = null
 func _ready():
 	var root = get_tree().get_root()
 	current_scene = root.get_child(root.get_child_count() - 1)
-	#Mario=
+	Mario = MarioScene.instance()
 
 func get_Mario():
 	MarioDupe=self.get_child(0).duplicate()
@@ -130,7 +107,7 @@ func endBattle(playerWins: bool):
 	
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
+func _process(_delta):
 #	if Mario==null:
 #		breakpoint
 	pass
