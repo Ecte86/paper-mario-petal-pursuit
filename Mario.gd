@@ -73,6 +73,17 @@ var position: Vector3
 
 onready var battle_status = Globals.battleStatus
 
+enum Stat_idx{
+	NAME = 0,
+	HEART_POINTS = 1,
+	FLOWER_POINTS = 2,
+	BADGE_POINTS = 3,
+	STAR_POINTS = 4,
+	LEVEL = 5,
+	PETAL_POWER = 6,
+	COINS = 7
+}
+
 func _ready():
 	setup()
 	
@@ -153,7 +164,7 @@ func setHeartPoints(num: int):
 func getHeartPoints():
 	return self.Heart_Points
 
-func _process(delta):
+func _process(_delta):
 
 	if get_parent().name=="Globals":
 		return
@@ -241,8 +252,8 @@ func _physics_process(delta):
 		return
 	
 	var edge=get_parent().getWorldEdge()
-	var EdgeLocationsX=[-edge.x,edge.x]
-	var EdgeLocationsZ=[-edge.z,edge.z]
+	#var EdgeLocationsX=[-edge.x,edge.x]
+	#var EdgeLocationsZ=[-edge.z,edge.z]
 	self.global_transform.origin.x = clamp(self.global_transform.origin.x,-edge.x,edge.x)
 	self.global_transform.origin.z = clamp(self.global_transform.origin.z,-(edge.z)/2,edge.z/2)
 	var gravity_modified = gravity * 1.5
