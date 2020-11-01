@@ -9,11 +9,12 @@ var response = ""
 
 var doneOnce = false
 
-onready var HP_idx = Globals.MarioStats.HEART_POINTS
-onready var FP_idx = Globals.MarioStats.FLOWER_POINTS
-onready var Coin_idx = Globals.MarioStats.COINS
-onready var Star_idx = Globals.MarioStats.STAR_POINTS
-onready var g = Globals
+onready var g = Globals.Mario
+
+onready var HP_idx = g.Stat_idx.HEART_POINTS
+onready var FP_idx = g.Stat_idx.FLOWER_POINTS
+onready var Coin_idx = g.Stat_idx.COINS
+onready var Star_idx = g.Stat_idx.STAR_POINTS
 
 func update_hp(HP):
 	$HPLabel.text = "HP: "+str(HP)+"/"+str(g.max_Heart_Points)
@@ -75,11 +76,11 @@ func _ready():
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
+func _process(_delta):
 	pass
 
 
-func _on_abilityList_gui_input(event):
+func _on_abilityList_gui_input(_event):
 	var input_valid = false
 	if Input.is_action_pressed("ui_down"):
 		input_valid=true
@@ -118,7 +119,7 @@ func _on_BattlePanel3_popup_hide():
 	 # Replace with function body.
 
 
-func _on_NintendoAButton_gui_input(event):
+func _on_NintendoAButton_gui_input(_event):
 	if Input.is_action_pressed("jump"):
 		$BattlePanel3/NintendoAButton.emit_signal("pressed")
 	 # Replace with function body.
