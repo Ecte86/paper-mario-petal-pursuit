@@ -236,7 +236,6 @@ func _on_BattleArena_player_attack(delta):
 	if Mario.transform.origin.y>2.5:
 		Mario.state=Mario.states.JUMP
 	if player_Attack_Finished:
-		var double_Attack
 		if !setupVariables:
 			double_Attack = false
 		time_limited_input_check=true
@@ -298,5 +297,5 @@ func _on_BattleArena_player_attack(delta):
 			resetCombatants()
 
 
-func _on_PlayerAttack_AnimationPlayer_animation_changed(old_name, new_name):
-	Mario.transform.origin=$PlayerSpawn.transform.origin
+#func _on_PlayerAttack_AnimationPlayer_animation_changed(old_name, new_name):
+#	Mario.transform.origin=$PlayerSpawn.transform.origin
