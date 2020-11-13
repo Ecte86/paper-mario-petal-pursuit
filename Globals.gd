@@ -11,7 +11,7 @@ extends Node
 #var stars=63
 var playerGoesFirst = null
 var playerTurn=null
-var battleStatus=0
+onready var battleStatus=false
 
 enum MarioStats{
 	NAME = 0,
@@ -22,6 +22,10 @@ enum MarioStats{
 	LEVEL = 5,
 	PETAL_POWER = 6,
 	COINS = 7
+}
+
+enum EnemyHP {
+	Goomba = 2
 }
 
 export(int) var max_Heart_Points = 10 # Maximum Heart Points == Hit Points == Life
@@ -38,13 +42,52 @@ export (int) var max_Petal_Power = 7
 
 export (int) var max_Coins = 100
 
+export (bool) var enemy_turn_finished = false
+
+export (PackedScene) var MarioScene = preload("res://Mario.tscn")
+
+var Mario: Node#=MarioScene.instance()# : Node
+var MarioDupe: Node
+
+var Enemy: Node
+var EnemyDupe: Node
+var Enemy_Name: String
+var Enemy_idx: int
 
 var current_scene = null
 
 func _ready():
 	var root = get_tree().get_root()
 	current_scene = root.get_child(root.get_child_count() - 1)
+	#Mario=
+
+func get_Enemy():
+	EnemyDupe=self.get_child(self.get_child_count()-1).duplicate()
+	var children=self.get_children()
+	var idx=0
+	for child in children:
+		if child.name==Enemy_Name:
+			self.remove_child(self.get_child(idx))
+		idx+=1
+	return EnemyDupe
+
+func set_Enemy(theEnemyNode):
+	Enemy_Name=theEnemyNode.name
+	self.add_child(theEnemyNode.duplicate())
+	Enemy=self.get_child(self.get_child_count()-1)
+	Enemy_idx=self.get_child_count()-1
 	
+	
+func get_Mario():
+	MarioDupe=self.get_child(0).duplicate()
+	self.remove_child(self.get_child(0))
+	return MarioDupe
+
+func set_Mario(modified_Mario):
+	self.add_child(modified_Mario.duplicate())
+	Mario=self.get_child(0)
+
+
 func goto_scene(path):
 	# This function will usually be called from a signal callback,
 	# or some other function in the current scene.
@@ -98,11 +141,11 @@ func setPlayerGoesFirst(value: bool):
 #func startBattle(playersTurn: bool):
 
 func endBattle(playerWins: bool):
-	battleStatus=0
+	battleStatus=false
 	playerGoesFirst=null
 	playerTurn=null
 	if playerWins:
-		get_tree().change_scene("res://Main.tscn")
+		get_tree().quit()#get_tree().change_scene("res://Main.tscn")
 	else:
 		# insert lose msg
 		get_tree().quit()
@@ -110,5 +153,7 @@ func endBattle(playerWins: bool):
 	
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
+func _process(delta):
+#	if Mario==null:
+#		breakpoint
+	pass

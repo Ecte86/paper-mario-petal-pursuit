@@ -1,8 +1,18 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://HUD.gd" type="Script" id=1]
 [ext_resource path="res://ItemList.gd" type="Script" id=2]
 [ext_resource path="res://Fonts/HUD_font.tres" type="DynamicFont" id=3]
+[ext_resource path="res://NintendoABurron.png" type="Texture" id=4]
+
+[sub_resource type="DynamicFontData" id=1]
+font_path = "res://Fonts/komika_text/KOMTXTI_.ttf"
+
+[sub_resource type="DynamicFont" id=2]
+size = 53
+outline_size = 2
+outline_color = Color( 0, 0, 0, 1 )
+font_data = SubResource( 1 )
 
 [sub_resource type="DynamicFontData" id=3]
 font_path = "res://Fonts/komika_text/KOMTXTI_.ttf"
@@ -13,26 +23,23 @@ outline_size = 2
 outline_color = Color( 0, 0, 0, 1 )
 font_data = SubResource( 3 )
 
-[sub_resource type="DynamicFontData" id=5]
-font_path = "res://Fonts/komika_text/KOMTXTI_.ttf"
+[sub_resource type="ImageTexture" id=5]
 
-[sub_resource type="DynamicFont" id=6]
-size = 53
-outline_size = 2
-outline_color = Color( 0, 0, 0, 1 )
-font_data = SubResource( 5 )
-
-[sub_resource type="StyleBoxFlat" id=7]
+[sub_resource type="StyleBoxFlat" id=6]
 bg_color = Color( 0.498039, 0, 0, 1 )
 
-[sub_resource type="DynamicFontData" id=1]
+[sub_resource type="DynamicFontData" id=7]
 font_path = "res://Fonts/komika_text/KOMTXTI_.ttf"
 
 [sub_resource type="DynamicFont" id=8]
 size = 24
 outline_size = 2
 outline_color = Color( 0, 0, 0, 1 )
-font_data = SubResource( 1 )
+font_data = SubResource( 7 )
+
+[sub_resource type="ImageTexture" id=9]
+
+[sub_resource type="StyleBoxEmpty" id=10]
 
 [node name="HUD" type="CanvasLayer"]
 script = ExtResource( 1 )
@@ -46,6 +53,7 @@ margin_right = 241.0
 margin_bottom = 69.0
 grow_horizontal = 0
 grow_vertical = 0
+rect_pivot_offset = Vector2( 50, 34 )
 size_flags_vertical = 1
 custom_fonts/font = ExtResource( 3 )
 text = "HP: "
@@ -57,7 +65,7 @@ __meta__ = {
 margin_left = 516.0
 margin_right = 742.0
 margin_bottom = 68.0
-custom_fonts/font = SubResource( 4 )
+custom_fonts/font = SubResource( 2 )
 text = "S:"
 __meta__ = {
 "_edit_use_anchors_": false
@@ -68,7 +76,7 @@ margin_left = 763.0
 margin_top = -4.0
 margin_right = 963.0
 margin_bottom = 64.0
-custom_fonts/font = SubResource( 4 )
+custom_fonts/font = SubResource( 2 )
 text = "C:"
 __meta__ = {
 "_edit_use_anchors_": false
@@ -80,32 +88,82 @@ margin_top = -1.0
 margin_right = 524.0
 margin_bottom = 67.0
 size_flags_vertical = 1
-custom_fonts/font = SubResource( 6 )
+custom_fonts/font = SubResource( 4 )
 text = "P:"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="BattlePanel" type="Panel" parent="."]
-visible = false
+[node name="BattlePanel2" type="WindowDialog" parent="."]
+visible = true
+anchor_left = 0.03
+anchor_top = 0.402
+anchor_right = 0.03
+anchor_bottom = 0.402
+margin_left = -12.72
+margin_top = -16.2
+margin_right = 248.28
+margin_bottom = 140.8
+custom_icons/close = SubResource( 5 )
+custom_styles/panel = SubResource( 6 )
+popup_exclusive = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="abilityList" type="ItemList" parent="BattlePanel2"]
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -279.0
-margin_top = -65.0
-margin_right = 279.0
-margin_bottom = 65.0
-custom_styles/panel = SubResource( 7 )
+margin_left = -112.5
+margin_top = -64.5
+margin_right = 112.5
+margin_bottom = 59.5
+focus_neighbour_left = NodePath(".")
+focus_neighbour_top = NodePath(".")
+focus_neighbour_right = NodePath(".")
+focus_neighbour_bottom = NodePath(".")
+focus_next = NodePath(".")
+focus_previous = NodePath(".")
+custom_fonts/font = SubResource( 8 )
+items = [ "Jump", null, false, "Hammer", null, true, "Item", null, true ]
+allow_reselect = true
+script = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="BattlePanel" type="Popup" parent="."]
+margin_left = -6.0
+margin_top = -6.0
+margin_right = 1024.0
+margin_bottom = 596.0
+mouse_default_cursor_shape = 2
+popup_exclusive = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Background" type="Panel" parent="BattlePanel"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -523.0
+margin_top = -309.0
+margin_right = 513.0
+margin_bottom = 304.0
+custom_styles/panel = SubResource( 6 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="BattleMessage" type="Label" parent="BattlePanel"]
-margin_left = 12.0
-margin_top = 17.0
-margin_right = 539.0
-margin_bottom = 107.0
+margin_left = 245.0
+margin_top = 252.0
+margin_right = 772.0
+margin_bottom = 342.0
 grow_horizontal = 0
 grow_vertical = 0
 size_flags_vertical = 1
@@ -117,33 +175,53 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="BattlePanel2" type="Panel" parent="."]
-visible = false
+[node name="BattlePanel3" type="WindowDialog" parent="."]
+visible = true
 anchor_left = 0.03
 anchor_top = 0.402
 anchor_right = 0.03
 anchor_bottom = 0.402
-margin_left = -12.72
-margin_top = -16.2
-margin_right = 248.28
-margin_bottom = 140.8
-custom_styles/panel = SubResource( 7 )
+margin_left = 454.28
+margin_top = -123.2
+margin_right = 818.28
+margin_bottom = 100.8
+custom_icons/close = SubResource( 9 )
+custom_styles/panel = SubResource( 10 )
+popup_exclusive = true
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="ItemList" type="ItemList" parent="BattlePanel2"]
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-margin_left = -112.5
-margin_top = -64.5
-margin_right = 112.5
-margin_bottom = 59.5
-custom_fonts/font = SubResource( 8 )
-items = [ "Jump", null, false, "Hammer", null, true, "Item", null, true ]
-script = ExtResource( 2 )
+[node name="GratsMessage" type="Label" parent="BattlePanel3"]
+visible = false
+margin_left = 144.0
+margin_top = 48.0
+margin_right = 385.0
+margin_bottom = 116.0
+grow_horizontal = 0
+grow_vertical = 0
+rect_pivot_offset = Vector2( 50, 34 )
+size_flags_vertical = 1
+custom_fonts/font = ExtResource( 3 )
+custom_colors/font_color = Color( 0, 0.521569, 1, 1 )
+text = "Nice!"
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="NintendoAButton" type="TextureButton" parent="BattlePanel3"]
+margin_left = 249.0
+margin_top = 158.0
+margin_right = 369.0
+margin_bottom = 278.0
+rect_scale = Vector2( 0.49, 0.49 )
+texture_normal = ExtResource( 4 )
+stretch_mode = 4
+__meta__ = {
+"_edit_use_anchors_": false
+}
+[connection signal="gui_input" from="BattlePanel2/abilityList" to="." method="_on_abilityList_gui_input"]
+[connection signal="about_to_show" from="BattlePanel3" to="." method="_on_BattlePanel3_about_to_show"]
+[connection signal="popup_hide" from="BattlePanel3" to="." method="_on_BattlePanel3_popup_hide"]
+[connection signal="gui_input" from="BattlePanel3/NintendoAButton" to="." method="_on_NintendoAButton_gui_input"]
+[connection signal="pressed" from="BattlePanel3/NintendoAButton" to="." method="_on_NintendoAButton_pressed"]
