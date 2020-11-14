@@ -13,11 +13,34 @@ var playerGoesFirst = null
 var playerTurn=null
 onready var battleStatus=false
 
+enum MarioStats{
+	NAME = 0,
+	HEART_POINTS = 1,
+	FLOWER_POINTS = 2,
+	BADGE_POINTS = 3,
+	STAR_POINTS = 4,
+	LEVEL = 5,
+	PETAL_POWER = 6,
+	COINS = 7
+}
+
 enum EnemyHP {
 	Goomba = 2
 }
 
+export(int) var max_Heart_Points = 10 # Maximum Heart Points == Hit Points == Life
 
+export (int) var max_Flower_Points = 10 # Max FP = Mana
+
+export (int) var max_Badge_Points = 10 # 
+
+export (int) var max_Star_Points = 99 # XP
+
+export (int) var max_Level = 10
+
+export (int) var max_Petal_Power = 7
+
+export (int) var max_Coins = 100
 
 export (bool) var enemy_turn_finished = false
 
@@ -26,13 +49,35 @@ export (PackedScene) var MarioScene = preload("res://Mario.tscn")
 var Mario: Node#=MarioScene.instance()# : Node
 var MarioDupe: Node
 
+var Enemy: Node
+var EnemyDupe: Node
+var Enemy_Name: String
+var Enemy_idx: int
+
 var current_scene = null
 
 func _ready():
 	var root = get_tree().get_root()
 	current_scene = root.get_child(root.get_child_count() - 1)
-	Mario = MarioScene.instance()
+	#Mario=
 
+func get_Enemy():
+	EnemyDupe=self.get_child(self.get_child_count()-1).duplicate()
+	var children=self.get_children()
+	var idx=0
+	for child in children:
+		if child.name==Enemy_Name:
+			self.remove_child(self.get_child(idx))
+		idx+=1
+	return EnemyDupe
+
+func set_Enemy(theEnemyNode):
+	Enemy_Name=theEnemyNode.name
+	self.add_child(theEnemyNode.duplicate())
+	Enemy=self.get_child(self.get_child_count()-1)
+	Enemy_idx=self.get_child_count()-1
+	
+	
 func get_Mario():
 	MarioDupe=self.get_child(0).duplicate()
 	self.remove_child(self.get_child(0))
@@ -41,6 +86,7 @@ func get_Mario():
 func set_Mario(modified_Mario):
 	self.add_child(modified_Mario.duplicate())
 	Mario=self.get_child(0)
+
 
 func goto_scene(path):
 	# This function will usually be called from a signal callback,
@@ -107,7 +153,7 @@ func endBattle(playerWins: bool):
 	
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(_delta):
+func _process(delta):
 #	if Mario==null:
 #		breakpoint
 	pass
