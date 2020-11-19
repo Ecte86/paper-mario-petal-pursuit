@@ -16,6 +16,7 @@
 [ext_resource path="res://Mario_Run_Forward/Pera_Albedo.0011.png" type="Texture" id=14]
 [ext_resource path="res://Mario_Run_Forward/Pera_Albedo.0012.png" type="Texture" id=15]
 
+
 [sub_resource type="AtlasTexture" id=1]
 flags = 7
 atlas = ExtResource( 5 )

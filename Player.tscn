@@ -6,6 +6,7 @@
 [ext_resource path="res://Paper_Mario_Run_Back.png" type="Texture" id=4]
 [ext_resource path="res://Paper_Mario_Back.png" type="Texture" id=5]
 
+
 [sub_resource type="AtlasTexture" id=2]
 flags = 23
 atlas = ExtResource( 2 )

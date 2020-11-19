@@ -39,9 +39,9 @@ func _ready():
 	# 2. preload the battle arena (where we battle with any enemies)
 	#	 and setup the HUD (on-screen elements)
 	self.preload_BattleArena_and_setup_HUD()
-	# 3. setup the cameras 
+	# 3. setup the cameras (still a Work in Progress.
+	#	 Cameras are a bit wierd atm) 
 	self.setup_cameras()
-	print_tree_pretty()
 
 func preload_BattleArena_and_setup_HUD():
 	# Update the GUI's stats from the player
@@ -116,17 +116,13 @@ func _on_Main_main_startBattle(playerGoesFirst):
 	if playerGoesFirst == true:
 		# ... then we get to have first attack
 		Globals.setPlayerGoesFirst(true)
-		# update Global Mario with a copy of Mario's node
+		# update Global Mario with our current Mario's stats
 		Globals.set_Mario(player.duplicate())
-		# do the same with the enemy we are attacking
-		Globals.set_Enemy($Goombah.duplicate())
 	else :
 		# otherwise it'd not our turn
 		Globals.setPlayerGoesFirst(false)
 		# we still need to update Global Mario tho
 		Globals.set_Mario(player.duplicate())
-		# and again with the enemy
-		Globals.set_Enemy($Goombah.duplicate())
 	# Add our new Scene to the tree when we are all done here, and show it
 	get_tree().root.call_deferred("add_child", arenaScene)
 	# Clear up memory/other events
@@ -147,7 +143,7 @@ func _process(delta):
 	# stuff
 	_processPlayerCollisions(delta)
 	
-func _processPlayerCollisions(delta):
+func _processPlayerCollisions(_delta):
 	# Loop through any objects player is colliding with
 	for i in player.get_slide_count():
 		# put them into collider variable

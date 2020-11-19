@@ -20,11 +20,10 @@ var finished_Drop_Movement: bool = false
 # var b = "text"
 
 onready var Mario = Globals.get_Mario()
-onready var enemy = Globals.get_Enemy()
 
 export (PackedScene) var EnemyScene
 
-#var enemy: RigidBody
+var enemy: RigidBody
 var player_camera = Camera.new()
 var enemy_camera = Camera.new()
 
@@ -48,7 +47,8 @@ signal player_attack
 var player_jump_num = -1
 var player_jump_max = -1
 # Called when the node enters the scene tree for the first time.
-func _ready():	
+func _ready():
+	
 	setupBattleSettings()
 	load_players_and_enemies()
 	load_and_setup_cameras()
@@ -99,11 +99,10 @@ func load_and_setup_cameras():
 
 func load_players_and_enemies():
 	#Mario = Globals.get_Mario()
-	#var enemyR=load("res://Goomba.tscn")
-	#enemy=enemyR.instance()
+	var enemyR=load("res://Goomba.tscn")
+	enemy=enemyR.instance()
 	add_child(Mario)
 	add_child(enemy)
-	
 
 
 func setupBattleSettings():
@@ -209,3 +208,94 @@ func _on_BattleArena_endBattle(playerWins):
 	else:
 		playerWins = false
 	Globals.endBattle(playerWins)
+
+
+func _on_PlayerAttack_AnimationPlayer_animation_finished(anim_name):
+	if anim_name=="run_and_jump_up":
+		player_Attack_Finished = true
+	else:
+		finished_Drop_Movement=true
+
+
+func _on_AttackInputTimer_timeout():
+	time_limited_input_check=false
+
+
+func _on_BattleArena_get_player_move():
+	if player_response=="Jump" and player_Attack_Started!=true:
+		player_Attack_Started=true
+	else:
+		player_response = $HUD.showTurnPanel()
+
+
+func _on_BattleArena_player_attack(delta):
+	var setupVariables = false
+	if player_Attack_Finished==false:
+		Mario.direction=Vector3.RIGHT
+		$PlayerSpawn/PlayerAttack_AnimationPlayer.play("run_and_jump_up")
+	if Mario.transform.origin.y>2.5:
+		Mario.state=Mario.states.JUMP
+	if player_Attack_Finished:
+		if !setupVariables:
+			double_Attack = false
+		time_limited_input_check=true
+		while input_timer<input_timer_max: 
+			input_timer+=delta
+			$HUD/BattlePanel3.popup()
+			double_Attack=Mario.checkforAttackInput()
+			if double_Attack==false:
+				if input_timer>=input_timer_max:
+					$HUD/BattlePanel3.hide()
+					break
+				yield()
+			else:
+				double_Attack=true
+				$HUD/BattlePanel3/GratsMessage.show()
+				$HUD/BattlePanel3/NintendoAButton.hide()
+				break
+		input_timer=0
+		player_Reached_Target=false
+
+		if double_Attack==false and player_jump_max==-1:
+			player_jump_max=1
+		#var player_original_position = player.transform.origin
+		if double_Attack==true and player_jump_max==-1:
+			player_jump_max=2
+
+		#var hitEnemy=false
+		var temp_started = null
+		if temp_started == null and player_jump_num==-1:
+			temp_started=false
+			player_jump_num=0
+		if input_timer==0:
+			if player_jump_num<=player_jump_max:
+				temp_started=true
+				if !finished_Drop_Movement:
+					$PlayerSpawn/PlayerAttack_AnimationPlayer.play("jump_on")
+					yield()
+				$PlayerSpawn/PlayerAttack_AnimationPlayer.stop(true)
+				$PlayerSpawn/PlayerAttack_AnimationPlayer.seek(0, true)
+				player_jump_num+=1
+				print_debug(player_jump_max)
+				if player_jump_max-player_jump_num==1: # we need to update player position if we 
+								  # still have another attack to go
+					finished_Drop_Movement=false
+					yield()
+			else:
+				$PlayerSpawn/PlayerAttack_AnimationPlayer.stop(true)
+				$PlayerSpawn/PlayerAttack_AnimationPlayer.set_current_animation("run_and_jump_up")
+
+		if player_jump_max-player_jump_num==0 and finished_Drop_Movement:
+			player_Reached_Target=true
+			$HUD/BattlePanel3.hide()
+		if player_Reached_Target==true:
+			$PlayerSpawn/PlayerAttack_AnimationPlayer.stop(true)
+			$PlayerSpawn/PlayerAttack_AnimationPlayer.set_current_animation("run_and_jump_up")
+			Globals.playerGoesFirst=false
+			player_Attack_Started=false
+			player_Reached_Target=false
+			resetCombatants()
+
+
+#func _on_PlayerAttack_AnimationPlayer_animation_changed(old_name, new_name):
+#	Mario.transform.origin=$PlayerSpawn.transform.origin

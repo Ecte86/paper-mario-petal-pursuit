@@ -1,7 +1,7 @@
 extends RigidBody
 
 # Our H.P.
-export (int) onready var Heart_Points = 2 # Globals.EnemyHP.Goomba
+export (int) var Heart_Points = Globals.EnemyHP.Goomba
 
 # Our initial position when we entered the room.
 var originalPos: Vector3
@@ -24,23 +24,17 @@ func _ready():
 	# created
 	
 	# If we're in the BattleArena scene...
-	if Parent.name == "BattleArena":
+	if Parent.name != "Main":
 		#... set our initial position to wherever our spawn point is
 		originalPos=Parent.get_node("EnemySpawn").global_transform.origin
 	else:
 		#...if we are in the Main scene, set our initial position to wherever
 		#   we currently are
-		if Parent.name=="Main":
-			originalPos=self.global_transform.origin
+		originalPos=self.global_transform.origin
 		
 	# Lock our movement unless we plan to move somewhere
-	# make sure that we only do things if we arent in Globals
-	if Parent.name != "Globals":
-		lock(true,true)
-		setup()
-		self.set_process(true)
-	else:
-		self.set_process(false)
+	lock(true,true)
+	setup()
 	
 func setup():
 	
