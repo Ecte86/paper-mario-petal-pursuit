@@ -9,24 +9,23 @@ var response = ""
 
 var doneOnce = false
 
-onready var g = Globals.Mario
 
-onready var HP_idx = g.Stat_idx.HEART_POINTS
-onready var FP_idx = g.Stat_idx.FLOWER_POINTS
-onready var Coin_idx = g.Stat_idx.COINS
-onready var Star_idx = g.Stat_idx.STAR_POINTS
+onready var HP_idx = Globals.MarioStats.HEART_POINTS
+onready var FP_idx = Globals.MarioStats.FLOWER_POINTS
+onready var Coin_idx = Globals.MarioStats.COINS
+onready var Star_idx = Globals.MarioStats.STAR_POINTS
 
 func update_hp(HP):
-	$HPLabel.text = "HP: "+str(HP)+"/"+str(g.max_Heart_Points)
+	$HPLabel.text = "HP: "+str(HP)+"/"+str(Globals.max_Heart_Points)
 
 func update_flowers(flowers):
-	$FlowersLabel.text = "FP: "+str(flowers)+"/"+str(g.max_Flower_Points)
+	$FlowersLabel.text = "FP: "+str(flowers)+"/"+str(Globals.max_Flower_Points)
 
 func update_coins(coins):
-	$CoinLabel.text = "C: "+str(coins)+"/"+str(g.max_Coins)
+	$CoinLabel.text = "C: "+str(coins)+"/"+str(Globals.max_Coins)
 	
 func update_stars(stars):
-	$StarsLabel.text = "S: "+str(stars)+"/"+str(g.max_Star_Points)
+	$StarsLabel.text = "S: "+str(stars)+"/"+str(Globals.max_Star_Points)
 
 func update(playerSettings: Array):
 	update_hp(playerSettings[HP_idx])
@@ -76,7 +75,7 @@ func _ready():
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(_delta):
+func _process(delta):
 	pass
 
 
