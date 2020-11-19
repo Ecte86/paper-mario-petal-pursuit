@@ -5,7 +5,7 @@ const CONST_DEBUG = true # Switch this to off later?
 
 #signal startBattle
 
-signal main_startBattle(playerGoesFirst)
+#signal main_startBattle(playerGoesFirst)
 
 var lastCollisionPartner
 
@@ -19,7 +19,7 @@ var playerSettings = []
 
 export (PackedScene) var PlayerScene
 
-var player
+var Mario
 
 var MarioCamera: Camera
 
@@ -44,8 +44,8 @@ func _ready():
 	print_tree_pretty()
 
 func preload_BattleArena_and_setup_HUD():
-	# Update the GUI's stats from the player
-	$HUD.update(getPlayerSettings(player))
+	# Update the GUI's stats from the mro
+	$HUD.update(getMarioSettings(Mario))
 	# Show the GUI, briefly. This is optional, but I included it as a test 
 	$HUD.showGUI()
 	# We aren't in a battle so set battleStatus to false
@@ -64,46 +64,46 @@ func setup_cameras():
 	MarioCamera.translate(Vector3(0, 5, CurrentPlayerPosition.z+9))
 	# Set our view to it.
 	MarioCamera.current = true
-	# Tell camera to look at player's position
-	CurrentPlayerPosition = player.transform.origin + Vector3(0,2,0)
+	# Tell camera to look at mro's position
+	CurrentPlayerPosition = Mario.transform.origin + Vector3(0,2,0)
 	MarioCamera.look_at(CurrentPlayerPosition, Vector3.UP)
 
 func load_players_and_enemies():
 	#Load Mario.
 	PlayerScene=load("res://Mario.tscn")
-	player = PlayerScene.instance()
+	Mario = PlayerScene.instance()
 	#Add Mario at the bottom of Main's tree
-	self.add_child(player)
+	self.add_child(Mario)
 	#Player is now Mario
-	player = self.get_node(player.get_path())
-	#Note: Player position is set to the middle of the Scene
-	player.setHeartPoints(8)
+	Mario = self.get_node(Mario.get_path())
+	#Note: Mario position is set to the middle of the Scene
+	Mario.setHeartPoints(8)
 
 func getWorldEdge():
 	# The floor's size, so we can refer to it with less typing
 	return $Floor.get_child(0).scale
 
-func getPlayerSettings(player):
+func getMarioSettings(mro):
 	# Get all Mario's settings and stuff it into an array
-	return [player.name,
-		player.getHeartPoints(),
-		player.getFlowerPoints(),
-		player.getBadgePoints(),
-		player.getStarPoints(),
-		player.getLevel(),
-		player.getPetalPower(),
-		player.getCoins()
+	return [mro.name,
+		mro.getHeartPoints(),
+		mro.getFlowerPoints(),
+		mro.getBadgePoints(),
+		mro.getStarPoints(),
+		mro.getLevel(),
+		mro.getPetalPower(),
+		mro.getCoins()
 	]
 
-func setPlayerSettings(player, settings: Array):
+func setPlayerSettings(mro, settings: Array):
 	# Given Mario's settings in an array, set them up all at once
-	player.setHeartPoints(settings[1])
-	player.setFlowerPoints(settings[2])
-	player.setBadgePoints(settings[3])
-	player.setStarPoints(settings[4])
-	player.setLevel(settings[5])
-	player.setPetalPower(settings[6])
-	player.setCoins(settings[7])
+	mro.setHeartPoints(settings[1])
+	mro.setFlowerPoints(settings[2])
+	mro.setBadgePoints(settings[3])
+	mro.setStarPoints(settings[4])
+	mro.setLevel(settings[5])
+	mro.setPetalPower(settings[6])
+	mro.setCoins(settings[7])
 
 func _on_Main_main_startBattle(playerGoesFirst):
 	# playerGoesFirst is a variable that gets set true or false depending on
@@ -117,14 +117,14 @@ func _on_Main_main_startBattle(playerGoesFirst):
 		# ... then we get to have first attack
 		Globals.setPlayerGoesFirst(true)
 		# update Global Mario with a copy of Mario's node
-		Globals.set_Mario(player.duplicate())
+		Globals.set_Mario(Mario.duplicate())
 		# do the same with the enemy we are attacking
 		Globals.set_Enemy($Goombah.duplicate())
 	else :
 		# otherwise it'd not our turn
 		Globals.setPlayerGoesFirst(false)
 		# we still need to update Global Mario tho
-		Globals.set_Mario(player.duplicate())
+		Globals.set_Mario(Mario.duplicate())
 		# and again with the enemy
 		Globals.set_Enemy($Goombah.duplicate())
 	# Add our new Scene to the tree when we are all done here, and show it
@@ -140,21 +140,21 @@ func _process(delta):
 	# Check for user input (besides movement)
 	_processUserInput(delta)
 	
-	# Make sure camera follows player
+	# Make sure camera follows Mario
 	_processCamera(delta)
 	
-	# Again, this is poorly designed, but check if player is colliding with 
+	# Again, this is poorly designed, but check if Mario is colliding with 
 	# stuff
 	_processPlayerCollisions(delta)
 	
 func _processPlayerCollisions(delta):
-	# Loop through any objects player is colliding with
-	for i in player.get_slide_count():
+	# Loop through any objects Mario is colliding with
+	for i in Mario.get_slide_count():
 		# put them into collider variable
-		var collider = player.get_slide_collision(i)
+		var collider = Mario.get_slide_collision(i)
 		# if we find any, get the most recent one and run the collision event
 		if collider:
-			_on_Mario_hit(player.get_last_collision_partner())
+			_on_Mario_hit(Mario.get_last_collision_partner())
 
 func _processCamera(delta):
 	# Try to get the camera to follow the player, but not follow them off the 
@@ -163,17 +163,17 @@ func _processCamera(delta):
 	
 	# Get camera's current position in the Scene
 	var oldCameraPos = self.to_global(MarioCamera.transform.origin)
-	# Get player's current position in the Scene
-	var playerPos = self.to_global(player.transform.origin)
+	# Get mro's current position in the Scene
+	var playerPos = self.to_global(Mario.transform.origin)
 	# look at them
-	MarioCamera.look_at(player.transform.origin, Vector3.UP)
-	# Follow player left & right
-	MarioCamera.transform.origin.x = player.transform.origin.x
+	MarioCamera.look_at(Mario.transform.origin, Vector3.UP)
+	# Follow Mario left & right
+	MarioCamera.transform.origin.x = Mario.transform.origin.x
 	# Get the edge of the world
 	var edge = getWorldEdge()
 	# Stop the camera if we reach the edge
 	MarioCamera.global_transform.origin.x = clamp(MarioCamera.global_transform.origin.x, -edge.x / 2, edge.x / 2)
-	# Follow player forward & back if they get too far
+	# Follow Mario forward & back if they get too far
 	var distanceTo=playerPos.distance_to(oldCameraPos)
 	if distanceTo>9 or distanceTo<5:
 		if playerPos.distance_to(oldCameraPos)>9:
@@ -211,7 +211,7 @@ func _on_Mario_hit(body):
 	# if the thing we collided with (body) is in the group "Enemies"...
 	if body.is_in_group("Enemies"): # (NEED TO FIND OUT HOW TO CHECK WHAT WE COLLIDING WITH)
 		# ...and if Mario is on the floor
-		if (player.isOnFloor()):
+		if (Mario.isOnFloor()):
 			#...then start a battle, but we don't get first attack
 			_on_Main_main_startBattle(false)
 		#...otherwise, we attacked the enemy...

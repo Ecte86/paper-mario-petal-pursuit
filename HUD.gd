@@ -73,12 +73,6 @@ func showTurnPanel():
 func _ready():
 	pass # Replace with function body.
 
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	pass
-
-
 func _on_abilityList_gui_input(_event):
 	var input_valid = false
 	if Input.is_action_pressed("ui_down"):

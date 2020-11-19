@@ -10,6 +10,7 @@ extends AnimationPlayer
 func _ready():
 	print_debug("Before: " + self.get_current_animation())
 	self.set_current_animation("goomba_attack")
+	self.seek(0,true)
 	print_debug("After: " + self.get_current_animation())
 	pass # Replace with function body.
 

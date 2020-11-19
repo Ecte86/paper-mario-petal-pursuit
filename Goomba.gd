@@ -110,9 +110,9 @@ func receiveDamage(damage):
 			# check
 #			Parent.reachedTarget=true
 	
-func set_Heart_Points(Heart_Points: int):
+func set_Heart_Points(HeartPoints: int):
 	# Set H.P. to given value
-	self.Heart_Points=Heart_Points
+	self.Heart_Points=HeartPoints
 	
 func get_Heart_Points():
 	# return H.P. value
@@ -136,8 +136,8 @@ func _on_Area_body_entered(body):
 					# get hurt
 					receiveDamage(1)
 
-func _process(delta):
-	$CollisionShape/AnimatedSprite3D/Shadow.global_transform.origin.y=groundLevel
+func _process(_delta):
+	$CollisionShape/AnimatedSprite3D/Shadow.global_transform.origin.y=self.transform.origin.y-self.scale.y+0.2
 	$CollisionShape/AnimatedSprite3D/Shadow.global_transform.origin.x= \
 		self.get_position().x
 	#$CollisionShape/AnimatedSprite3D/Shadow.global_transform.origin.x= \
