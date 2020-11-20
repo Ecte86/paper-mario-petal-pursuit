@@ -63,10 +63,13 @@ func showTurnPanel():
 		$BattlePanel2.popup()
 		$BattlePanel2/abilityList.focus_mode=2
 		$BattlePanel2/abilityList.grab_focus()
+		showGUI(3,true)
+		
 	if response!="":
 		$BattlePanel2/abilityList.focus_mode=0
 		$BattlePanel2/abilityList.release_focus()
 		$BattlePanel2.hide()
+		hideGUI()
 	return response
 
 # Called when the node enters the scene tree for the first time.
