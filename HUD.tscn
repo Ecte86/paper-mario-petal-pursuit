@@ -1,21 +1,15 @@
-[gd_scene load_steps=17 format=2]
+[gd_scene load_steps=19 format=2]
 
 [ext_resource path="res://HUD.gd" type="Script" id=1]
 [ext_resource path="res://ItemList.gd" type="Script" id=2]
 [ext_resource path="res://Fonts/HUD_font.tres" type="DynamicFont" id=3]
 [ext_resource path="res://NintendoABurron.png" type="Texture" id=4]
 
-[sub_resource type="StyleBoxFlat" id=11]
+[sub_resource type="StyleBoxFlat" id=1]
 bg_color = Color( 1, 0.580392, 0.509804, 1 )
 
-[sub_resource type="DynamicFontData" id=1]
-font_path = "res://Fonts/komika_text/KOMTXTI_.ttf"
-
-[sub_resource type="DynamicFont" id=2]
-size = 53
-outline_size = 2
-outline_color = Color( 0, 0, 0, 1 )
-font_data = SubResource( 1 )
+[sub_resource type="StyleBoxFlat" id=2]
+bg_color = Color( 0.894118, 0.611765, 0.0588235, 1 )
 
 [sub_resource type="DynamicFontData" id=3]
 font_path = "res://Fonts/komika_text/KOMTXTI_.ttf"
@@ -26,26 +20,75 @@ outline_size = 2
 outline_color = Color( 0, 0, 0, 1 )
 font_data = SubResource( 3 )
 
-[sub_resource type="ImageTexture" id=5]
+[sub_resource type="StyleBoxFlat" id=5]
+bg_color = Color( 0.388235, 0.74902, 0.392157, 1 )
 
-[sub_resource type="StyleBoxFlat" id=6]
-bg_color = Color( 0.498039, 0, 0, 1 )
-
-[sub_resource type="DynamicFontData" id=7]
+[sub_resource type="DynamicFontData" id=6]
 font_path = "res://Fonts/komika_text/KOMTXTI_.ttf"
 
-[sub_resource type="DynamicFont" id=8]
+[sub_resource type="DynamicFont" id=7]
+size = 53
+outline_size = 2
+outline_color = Color( 0, 0, 0, 1 )
+font_data = SubResource( 6 )
+
+[sub_resource type="ImageTexture" id=8]
+
+[sub_resource type="StyleBoxFlat" id=9]
+bg_color = Color( 0.498039, 0, 0, 1 )
+
+[sub_resource type="DynamicFontData" id=10]
+font_path = "res://Fonts/komika_text/KOMTXTI_.ttf"
+
+[sub_resource type="DynamicFont" id=11]
 size = 24
 outline_size = 2
 outline_color = Color( 0, 0, 0, 1 )
-font_data = SubResource( 7 )
+font_data = SubResource( 10 )
 
-[sub_resource type="ImageTexture" id=9]
+[sub_resource type="ImageTexture" id=12]
 
-[sub_resource type="StyleBoxEmpty" id=10]
+[sub_resource type="StyleBoxEmpty" id=13]
 
-[sub_resource type="StyleBoxFlat" id=12]
-bg_color = Color( 0.894118, 0.611765, 0.0588235, 1 )
+[sub_resource type="Animation" id=14]
+resource_name = "Dmg_Float"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/path = NodePath("Dmg_Info:margin_left")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.3 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 297.0, 348.0 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Dmg_Info:margin_top")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.3 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 87.0, 50.0 ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("Dmg_Info:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.3 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, false ]
+}
 
 [node name="HUD" type="CanvasLayer"]
 script = ExtResource( 1 )
@@ -53,7 +96,7 @@ __meta__ = {
 "_edit_horizontal_guides_": [ 0.0 ]
 }
 
-[node name="HPPanel" type="Panel" parent="."]
+[node name="HP_Panel" type="Panel" parent="."]
 anchor_left = 0.03
 anchor_top = 0.402
 anchor_right = 0.03
@@ -63,13 +106,13 @@ margin_top = -213.2
 margin_right = 207.28
 margin_bottom = -184.2
 rect_pivot_offset = Vector2( 261, 93 )
-custom_styles/panel = SubResource( 11 )
+custom_styles/panel = SubResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false,
 "_editor_description_": ""
 }
 
-[node name="HPLabel" type="Label" parent="HPPanel"]
+[node name="HPLabel" type="Label" parent="HP_Panel"]
 margin_left = -2.0
 margin_top = -27.0
 margin_right = 235.0
@@ -85,35 +128,68 @@ __meta__ = {
 "_editor_description_": ""
 }
 
-[node name="StarsLabel" type="Label" parent="."]
-margin_left = 516.0
-margin_right = 742.0
-margin_bottom = 68.0
-custom_fonts/font = SubResource( 2 )
+[node name="PP_Panel" type="Panel" parent="."]
+anchor_left = 0.03
+anchor_top = 0.402
+anchor_right = 0.03
+anchor_bottom = 0.402
+margin_left = 216.28
+margin_top = -214.2
+margin_right = 452.28
+margin_bottom = -185.2
+rect_pivot_offset = Vector2( 261, 93 )
+custom_styles/panel = SubResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false,
+"_editor_description_": ""
+}
+
+[node name="FlowersLabel" type="Label" parent="PP_Panel"]
+margin_left = 5.0
+margin_top = -28.0
+margin_right = 277.0
+margin_bottom = 40.0
+size_flags_vertical = 1
+custom_fonts/font = SubResource( 4 )
+text = "P:"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="SnC_Panel" type="Panel" parent="."]
+anchor_left = 0.03
+anchor_top = 0.402
+anchor_right = 0.03
+anchor_bottom = 0.402
+margin_left = 463.28
+margin_top = -215.2
+margin_right = 971.28
+margin_bottom = -186.2
+rect_pivot_offset = Vector2( 261, 93 )
+custom_styles/panel = SubResource( 5 )
+__meta__ = {
+"_edit_use_anchors_": false,
+"_editor_description_": ""
+}
+
+[node name="StarsLabel" type="Label" parent="SnC_Panel"]
+margin_left = 7.0
+margin_top = -26.0
+margin_right = 233.0
+margin_bottom = 42.0
+custom_fonts/font = SubResource( 7 )
 text = "S:"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="CoinLabel" type="Label" parent="."]
-margin_left = 763.0
-margin_top = -4.0
-margin_right = 963.0
-margin_bottom = 64.0
-custom_fonts/font = SubResource( 2 )
+[node name="CoinLabel" type="Label" parent="SnC_Panel"]
+margin_left = 259.0
+margin_top = -30.0
+margin_right = 459.0
+margin_bottom = 38.0
+custom_fonts/font = SubResource( 7 )
 text = "C:"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="FlowersLabel" type="Label" parent="."]
-margin_left = 252.0
-margin_top = -1.0
-margin_right = 524.0
-margin_bottom = 67.0
-size_flags_vertical = 1
-custom_fonts/font = SubResource( 4 )
-text = "P:"
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -129,8 +205,8 @@ margin_top = -16.2
 margin_right = 248.28
 margin_bottom = 140.8
 rect_pivot_offset = Vector2( 261, 93 )
-custom_icons/close = SubResource( 5 )
-custom_styles/panel = SubResource( 6 )
+custom_icons/close = SubResource( 8 )
+custom_styles/panel = SubResource( 9 )
 popup_exclusive = true
 __meta__ = {
 "_edit_use_anchors_": false
@@ -151,7 +227,7 @@ focus_neighbour_right = NodePath(".")
 focus_neighbour_bottom = NodePath(".")
 focus_next = NodePath(".")
 focus_previous = NodePath(".")
-custom_fonts/font = SubResource( 8 )
+custom_fonts/font = SubResource( 11 )
 items = [ "Jump", null, false, "Hammer", null, true, "Item", null, true ]
 allow_reselect = true
 script = ExtResource( 2 )
@@ -179,7 +255,7 @@ margin_left = -523.0
 margin_top = -309.0
 margin_right = 513.0
 margin_bottom = 304.0
-custom_styles/panel = SubResource( 6 )
+custom_styles/panel = SubResource( 9 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -210,8 +286,8 @@ margin_left = 454.28
 margin_top = -123.2
 margin_right = 818.28
 margin_bottom = 100.8
-custom_icons/close = SubResource( 9 )
-custom_styles/panel = SubResource( 10 )
+custom_icons/close = SubResource( 12 )
+custom_styles/panel = SubResource( 13 )
 popup_exclusive = true
 __meta__ = {
 "_edit_use_anchors_": false
@@ -246,21 +322,27 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Panel" type="Panel" parent="."]
-anchor_left = 0.03
-anchor_top = 0.402
-anchor_right = 0.03
-anchor_bottom = 0.402
-margin_left = -28.72
-margin_top = -213.2
-margin_right = 207.28
-margin_bottom = -184.2
-rect_pivot_offset = Vector2( 261, 93 )
-custom_styles/panel = SubResource( 12 )
+[node name="Dmg_Info" type="Label" parent="BattlePanel3"]
+visible = false
+margin_left = 348.0
+margin_top = 50.0
+margin_right = 589.0
+margin_bottom = 140.0
+grow_horizontal = 0
+grow_vertical = 0
+rect_pivot_offset = Vector2( 50, 34 )
+size_flags_vertical = 1
+custom_fonts/font = ExtResource( 3 )
+custom_colors/font_color = Color( 0.929412, 0.337255, 0.0509804, 1 )
+custom_colors/font_color_shadow = Color( 0, 0, 0, 1 )
+text = "1"
 __meta__ = {
 "_edit_use_anchors_": false,
 "_editor_description_": ""
 }
+
+[node name="DMG_AnimationPlayer" type="AnimationPlayer" parent="BattlePanel3"]
+anims/Dmg_Float = SubResource( 14 )
 [connection signal="gui_input" from="BattlePanel2/abilityList" to="." method="_on_abilityList_gui_input"]
 [connection signal="about_to_show" from="BattlePanel3" to="." method="_on_BattlePanel3_about_to_show"]
 [connection signal="popup_hide" from="BattlePanel3" to="." method="_on_BattlePanel3_popup_hide"]

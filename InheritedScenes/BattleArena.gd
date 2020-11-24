@@ -257,6 +257,7 @@ func _on_BattleArena_player_attack(delta):
 				double_Attack=true
 				$HUD/BattlePanel3/GratsMessage.show()
 				$HUD/BattlePanel3/NintendoAButton.hide()
+				
 				break
 		input_timer=0
 		player_Reached_Target=false
@@ -292,10 +293,14 @@ func _on_BattleArena_player_attack(delta):
 
 		if player_jump_max-player_jump_num==0 and finished_Drop_Movement:
 			player_Reached_Target=true
-			$HUD/BattlePanel3.hide()
 		if player_Reached_Target==true:
 			$PlayerSpawn/PlayerAttack_AnimationPlayer.stop(true)
 			$PlayerSpawn/PlayerAttack_AnimationPlayer.set_current_animation("run_and_jump_up")
+			$HUD/BattlePanel3/Dmg_Info.text=str(player_jump_max)
+			$HUD/BattlePanel3/DMG_AnimationPlayer.play("Dmg_Float")
+			while $HUD/BattlePanel3/DMG_AnimationPlayer.is_playing()==true:
+				yield()
+			$HUD/BattlePanel3.hide()
 			Globals.playerGoesFirst=false
 			player_Attack_Started=false
 			player_Reached_Target=false

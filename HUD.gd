@@ -16,16 +16,16 @@ onready var Coin_idx = Globals.MarioStats.COINS
 onready var Star_idx = Globals.MarioStats.STAR_POINTS
 
 func update_hp(HP):
-	$HPLabel.text = "HP: "+str(HP)+"/"+str(Globals.max_Heart_Points)
+	$HP_Panel/HPLabel.text = "HP: "+str(HP)+"/"+str(Globals.max_Heart_Points)
 
 func update_flowers(flowers):
-	$FlowersLabel.text = "FP: "+str(flowers)+"/"+str(Globals.max_Flower_Points)
+	$PP_Panel/FlowersLabel.text = "FP: "+str(flowers)+"/"+str(Globals.max_Flower_Points)
 
 func update_coins(coins):
-	$CoinLabel.text = "C: "+str(coins)+"/"+str(Globals.max_Coins)
+	$SnC_Panel/CoinLabel.text = "C: "+str(coins)+"/"+str(Globals.max_Coins)
 	
 func update_stars(stars):
-	$StarsLabel.text = "S: "+str(stars)+"/"+str(Globals.max_Star_Points)
+	$SnC_Panel/StarsLabel.text = "S: "+str(stars)+"/"+str(Globals.max_Star_Points)
 
 func update(playerSettings: Array):
 	update_hp(playerSettings[HP_idx])
@@ -34,22 +34,17 @@ func update(playerSettings: Array):
 	update_stars(playerSettings[Star_idx])
 
 func showGUI(time = 3.0, forever = false):
-	$HPLabel.show()
-	$FlowersLabel.show()
-	$CoinLabel.show()
-	$StarsLabel.show()
+	$HP_Panel.show()
+	$PP_Panel.show()
+	$SnC_Panel.show()
 	if forever == false:
 		yield(get_tree().create_timer(time), "timeout")
-		$HPLabel.hide()
-		$FlowersLabel.hide()
-		$CoinLabel.hide()
-		$StarsLabel.hide()
+		hideGUI()
 
 func hideGUI():
-	$HPLabel.hide()
-	$FlowersLabel.hide()
-	$CoinLabel.hide()
-	$StarsLabel.hide()
+	$HP_Panel.hide()
+	$PP_Panel.hide()
+	$SnC_Panel.hide()
 
 
 func startBattle(playerFirst: bool):
@@ -87,7 +82,7 @@ func _on_abilityList_gui_input(_event):
 					break
 				else:
 					$BattlePanel2/abilityList.select(x+1)
-	if Input.is_action_pressed("jump"):
+	if Input.is_action_pressed("jump") or Input.is_action_pressed("ui_accept"):
 		input_valid=true
 		var selected_item_idx = -1
 		for x in $BattlePanel2/abilityList.get_item_count():
