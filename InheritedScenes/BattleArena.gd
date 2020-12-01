@@ -297,9 +297,6 @@ func _on_BattleArena_player_attack(delta):
 			$PlayerSpawn/PlayerAttack_AnimationPlayer.stop(true)
 			$PlayerSpawn/PlayerAttack_AnimationPlayer.set_current_animation("run_and_jump_up")
 			$HUD/BattlePanel3/Dmg_Info.text=str(player_jump_max)
-			$HUD/BattlePanel3/DMG_AnimationPlayer.play("Dmg_Float")
-			while $HUD/BattlePanel3/DMG_AnimationPlayer.is_playing()==true:
-				yield()
 			$HUD/BattlePanel3.hide()
 			Globals.playerGoesFirst=false
 			player_Attack_Started=false

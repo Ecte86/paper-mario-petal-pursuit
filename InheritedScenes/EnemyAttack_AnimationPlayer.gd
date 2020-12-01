@@ -18,10 +18,10 @@ func _ready():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	if self.is_playing():
-		get_parent().get_parent().enemy.transform.origin= \
+		get_parent().get_parent().enemy.transform.origin = \
 												get_parent().transform.origin
 	else:
 		if get_parent().transform.origin != \
 				 get_parent().get_parent().enemy.transform.origin:
-			get_parent().get_parent().enemy.transform.origin= \
+			get_parent().get_parent().enemy.transform.origin = \
 												get_parent().transform.origin

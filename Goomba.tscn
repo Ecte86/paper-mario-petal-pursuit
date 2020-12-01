@@ -4,7 +4,7 @@
 [ext_resource path="res://image0.png" type="Texture" id=2]
 [ext_resource path="res://Goomba.gd" type="Script" id=3]
 
-[sub_resource type="CapsuleShape" id=3]
+[sub_resource type="CapsuleShape" id=1]
 
 [sub_resource type="SpriteFrames" id=2]
 animations = [ {
@@ -14,7 +14,7 @@ animations = [ {
 "speed": 5.0
 } ]
 
-[sub_resource type="CapsuleMesh" id=5]
+[sub_resource type="CapsuleMesh" id=3]
 
 [sub_resource type="SpatialMaterial" id=4]
 flags_transparent = true
@@ -32,7 +32,7 @@ script = ExtResource( 3 )
 
 [node name="CollisionShape" type="CollisionShape" parent="."]
 transform = Transform( 0.75, 0, 0, 0, 0.75, 0, 0, 0, 0.75, 0, 0, 0 )
-shape = SubResource( 3 )
+shape = SubResource( 1 )
 
 [node name="AnimatedSprite3D" type="AnimatedSprite3D" parent="CollisionShape"]
 transform = Transform( 0.75, 0, 0, 0, 0.75, 0, 0, 0, 0.75, 0, 0, 0 )
@@ -47,7 +47,7 @@ __meta__ = {
 
 [node name="Shadow" parent="CollisionShape/AnimatedSprite3D" instance=ExtResource( 1 )]
 transform = Transform( 1.6, 0, 0, 0, 1.6, 0, 0, 0, 0, 0, 0, 0 )
-mesh = SubResource( 5 )
+mesh = SubResource( 3 )
 material/0 = SubResource( 4 )
 
 [node name="Area" type="Area" parent="CollisionShape"]
@@ -55,5 +55,5 @@ transform = Transform( 1.33333, 0, 0, 0, 1.33333, 3.55271e-15, 0, -3.55271e-15, 
 
 [node name="CollisionShape2" type="CollisionShape" parent="CollisionShape/Area"]
 transform = Transform( 0.75, 0, 0, 0, 0.75, 0, 0, 0, 0.75, 0, 0, 0 )
-shape = SubResource( 3 )
+shape = SubResource( 1 )
 [connection signal="body_entered" from="CollisionShape/Area" to="." method="_on_Area_body_entered"]

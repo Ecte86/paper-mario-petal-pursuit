@@ -101,6 +101,7 @@ func _on_abilityList_gui_input(_event):
 
 
 func _on_BattlePanel3_about_to_show():
+	$BattlePanel3/Dmg_Info.hide()
 	$BattlePanel3/NintendoAButton.focus_mode=2
 	$BattlePanel3/NintendoAButton.grab_focus()
 
@@ -120,3 +121,12 @@ func _on_NintendoAButton_pressed():
 	get_parent().doubleAttack=true
 	$BattlePanel3/GratsMessage.show()
 	 # Replace with function body.
+
+
+func _on_Goombah_body_entered(body):
+	$BattlePanel3/Dmg_Info.show()
+	$BattlePanel3/DMG_AnimationPlayer.play("Dmg_Float")
+
+
+func _on_DMG_AnimationPlayer_animation_finished(anim_name):
+	$BattlePanel3/Dmg_Info.hide()

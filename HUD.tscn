@@ -323,9 +323,8 @@ __meta__ = {
 }
 
 [node name="Dmg_Info" type="Label" parent="BattlePanel3"]
-visible = false
-margin_left = 348.0
-margin_top = 50.0
+margin_left = 297.0
+margin_top = 87.0
 margin_right = 589.0
 margin_bottom = 140.0
 grow_horizontal = 0
@@ -348,3 +347,4 @@ anims/Dmg_Float = SubResource( 14 )
 [connection signal="popup_hide" from="BattlePanel3" to="." method="_on_BattlePanel3_popup_hide"]
 [connection signal="gui_input" from="BattlePanel3/NintendoAButton" to="." method="_on_NintendoAButton_gui_input"]
 [connection signal="pressed" from="BattlePanel3/NintendoAButton" to="." method="_on_NintendoAButton_pressed"]
+[connection signal="animation_finished" from="BattlePanel3/DMG_AnimationPlayer" to="." method="_on_DMG_AnimationPlayer_animation_finished"]

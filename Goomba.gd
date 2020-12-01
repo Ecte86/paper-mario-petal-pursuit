@@ -135,6 +135,8 @@ func _on_Area_body_entered(body):
 				if body.transform.origin.y >= topEdge:
 					# get hurt
 					receiveDamage(1)
+					if Parent.name=="BattleArena":
+						get_parent().find_node("HUD")._on_Goombah_body_entered(body)
 
 func _process(_delta):
 	$CollisionShape/AnimatedSprite3D/Shadow.global_transform.origin.y=self.transform.origin.y-self.scale.y+0.2
