@@ -13,6 +13,8 @@ var playerGoesFirst = null
 var playerTurn=null
 onready var battleStatus=false
 
+export (bool) var FAKE_SHADOW = false
+
 enum MarioStats{
 	NAME = 0,
 	HEART_POINTS = 1,

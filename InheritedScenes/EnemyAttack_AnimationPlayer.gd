@@ -5,6 +5,7 @@ extends AnimationPlayer
 # var a = 2
 # var b = "text"
 
+onready var SceneRoot = get_parent().get_parent()
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -18,10 +19,12 @@ func _ready():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	if self.is_playing():
-		get_parent().get_parent().enemy.transform.origin = \
+		SceneRoot.enemy.transform.origin = \
 												get_parent().transform.origin
+		var angle = get_parent().rotation_degrees.z
+		SceneRoot.enemy.rotation_degrees.z=angle
 	else:
 		if get_parent().transform.origin != \
-				 get_parent().get_parent().enemy.transform.origin:
-			get_parent().get_parent().enemy.transform.origin = \
+				 SceneRoot.enemy.transform.origin:
+			SceneRoot.enemy.transform.origin = \
 												get_parent().transform.origin

@@ -36,8 +36,9 @@ shape = SubResource( 1 )
 
 [node name="AnimatedSprite3D" type="AnimatedSprite3D" parent="CollisionShape"]
 transform = Transform( 0.75, 0, 0, 0, 0.75, 0, 0, 0, 0.75, 0, 0, 0 )
-offset = Vector2( 0, 25 )
 axis = 1
+shaded = true
+alpha_cut = 2
 frames = SubResource( 2 )
 animation = "idle"
 playing = true

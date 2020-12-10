@@ -30,7 +30,7 @@ func _ready():
 	else:
 		#...if we are in the Main scene, set our initial position to wherever
 		#   we currently are
-		if Parent.name=="Main":
+		if Parent.name!="Globals":
 			originalPos=self.global_transform.origin
 		
 	# Lock our movement unless we plan to move somewhere
@@ -43,11 +43,11 @@ func _ready():
 		self.set_process(false)
 	
 func setup():
-	
-	groundLevel=Parent.get_child(1).scale.y
-	self.set_position(self.get_position().x,groundLevel+(self.scale.y/2),self.get_position().z)
-	print_debug(self.transform.origin.y)
-	print_debug(groundLevel)
+	if Parent.name != "BattleArena":
+		groundLevel=Parent.get_child(1).scale.y
+		self.set_position(self.get_position().x,groundLevel+(self.scale.y/2)+15,self.get_position().z)
+		print_debug(self.transform.origin.y)
+		print_debug(groundLevel)
 
 func get_position():
 	return self.transform.origin
@@ -139,8 +139,13 @@ func _on_Area_body_entered(body):
 						get_parent().find_node("HUD")._on_Goombah_body_entered(body)
 
 func _process(_delta):
-	$CollisionShape/AnimatedSprite3D/Shadow.global_transform.origin.y=self.transform.origin.y-self.scale.y+0.2
-	$CollisionShape/AnimatedSprite3D/Shadow.global_transform.origin.x= \
-		self.get_position().x
-	#$CollisionShape/AnimatedSprite3D/Shadow.global_transform.origin.x= \
-	#	self.get_position().z
+	if Globals.FAKE_SHADOW:
+		$CollisionShape/AnimatedSprite3D/Shadow.show()
+		# Position shadow
+		$CollisionShape/AnimatedSprite3D/Shadow.global_transform.origin.y=self.transform.origin.y-self.scale.y+0.2
+		$CollisionShape/AnimatedSprite3D/Shadow.global_transform.origin.x= \
+			self.get_position().x
+		#$CollisionShape/AnimatedSprite3D/Shadow.global_transform.origin.x= \
+		#	self.get_position().z
+	else:
+		$CollisionShape/AnimatedSprite3D/Shadow.hide()

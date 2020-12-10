@@ -35,13 +35,16 @@ func _ready():
 	
 	# 1. load and display yMario and enemies
 	self.load_players_and_enemies()
-	
+	$Goomba.transform.origin.y=1.147
+	Mario.transform.origin.y=0.056
+	print_debug(Mario.transform.origin)
+	print_debug($Goomba.transform.origin)
 	# 2. preload the battle arena (where we battle with any enemies)
 	#	 and setup the HUD (on-screen elements)
 	self.preload_BattleArena_and_setup_HUD()
 	# 3. setup the cameras 
 	self.setup_cameras()
-	print_tree_pretty()
+	#print_tree_pretty()
 
 func preload_BattleArena_and_setup_HUD():
 	# Update the GUI's stats from the mro
@@ -119,14 +122,14 @@ func _on_Main_main_startBattle(playerGoesFirst):
 		# update Global Mario with a copy of Mario's node
 		Globals.set_Mario(Mario.duplicate())
 		# do the same with the enemy we are attacking
-		Globals.set_Enemy($Goombah.duplicate())
+		Globals.set_Enemy($Goomba.duplicate())
 	else :
 		# otherwise it'd not our turn
 		Globals.setPlayerGoesFirst(false)
 		# we still need to update Global Mario tho
 		Globals.set_Mario(Mario.duplicate())
 		# and again with the enemy
-		Globals.set_Enemy($Goombah.duplicate())
+		Globals.set_Enemy($Goomba.duplicate())
 	# Add our new Scene to the tree when we are all done here, and show it
 	get_tree().root.call_deferred("add_child", arenaScene)
 	# Clear up memory/other events

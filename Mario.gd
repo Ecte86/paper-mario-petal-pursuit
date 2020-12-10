@@ -88,12 +88,15 @@ func _ready():
 	setup()
 	
 func setup():
-	self.set_position(self.position.x,1,self.position.z)
+	#self.set_position(self.position.x,1,self.position.z)
 	SceneRoot=get_parent()
-	self.move_and_slide_with_snap(Vector3(0,5,0),Vector3.DOWN,Vector3.UP)
-	self.move_and_slide_with_snap(Vector3(0,-5,0),Vector3.DOWN,Vector3.UP)
+	#self.move_and_slide_with_snap(Vector3(0,5,0),Vector3.DOWN,Vector3.UP)
+	#self.move_and_slide_with_snap(Vector3(0,-5,0),Vector3.DOWN,Vector3.UP)
 	groundLevel=self.transform.origin.y-self.scale.y
+	#self.set_position(self.position.x,0.1,self.position.z)
 	print_debug(str(self.get_position()))
+	print_debug("GL: " + str(groundLevel))
+	$AnimatedSprite3D.play("idleDown")
 
 func get_position():
 	return self.transform.origin
@@ -222,14 +225,21 @@ func _process(_delta):
 			$AnimatedSprite3D.play("walkDown")
 			$AnimatedSprite3D.flip_h=true
 			
-	if !is_on_floor() and self.transform.origin.y>groundLevel or state == states.JUMP: # If mario is in the air, jump
+	if (!is_on_floor() and \
+		self.transform.origin.y>groundLevel and \
+		SceneRoot.name!="BattleArena") \
+		or state == states.JUMP: # If mario is in the air, jump
 		$AnimatedSprite3D.play("jump")
 		if direction.x>0: # flip if we are heading right
 			$AnimatedSprite3D.flip_h=true
 		else:
 			if is_on_floor() or direction.x<0: #head left only if user specifies, or we complete jump
 				$AnimatedSprite3D.flip_h=false
-	$AnimatedSprite3D/Shadow.global_transform.origin.y=groundLevel
+	if Globals.FAKE_SHADOW:
+		$AnimatedSprite3D/Shadow.show()
+		$AnimatedSprite3D/Shadow.global_transform.origin.y=groundLevel
+	else:
+		$AnimatedSprite3D/Shadow.hide()
 
 #	I cannot get this to work very well.
 #	if mario_direction=="Idle":

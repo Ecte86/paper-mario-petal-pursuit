@@ -69,6 +69,9 @@ func position_players_and_enemies():
 	Mario.transform.origin.y=$PlayerSpawn.transform.origin.y
 	Mario.transform.origin.z=$PlayerSpawn.transform.origin.z
 	
+	$EnemySpawn.scale.y=enemy.scale.y
+	$EnemySpawn.transform.origin.y=1.8 # Need to find a way to "fall down" 
+										 # to Ground Level
 	enemy.transform.origin.x=$EnemySpawn.transform.origin.x
 	enemy.transform.origin.y=$EnemySpawn.transform.origin.y
 	enemy.transform.origin.z=$EnemySpawn.transform.origin.z
@@ -82,7 +85,7 @@ func position_players_and_enemies():
 	#enemy_Pos=enemy.transform.origin
 	#player.get_child(0).flip_h=true
 	
-	Mario.state=Mario.states.IGNORE
+	Mario.state=Mario.states.IDLE
 	Mario.get_child(0).play("idleDown")
 	Mario.hflip(true)
 
@@ -109,6 +112,9 @@ func load_players_and_enemies():
 
 
 func setupBattleSettings():
+	$PlayerSpawn/PlayerAttack_AnimationPlayer.play("run_and_jump_up")
+	$PlayerSpawn/PlayerAttack_AnimationPlayer.stop(true)
+	
 	if Globals.playerGoesFirst==true:
 		_on_BattleArena_startBattle(true)
 		Globals.setPlayerGoesFirst(true)
@@ -167,7 +173,7 @@ func _process(delta):
 			if player_Attack_Started:
 				# player attack
 				_on_BattleArena_player_attack(delta)#emit_signal("player_attack", delta)
-		else: # Its npt players turn
+		else: # Its not players turn
 			$PlayerSpawn/PlayerAttack_AnimationPlayer.set_current_animation("run_and_jump_up")
 			$PlayerSpawn/PlayerAttack_AnimationPlayer.stop(true)
 			
@@ -175,7 +181,7 @@ func _process(delta):
 			if enemy.get_Heart_Points(): # If Enemy is alive
 				if enemy.visible==false:
 					enemy.show()
-	#			yield() # replace with turn!
+				$EnemySpawn/EnemyAttack_AnimationPlayer.play("goomba_attack")
 			else:
 				#enemy lost!
 				enemy.hide()
@@ -236,9 +242,17 @@ func _on_BattleArena_player_attack(delta):
 	var setupVariables = false
 	if player_Attack_Finished==false:
 		Mario.direction=Vector3.RIGHT
+		Mario.state=Mario.states.E
 		$PlayerSpawn/PlayerAttack_AnimationPlayer.play("run_and_jump_up")
-	if Mario.transform.origin.y>2.5:
+	if Mario.transform.origin.y>2.5: # if we are off ground level (2.5) then 
+									 #  jump
 		Mario.state=Mario.states.JUMP
+	elif $PlayerSpawn/PlayerAttack_AnimationPlayer.is_playing() and \
+		$PlayerSpawn/PlayerAttack_AnimationPlayer.current_animation == "run_and_jump_up":
+		Mario.state=Mario.states.E
+	else:
+		Mario.state=Mario.states.IDLE
+		Mario.get_child(0).play("idleDown")
 	if player_Attack_Finished:
 		var double_Attack
 		if !setupVariables:
@@ -302,6 +316,8 @@ func _on_BattleArena_player_attack(delta):
 			player_Attack_Started=false
 			player_Reached_Target=false
 			resetCombatants()
+	else:
+		yield()
 
 
 func _on_PlayerAttack_AnimationPlayer_animation_changed(old_name, new_name):
