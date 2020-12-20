@@ -1,0 +1,58 @@
+[
+  {
+    "Stat": "Heart_Points",
+    "Value": 10
+  },
+  {
+    "Stat": "max_Heart_Points",
+    "Value": 10
+  },
+  {
+    "Stat": "Flower_Points",
+    "Value": 10
+  },
+  {
+    "Stat": "max_Flower_Points",
+    "Value": 10
+  },
+  {
+    "Stat": "Badge_Points",
+    "Value": 0
+  },
+  {
+    "Stat": "max_Badge_Points",
+    "Value": 10
+  },
+  {
+    "Stat": "Star_Points",
+    "Value": 0
+  },
+  {
+    "Stat": "max_Star_Points",
+    "Value": 99
+  },
+  {
+    "Stat": "Level",
+    "Value": 1
+  },
+  {
+    "Stat": "max_Level",
+    "Value": 10
+  },
+  {
+    "Stat": "Petal_Power",
+    "Value": 0
+  },
+  {
+    "Stat": "max_Petal_Power",
+    "Value": 7
+  },
+  {
+    "Stat": "Coins",
+    "Value": 100
+  },
+  {
+    "Stat": "max_Coins",
+    "Value": 100
+  }
+]
