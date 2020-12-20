@@ -1,9 +1,10 @@
-[gd_scene load_steps=19 format=2]
+[gd_scene load_steps=20 format=2]
 
 [ext_resource path="res://HUD.gd" type="Script" id=1]
 [ext_resource path="res://ItemList.gd" type="Script" id=2]
 [ext_resource path="res://Fonts/HUD_font.tres" type="DynamicFont" id=3]
 [ext_resource path="res://NintendoABurron.png" type="Texture" id=4]
+[ext_resource path="res://pmtpp-debug.png" type="Texture" id=5]
 
 [sub_resource type="StyleBoxFlat" id=1]
 bg_color = Color( 1, 0.580392, 0.509804, 1 )
@@ -112,6 +113,12 @@ __meta__ = {
 "_editor_description_": ""
 }
 
+[node name="pmtpp-debug" type="Sprite" parent="HP_Panel"]
+position = Vector2( 276, 4.99998 )
+scale = Vector2( 0.35, 0.35 )
+z_index = 1
+texture = ExtResource( 5 )
+
 [node name="HPLabel" type="Label" parent="HP_Panel"]
 margin_left = -2.0
 margin_top = -27.0
@@ -145,13 +152,12 @@ __meta__ = {
 }
 
 [node name="FlowersLabel" type="Label" parent="PP_Panel"]
-margin_left = 5.0
+margin_left = 59.0
 margin_top = -28.0
 margin_right = 277.0
 margin_bottom = 40.0
 size_flags_vertical = 1
 custom_fonts/font = SubResource( 4 )
-text = "P:"
 __meta__ = {
 "_edit_use_anchors_": false
 }

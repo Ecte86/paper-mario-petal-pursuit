@@ -19,7 +19,7 @@ func update_hp(HP):
 	$HP_Panel/HPLabel.text = "HP: "+str(HP)+"/"+str(Globals.max_Heart_Points)
 
 func update_flowers(flowers):
-	$PP_Panel/FlowersLabel.text = "FP: "+str(flowers)+"/"+str(Globals.max_Flower_Points)
+	$PP_Panel/FlowersLabel.text = ""+str(flowers)+"/"+str(Globals.max_Flower_Points)
 
 func update_coins(coins):
 	$SnC_Panel/CoinLabel.text = "C: "+str(coins)+"/"+str(Globals.max_Coins)
