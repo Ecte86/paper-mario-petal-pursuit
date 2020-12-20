@@ -35,7 +35,7 @@ transform = Transform( 0.75, 0, 0, 0, 0.75, 0, 0, 0, 0.75, 0, 0, 0 )
 shape = SubResource( 1 )
 
 [node name="AnimatedSprite3D" type="AnimatedSprite3D" parent="CollisionShape"]
-transform = Transform( 0.75, 0, 0, 0, 0.75, 0, 0, 0, 0.75, 0, 0, 0 )
+transform = Transform( 0.75, 0, 0, 0, 0.5, 0, 0, 0, 0.75, 0, 0, 0 )
 axis = 1
 shaded = true
 alpha_cut = 2

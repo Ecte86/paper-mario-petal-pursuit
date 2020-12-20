@@ -1,11 +1,11 @@
 extends KinematicBody
 signal hit
 
-var speed = 300
+var speed = 550
 var direction = Vector3()
-var gravity = -9.8
+var gravity = -45
 var velocity = Vector3()
-var jumpAmount = 10
+var jumpAmount = 20
 
 enum states {
 	IDLE = 0
@@ -294,10 +294,12 @@ func _physics_process(delta):
 			
 			velocity = move_and_slide(velocity,Vector3(0,1,0))
 		
-			if Input.is_action_pressed("jump"): # TODO: find a better action for jumping
+			if Input.is_action_just_pressed("jump"): # TODO: find a better action for jumping
 				#velocity.y=10
 				if is_on_floor():
 					velocity.y=jumpAmount
+					$AnimatedSprite3D/AudioStreamPlayer.play()
+					
 	
 
 	#velocity = move_and_slide(direction,Vector3(0,1,0))

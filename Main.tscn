@@ -17,6 +17,7 @@ background_mode = 2
 background_sky = SubResource( 1 )
 
 [node name="Main" type="Spatial"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0442297, 0 )
 script = ExtResource( 6 )
 Mob = ExtResource( 4 )
 
@@ -36,12 +37,19 @@ transform = Transform( -1.62921e-07, 0, 2, 0, 1, 0, -1, 0, -3.25841e-07, 0, 0.5,
 transform = Transform( -1.62921e-07, 0, 2, 0, 1, 0, -1, 0, -3.25841e-07, 0, 0.5, -10 )
 
 [node name="Goomba" parent="." instance=ExtResource( 4 )]
-transform = Transform( 1, 0, 0, 0, -1.62921e-07, -1, 0, 1, -1.62921e-07, 3, 1.34889, 0 )
+transform = Transform( 1, 0, 0, 0, -1.62921e-07, -1, 0, 1, -1.62921e-07, 3.10724, 1.46441, -0.0762644 )
 collision_mask = 3
 
 [node name="HUD" parent="." instance=ExtResource( 5 )]
 
 [node name="BackgroundMusic" parent="." instance=ExtResource( 7 )]
+transform = Transform( 0.113775, -0.993506, 0, 0.993506, 0.113775, 0, 0, 0, 1, 1.11099, 1.52399, -0.978116 )
+unit_db = 80.0
+unit_size = 100.0
+max_db = 2.598
+autoplay = true
+out_of_range_mode = 1
+emission_angle_filter_attenuation_db = -17.2
 
 [node name="Camera" parent="." instance=ExtResource( 3 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 9 )
@@ -52,7 +60,7 @@ script = null
 environment = SubResource( 2 )
 
 [node name="DirectionalLight" parent="." instance=ExtResource( 9 )]
+transform = Transform( -0.983907, -0.123882, 0.128764, 0.177982, -0.61579, 0.767545, -0.0157936, 0.778111, 0.627928, 3.82283, 10.3745, 8.86143 )
 
 [node name="Mario" parent="." instance=ExtResource( 8 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.65623, 0 )
-visible = false
