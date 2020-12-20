@@ -1,0 +1,60 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://Shadow.tscn" type="PackedScene" id=1]
+[ext_resource path="res://image0.png" type="Texture" id=2]
+[ext_resource path="res://Goomba.gd" type="Script" id=3]
+
+[sub_resource type="CapsuleShape" id=1]
+
+[sub_resource type="SpriteFrames" id=2]
+animations = [ {
+"frames": [ ExtResource( 2 ) ],
+"loop": true,
+"name": "idle",
+"speed": 5.0
+} ]
+
+[sub_resource type="CapsuleMesh" id=3]
+
+[sub_resource type="SpatialMaterial" id=4]
+flags_transparent = true
+flags_unshaded = true
+flags_use_point_size = true
+albedo_color = Color( 0, 0, 0, 0.498039 )
+
+[node name="Goomba" type="RigidBody" groups=[
+"Enemies",
+]]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0 )
+collision_layer = 4
+collision_mask = 11
+script = ExtResource( 3 )
+
+[node name="CollisionShape" type="CollisionShape" parent="."]
+transform = Transform( 0.75, 0, 0, 0, 0.75, 0, 0, 0, 0.75, 0, 0, 0 )
+shape = SubResource( 1 )
+
+[node name="AnimatedSprite3D" type="AnimatedSprite3D" parent="CollisionShape"]
+transform = Transform( 0.75, 0, 0, 0, 0.5, 0, 0, 0, 0.75, 0, 0, 0 )
+axis = 1
+shaded = true
+alpha_cut = 2
+frames = SubResource( 2 )
+animation = "idle"
+playing = true
+__meta__ = {
+"_editor_description_": ""
+}
+
+[node name="Shadow" parent="CollisionShape/AnimatedSprite3D" instance=ExtResource( 1 )]
+transform = Transform( 1.6, 0, 0, 0, 1.6, 0, 0, 0, 0, 0, 0, 0 )
+mesh = SubResource( 3 )
+material/0 = SubResource( 4 )
+
+[node name="Area" type="Area" parent="CollisionShape"]
+transform = Transform( 1.33333, 0, 0, 0, 1.33333, 3.55271e-15, 0, -3.55271e-15, 1.33333, 0, 0, 0 )
+
+[node name="CollisionShape2" type="CollisionShape" parent="CollisionShape/Area"]
+transform = Transform( 0.75, 0, 0, 0, 0.75, 0, 0, 0, 0.75, 0, 0, 0 )
+shape = SubResource( 1 )
+[connection signal="body_entered" from="CollisionShape/Area" to="." method="_on_Area_body_entered"]
