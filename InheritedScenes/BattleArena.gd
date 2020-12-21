@@ -1,6 +1,7 @@
 extends Spatial
 signal startBattle(freeAttack)
 signal endBattle(playerWins)
+signal mario_hit()
 
 
 var player_Reached_Target=false
@@ -155,7 +156,10 @@ func resetCombatants(end_of_turn=true): # if not false, we assume end of turn
 	if Globals.playerTurn and end_of_turn==true:
 		Globals.playerTurn=false
 		Globals.playerGoesFirst=false
+		enemy_Attack_Started=true
 	else:
+		if enemy_Attack_Finished:
+			Globals.enemy_turn_finished=true
 		if Globals.enemy_turn_finished==true and end_of_turn==true:
 			Globals.playerTurn=true
 		
@@ -163,25 +167,37 @@ func resetCombatants(end_of_turn=true): # if not false, we assume end of turn
 	Mario.velocity=Vector3.ZERO
 	$PlayerSpawn/PlayerAttack_AnimationPlayer.stop()
 	$PlayerSpawn/PlayerAttack_AnimationPlayer.seek(0,true)
+	$EnemySpawn/EnemyAttack_AnimationPlayer.stop()
+	$EnemySpawn/EnemyAttack_AnimationPlayer.seek(0,true)
 	position_players_and_enemies()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	if Globals.battleStatus ==true:
 		if Globals.playerTurn ==true:
+			$EnemySpawn/EnemyAttack_AnimationPlayer.stop(true)
+			$EnemySpawn/EnemyAttack_AnimationPlayer.seek(0,true)
 			emit_signal("get_player_move")
 			if player_Attack_Started:
 				# player attack
 				_on_BattleArena_player_attack(delta)#emit_signal("player_attack", delta)
 		else: # Its not players turn
+			if enemy_Attack_Started==true:
+				enemy_Attack_Finished=false
 			$PlayerSpawn/PlayerAttack_AnimationPlayer.set_current_animation("run_and_jump_up")
 			$PlayerSpawn/PlayerAttack_AnimationPlayer.stop(true)
 			
+			if enemy_Attack_Finished:
+				$EnemySpawn/EnemyAttack_AnimationPlayer.stop(true)
+				$EnemySpawn/EnemyAttack_AnimationPlayer.set_current_animation("goomba_attack")
 
 			if enemy.get_Heart_Points(): # If Enemy is alive
 				if enemy.visible==false:
 					enemy.show()
-				$EnemySpawn/EnemyAttack_AnimationPlayer.play("goomba_attack")
+				if enemy_Attack_Finished==false:
+					if $EnemySpawn/EnemyAttack_AnimationPlayer.is_playing()==false:
+						$EnemySpawn/EnemyAttack_AnimationPlayer.play("goomba_attack")
+						enemy_Attack_Started=true
 			else:
 				#enemy lost!
 				enemy.hide()
@@ -322,3 +338,28 @@ func _on_BattleArena_player_attack(delta):
 
 func _on_PlayerAttack_AnimationPlayer_animation_changed(old_name, new_name):
 	Mario.transform.origin=$PlayerSpawn.transform.origin
+
+
+func _on_EnemyAttack_AnimationPlayer_animation_changed(old_name, new_name):
+	enemy.transform.origin=$EnemySpawn.transform.origin
+
+
+func _on_EnemyAttack_AnimationPlayer_animation_finished(anim_name):
+	print_debug("Enemy attack finished")
+	if anim_name=="goomba_attack":
+		enemy_Attack_Finished = true
+		$EnemySpawn/EnemyAttack_AnimationPlayer.stop(true)
+		$EnemySpawn/EnemyAttack_AnimationPlayer.seek(0,true)
+	Globals.enemy_turn_finished=true
+	enemy_Attack_Finished = true
+	enemy_Attack_Started=false
+	resetCombatants()
+
+
+
+func _on_BattleArena_mario_hit():
+	if Globals.playerTurn==false:
+		_on_EnemyAttack_AnimationPlayer_animation_finished("goomba_attack")
+		Globals.enemy_turn_finished=true
+		Globals.playerTurn=true
+		resetCombatants()

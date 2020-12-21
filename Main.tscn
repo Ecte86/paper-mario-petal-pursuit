@@ -64,3 +64,4 @@ transform = Transform( -0.983907, -0.123882, 0.128764, 0.177982, -0.61579, 0.767
 
 [node name="Mario" parent="." instance=ExtResource( 8 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.65623, 0 )
+visible = false

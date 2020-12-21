@@ -294,7 +294,7 @@ func _physics_process(delta):
 			
 			velocity = move_and_slide(velocity,Vector3(0,1,0))
 		
-			if Input.is_action_just_pressed("jump"): # TODO: find a better action for jumping
+			if Input.is_action_just_pressed("jump"): # TODO: find a better action for jumping?
 				#velocity.y=10
 				if is_on_floor():
 					velocity.y=jumpAmount
@@ -319,13 +319,9 @@ func _on_Area_body_entered(body):
 	set_last_collision_partner(body)
 	if body.is_in_group("Enemies"):
 		if get_parent().name=="BattleArena":#if Globals.battleStatus==1:
-			if self.is_on_floor():
-				self.setHeartPoints(self.getHeartPoints()-1)
-			else:
-				#self.get_parent().enemy.receiveDamage(1)
-				#get_parent().reachedTarget=1
-				self.velocity.x=0
-				#get_parent().resetCombatants()
+			#if self.is_on_floor():
+			self.setHeartPoints(self.getHeartPoints()-1)
+			get_parent().emit_signal("mario_hit")
 		else:
 			if self.is_on_floor():
 				get_parent().emit_signal("main_startBattle",false)

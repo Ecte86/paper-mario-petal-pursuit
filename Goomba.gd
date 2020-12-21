@@ -124,7 +124,7 @@ func _on_Area_body_entered(body):
 	# If we are in battle
 	if battle_status==true:
 		# And its not our turn
-		if playerTurn==true:
+		if Globals.playerTurn==true:
 			# and the colliding object is in the group of "Player"
 			if body.is_in_group("Player"):
 				# and if its higher than our top edge...
@@ -137,6 +137,8 @@ func _on_Area_body_entered(body):
 					receiveDamage(1)
 					if Parent.name=="BattleArena":
 						get_parent().find_node("HUD")._on_Goombah_body_entered(body)
+		else:
+			Parent.find_node("EnemySpawn").get_child(1).stop(true)
 
 func _process(_delta):
 	if Globals.FAKE_SHADOW:
