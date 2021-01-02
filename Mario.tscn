@@ -16,17 +16,17 @@
 [ext_resource path="res://Paper_Mario_Back.png" type="Texture" id=15]
 
 [sub_resource type="AtlasTexture" id=1]
-flags = 23
+flags = 7
 atlas = ExtResource( 15 )
 region = Rect2( 0, 0, 196, 301 )
 
 [sub_resource type="AtlasTexture" id=2]
-flags = 23
+flags = 7
 atlas = ExtResource( 15 )
 region = Rect2( 0, 301, 196, 301 )
 
 [sub_resource type="AtlasTexture" id=3]
-flags = 23
+flags = 7
 atlas = ExtResource( 15 )
 region = Rect2( 0, 602, 196, 301 )
 
@@ -42,6 +42,11 @@ animations = [ {
 "name": "jump",
 "speed": 2.0
 }, {
+"frames": [ ExtResource( 4 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 5 ), ExtResource( 5 ), ExtResource( 5 ), ExtResource( 5 ), ExtResource( 5 ), ExtResource( 5 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 5 ), ExtResource( 5 ), ExtResource( 5 ), ExtResource( 5 ), ExtResource( 5 ), ExtResource( 2 ) ],
+"loop": true,
+"name": "idleDown",
+"speed": 10.0
+}, {
 "frames": [ SubResource( 1 ), SubResource( 1 ), SubResource( 1 ), SubResource( 1 ), SubResource( 2 ), SubResource( 2 ), SubResource( 2 ), SubResource( 2 ), SubResource( 1 ), SubResource( 1 ), SubResource( 1 ), SubResource( 1 ), SubResource( 2 ), SubResource( 2 ), SubResource( 2 ), SubResource( 2 ), SubResource( 1 ), SubResource( 1 ), SubResource( 1 ), SubResource( 1 ), SubResource( 2 ), SubResource( 3 ), SubResource( 2 ), SubResource( 2 ), SubResource( 1 ), SubResource( 1 ), SubResource( 1 ), SubResource( 1 ), SubResource( 2 ), SubResource( 2 ), SubResource( 2 ) ],
 "loop": true,
 "name": "idleUp",
@@ -51,11 +56,6 @@ animations = [ {
 "loop": true,
 "name": "walkDown",
 "speed": 9.0
-}, {
-"frames": [ ExtResource( 4 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 5 ), ExtResource( 5 ), ExtResource( 5 ), ExtResource( 5 ), ExtResource( 5 ), ExtResource( 5 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 5 ), ExtResource( 5 ), ExtResource( 5 ), ExtResource( 5 ), ExtResource( 5 ), ExtResource( 2 ) ],
-"loop": true,
-"name": "idleDown",
-"speed": 10.0
 } ]
 
 [sub_resource type="CapsuleMesh" id=5]
@@ -81,7 +81,6 @@ shaded = true
 alpha_cut = 2
 frames = SubResource( 4 )
 animation = "walkDown"
-frame = 3
 playing = true
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="AnimatedSprite3D"]

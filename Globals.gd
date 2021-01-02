@@ -48,11 +48,11 @@ export (bool) var enemy_turn_finished = false
 
 export (PackedScene) var MarioScene = preload("res://Mario.tscn")
 
-var Mario: Node#=MarioScene.instance()# : Node
-var MarioDupe: Node
+var node_Mario: Node#=MarioScene.instance()# : Node
+var node_MarioDupe: Node
 
-var Enemy: Node
-var EnemyDupe: Node
+var node_Enemy: Node
+var node_EnemyDupe: Node
 var Enemy_Name: String
 var Enemy_idx: int
 
@@ -64,30 +64,30 @@ func _ready():
 	#Mario=
 
 func get_Enemy():
-	EnemyDupe=self.get_child(self.get_child_count()-1).duplicate()
+	node_EnemyDupe=self.get_child(self.get_child_count()-1).duplicate()
 	var children=self.get_children()
 	var idx=0
 	for child in children:
 		if child.name==Enemy_Name:
 			self.remove_child(self.get_child(idx))
 		idx+=1
-	return EnemyDupe
+	return node_EnemyDupe
 
 func set_Enemy(theEnemyNode):
 	Enemy_Name=theEnemyNode.name
 	self.add_child(theEnemyNode.duplicate())
-	Enemy=self.get_child(self.get_child_count()-1)
+	node_Enemy=self.get_child(self.get_child_count()-1)
 	Enemy_idx=self.get_child_count()-1
 	
 	
 func get_Mario():
-	MarioDupe=self.get_child(0).duplicate()
+	node_MarioDupe=self.get_child(0).duplicate()
 	self.remove_child(self.get_child(0))
-	return MarioDupe
+	return node_MarioDupe
 
-func set_Mario(modified_Mario):
-	self.add_child(modified_Mario.duplicate())
-	Mario=self.get_child(0)
+func set_Mario(node_Modified_Mario):
+	self.add_child(node_Modified_Mario.duplicate())
+	node_Mario=self.get_child(0)
 
 
 func goto_scene(path):

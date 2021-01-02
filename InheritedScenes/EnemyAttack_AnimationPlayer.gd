@@ -6,6 +6,7 @@ extends AnimationPlayer
 # var b = "text"
 
 onready var SceneRoot = get_parent().get_parent()
+onready var enemy = SceneRoot.enemy
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -13,18 +14,17 @@ func _ready():
 	self.set_current_animation("goomba_attack")
 	self.seek(0,true)
 	print_debug("After: " + self.get_current_animation())
-	pass # Replace with function body.
+	self.get_animation(self.current_animation).loop = false
+	
+	#pass # Replace with function body.
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	if self.is_playing():
-		SceneRoot.enemy.transform.origin = \
-												get_parent().transform.origin
-		var angle = get_parent().rotation_degrees.z
-		SceneRoot.enemy.rotation_degrees.z=angle
+		SceneRoot.enemy.lock(false,false)
+		SceneRoot.enemy.set_rotation(Vector3(-1*delta,0,0),true)
+		SceneRoot.enemy.set_positionV3(get_parent().global_transform.origin)
+		### TODO: *make Goomba inherit from Spatial or MeshInstance? ###
 	else:
-		if get_parent().transform.origin != \
-				 SceneRoot.enemy.transform.origin:
-			SceneRoot.enemy.transform.origin = \
-												get_parent().transform.origin
+		SceneRoot.enemy.lock(true,true)

@@ -20,7 +20,7 @@ var finished_Drop_Movement: bool = false
 # var a = 2
 # var b = "text"
 
-onready var Mario = Globals.get_Mario()
+onready var Mario : Mario= Globals.get_Mario()
 onready var enemy = Globals.get_Enemy()
 
 export (PackedScene) var EnemyScene
@@ -32,10 +32,6 @@ var enemy_camera = Camera.new()
 var player_Pos: Vector3
 var enemy_Pos: Vector3
 
-var lerp_currentTime=0
-var lerp_totalTime=3
-var lerp_startPos
-var lerp_endPos
 
 var time_limited_input_check
 var input_timer = 0
@@ -73,26 +69,23 @@ func position_players_and_enemies():
 	$EnemySpawn.scale.y=enemy.scale.y
 	$EnemySpawn.transform.origin.y=1.8 # Need to find a way to "fall down" 
 										 # to Ground Level
-	enemy.transform.origin.x=$EnemySpawn.transform.origin.x
-	enemy.transform.origin.y=$EnemySpawn.transform.origin.y
-	enemy.transform.origin.z=$EnemySpawn.transform.origin.z
+
+	enemy.set_positionV3($EnemySpawn.transform.origin)
+
+	enemy.set_rotation(Vector3.ZERO)
 
 	$PlayerSpawn/PlayerAttack_AnimationPlayer.set_current_animation("run_and_jump_up")
 	$PlayerSpawn/PlayerAttack_AnimationPlayer.stop(true)
 
 	$EnemySpawn/EnemyAttack_AnimationPlayer.set_current_animation("goomba_attack")
 	$EnemySpawn/EnemyAttack_AnimationPlayer.stop(true)
-	#player_Pos=player.transform.origin
-	#enemy_Pos=enemy.transform.origin
-	#player.get_child(0).flip_h=true
 	
 	Mario.state=Mario.states.IDLE
 	Mario.get_child(0).play("idleDown")
 	Mario.hflip(true)
 
 func load_and_setup_cameras():
-	while typeof(enemy) == TYPE_NIL:
-		load_players_and_enemies()
+#	load_players_and_enemies()
 	Mario.add_child(player_camera)
 	enemy.add_child(enemy_camera)
 	player_camera=Mario.get_child(Mario.get_child_count()-1)
@@ -107,6 +100,10 @@ func load_players_and_enemies():
 	#Mario = Globals.get_Mario()
 	#var enemyR=load("res://Goomba.tscn")
 	#enemy=enemyR.instance()
+	
+	if enemy is Goomba:
+		enemy as Goomba
+	
 	add_child(Mario)
 	add_child(enemy)
 	
@@ -152,17 +149,18 @@ func getEnemy():
 func setPlayerGoesFirst(value: bool):
 	Globals.setPlayerGoesFirst(value)
 
-func resetCombatants(end_of_turn=true): # if not false, we assume end of turn
-	if Globals.playerTurn and end_of_turn==true:
+func resetCombatants(end_of_mario_turn=true): # if not false, we assume end of Mario's turn
+	if Globals.playerTurn and end_of_mario_turn==true:
 		Globals.playerTurn=false
 		Globals.playerGoesFirst=false
 		enemy_Attack_Started=true
 	else:
+		player_response=""
 		if enemy_Attack_Finished:
 			Globals.enemy_turn_finished=true
-		if Globals.enemy_turn_finished==true and end_of_turn==true:
+		if Globals.enemy_turn_finished==true and end_of_mario_turn==true:
 			Globals.playerTurn=true
-		
+	player_Attack_Started=false
 	Mario.direction=Vector3.ZERO
 	Mario.velocity=Vector3.ZERO
 	$PlayerSpawn/PlayerAttack_AnimationPlayer.stop()
@@ -174,7 +172,7 @@ func resetCombatants(end_of_turn=true): # if not false, we assume end of turn
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	if Globals.battleStatus ==true:
-		if Globals.playerTurn ==true:
+		if Globals.playerTurn == true:
 			$EnemySpawn/EnemyAttack_AnimationPlayer.stop(true)
 			$EnemySpawn/EnemyAttack_AnimationPlayer.seek(0,true)
 			emit_signal("get_player_move")
@@ -199,7 +197,7 @@ func _process(delta):
 						$EnemySpawn/EnemyAttack_AnimationPlayer.play("goomba_attack")
 						enemy_Attack_Started=true
 			else:
-				#enemy lost!
+				#enemy lost battle!
 				enemy.hide()
 				emit_signal("endBattle", "true")
 #	pass
@@ -351,9 +349,10 @@ func _on_EnemyAttack_AnimationPlayer_animation_finished(anim_name):
 		$EnemySpawn/EnemyAttack_AnimationPlayer.stop(true)
 		$EnemySpawn/EnemyAttack_AnimationPlayer.seek(0,true)
 	Globals.enemy_turn_finished=true
+	Globals.playerTurn == true
 	enemy_Attack_Finished = true
 	enemy_Attack_Started=false
-	resetCombatants()
+	resetCombatants(false)
 
 
 
@@ -362,4 +361,4 @@ func _on_BattleArena_mario_hit():
 		_on_EnemyAttack_AnimationPlayer_animation_finished("goomba_attack")
 		Globals.enemy_turn_finished=true
 		Globals.playerTurn=true
-		resetCombatants()
+		resetCombatants(false)

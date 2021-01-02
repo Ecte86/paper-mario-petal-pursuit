@@ -1,4 +1,5 @@
 extends RigidBody
+class_name Goomba
 
 # Our H.P.
 export (int) onready var Heart_Points = 2 # Globals.EnemyHP.Goomba
@@ -59,7 +60,14 @@ func set_position(x=self.transform.origin.x,y=self.transform.origin.y,z=self.tra
 
 func set_positionV3(newPos):
 	self.transform.origin=newPos
-
+	
+func set_rotation(new: Vector3, impulse: bool=false):
+	if new == Vector3.ZERO:
+		new.x = 90
+		self.rotation_degrees=new
+	if impulse:
+		apply_impulse(Vector3.ZERO, new)
+	
 func lock(position: bool, angle: bool):
 	# General function that locks/unlocks movement, or rotation, or both.
 	
@@ -141,13 +149,8 @@ func _on_Area_body_entered(body):
 			Parent.find_node("EnemySpawn").get_child(1).stop(true)
 
 func _process(_delta):
-	if Globals.FAKE_SHADOW:
-		$CollisionShape/AnimatedSprite3D/Shadow.show()
-		# Position shadow
-		$CollisionShape/AnimatedSprite3D/Shadow.global_transform.origin.y=self.transform.origin.y-self.scale.y+0.2
-		$CollisionShape/AnimatedSprite3D/Shadow.global_transform.origin.x= \
-			self.get_position().x
-		#$CollisionShape/AnimatedSprite3D/Shadow.global_transform.origin.x= \
-		#	self.get_position().z
-	else:
+	if not Globals.FAKE_SHADOW:
 		$CollisionShape/AnimatedSprite3D/Shadow.hide()
+
+func _physics_process(delta: float) -> void:
+	pass

@@ -1,4 +1,5 @@
 extends KinematicBody
+class_name Mario
 signal hit
 
 var speed = 550
@@ -83,6 +84,7 @@ enum Stat_idx{
 	PETAL_POWER = 6,
 	COINS = 7
 }
+
 
 func _ready():
 	setup()
