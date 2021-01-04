@@ -1,0 +1,17 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://Label.gd" type="Script" id=1]
+
+[node name="CanvasLayer" type="CanvasLayer"]
+follow_viewport_enable = true
+
+[node name="Label" type="Label" parent="."]
+margin_left = 0.741104
+margin_top = 562.326
+margin_right = 40.7411
+margin_bottom = 576.326
+rect_scale = Vector2( 3.4, 2.64 )
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}

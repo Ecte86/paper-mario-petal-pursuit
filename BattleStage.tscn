@@ -1,6 +1,7 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://forest_concept_1_ver_2.ogg" type="AudioStream" id=1]
+[ext_resource path="res://MarginContainer.tscn" type="PackedScene" id=2]
 
 [sub_resource type="SpatialMaterial" id=1]
 albedo_color = Color( 0.6, 0.4, 0, 1 )
@@ -28,3 +29,5 @@ shape = SubResource( 3 )
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource( 1 )
 volume_db = 2.019
+
+[node name="MarginContainer" parent="." instance=ExtResource( 2 )]

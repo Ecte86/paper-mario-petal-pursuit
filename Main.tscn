@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://Walls.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Floor.tscn" type="PackedScene" id=2]
@@ -9,6 +9,7 @@
 [ext_resource path="res://BackgroundMusic.tscn" type="PackedScene" id=7]
 [ext_resource path="res://Mario.tscn" type="PackedScene" id=8]
 [ext_resource path="res://Sun.tscn" type="PackedScene" id=9]
+[ext_resource path="res://MarginContainer.tscn" type="PackedScene" id=10]
 
 [sub_resource type="ProceduralSky" id=1]
 
@@ -65,3 +66,5 @@ transform = Transform( -0.983907, -0.123882, 0.128764, 0.177982, -0.61579, 0.767
 [node name="Mario" parent="." instance=ExtResource( 8 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.65623, 0 )
 visible = false
+
+[node name="MarginContainer" parent="." instance=ExtResource( 10 )]
