@@ -99,7 +99,7 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -4.316, 2, 9 )
 current = true
 
 [node name="PlayerSpawn" type="Spatial" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 5.888, 4.27275, 0 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -4.684, 2.5, 0 )
 
 [node name="EditorOnlyPlaceholderMesh" parent="PlayerSpawn" instance=ExtResource( 2 )]
 

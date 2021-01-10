@@ -228,10 +228,10 @@ func _process(_delta):
 			$AnimatedSprite3D.flip_h=true
 			
 	if (!is_on_floor() and \
-		self.transform.origin.y>groundLevel and \
-		SceneRoot.name!="BattleArena") \
-		or state == states.JUMP: # If mario is in the air, jump
-		$AnimatedSprite3D.play("jump")
+		 self.transform.origin.y>groundLevel and \
+		 SceneRoot.name!="BattleArena") \
+		 or state == states.JUMP: # If mario is in the air, jump
+		$AnimatedSprite3D.play("jump") # (set animation to "jump")
 		if direction.x>0: # flip if we are heading right
 			$AnimatedSprite3D.flip_h=true
 		else:
@@ -300,9 +300,12 @@ func _physics_process(delta):
 				#velocity.y=10
 				if is_on_floor():
 					velocity.y=jumpAmount
-					$AnimatedSprite3D/AudioStreamPlayer.play()
+					self.play("jump")
 					
-	
+
+func play(soundName: String):
+	if soundName=="jump":
+		$AnimatedSprite3D/AudioStreamPlayer.play() # (play "jump" sound)
 
 	#velocity = move_and_slide(direction,Vector3(0,1,0))
 

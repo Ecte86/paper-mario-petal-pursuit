@@ -67,7 +67,7 @@ func setup_cameras():
 	MarioCamera.translate(Vector3(0, 5, CurrentPlayerPosition.z+9))
 	# Set our view to it.
 	MarioCamera.current = true
-	# Tell camera to look at mro's position
+	# Tell camera to look at mario's position
 	CurrentPlayerPosition = Mario.transform.origin + Vector3(0,2,0)
 	MarioCamera.look_at(CurrentPlayerPosition, Vector3.UP)
 
