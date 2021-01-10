@@ -49,84 +49,99 @@ func hideGUI():
 
 func startBattle(playerFirst: bool):
 	if playerFirst:
-		$BattlePanel.popup()
+		$TurnPanel.popup()
 		yield(get_tree().create_timer(3.0), "timeout")
-		$BattlePanel.hide()
+		$TurnPanel.hide()
 
 func showTurnPanel():
-	if $BattlePanel.visible==false:
-		$BattlePanel2.popup()
-		$BattlePanel2/abilityList.focus_mode=2
-		$BattlePanel2/abilityList.grab_focus()
-		showGUI(3,true)
+	if $TurnPanel.visible==false:
+		$TurnPanel.popup()
+		$TurnPanel/abilityList.focus_mode=2
+		$TurnPanel/abilityList.grab_focus()
+		showGUI(3,false)
 		
 	if response!="":
-		$BattlePanel2/abilityList.focus_mode=0
-		$BattlePanel2/abilityList.release_focus()
-		$BattlePanel2.hide()
+		doneOnce=true
+		$TurnPanel/abilityList.focus_mode=0
+		$TurnPanel/abilityList.release_focus()
+		$TurnPanel.hide()
 		hideGUI()
 	return response
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass # Replace with function body.
+	response=""
+	setupUI()
+	
+func setupUI():
+	setupUI_AttackMessages()
+	setupUI_IntroPanel()
+
+func setupUI_AttackMessages():
+	$AttackMessages.hide()
+	$AttackMessages/GratsMessage.hide()
+	$AttackMessages/NintendoAButton.hide()
+	$AttackMessages/Dmg_Info.hide()
+
+func setupUI_IntroPanel():
+	$IntroPanel.hide()
 
 func _on_abilityList_gui_input(_event):
 	var input_valid = false
 	if Input.is_action_pressed("ui_down"):
 		input_valid=true
-		for x in $BattlePanel2/abilityList.get_item_count():
-			if $BattlePanel2/abilityList.is_selected(x):
-				if x+1 > $BattlePanel2/abilityList.get_item_count():
-					$BattlePanel2/abilityList.select(0)
+		for x in $TurnPanel/abilityList.get_item_count():
+			if $TurnPanel/abilityList.is_selected(x):
+				if x+1 > $TurnPanel/abilityList.get_item_count():
+					$TurnPanel/abilityList.select(0)
 					break
 				else:
-					$BattlePanel2/abilityList.select(x+1)
+					$TurnPanel/abilityList.select(x+1)
 	if Input.is_action_pressed("jump") or Input.is_action_pressed("ui_accept"):
 		input_valid=true
 		var selected_item_idx = -1
-		for x in $BattlePanel2/abilityList.get_item_count():
-			if $BattlePanel2/abilityList.is_selected(x):
+		for x in $TurnPanel/abilityList.get_item_count():
+			if $TurnPanel/abilityList.is_selected(x):
 				selected_item_idx=x
-				response=$BattlePanel2/abilityList.get_item_text(x)
+				response=$TurnPanel/abilityList.get_item_text(x)
 				break
 	if Input.is_action_pressed("ui_focus_next"):
 		input_valid=false
 		showGUI()
 	if input_valid==false:
-		if $BattlePanel2.visible==true:
-			$BattlePanel2/abilityList.focus_mode=2
-			$BattlePanel2/abilityList.grab_focus()
+		if $TurnPanel.visible==true:
+			$TurnPanel/abilityList.focus_mode=2
+			$TurnPanel/abilityList.grab_focus()
 			response=""
 
 
 func _on_BattlePanel3_about_to_show():
-	$BattlePanel3/Dmg_Info.hide()
-	$BattlePanel3/NintendoAButton.focus_mode=2
-	$BattlePanel3/NintendoAButton.grab_focus()
+	$AttackMessages/Dmg_Info.hide()
+	$AttackMessages/NintendoAButton.focus_mode=2
+	$AttackMessages/NintendoAButton.grab_focus()
 
 func _on_BattlePanel3_popup_hide():
-	$BattlePanel3/NintendoAButton.focus_mode=0
-	$BattlePanel3/NintendoAButton.release_focus()
+	$AttackMessages/NintendoAButton.focus_mode=0
+	$AttackMessages/NintendoAButton.release_focus()
 	 # Replace with function body.
 
 
 func _on_NintendoAButton_gui_input(_event):
 	if Input.is_action_pressed("jump"):
-		$BattlePanel3/NintendoAButton.emit_signal("pressed")
+		$AttackMessages/NintendoAButton.emit_signal("pressed")
 	 # Replace with function body.
 
 
 func _on_NintendoAButton_pressed():
 	get_parent().doubleAttack=true
-	$BattlePanel3/GratsMessage.show()
+	$AttackMessages/GratsMessage.show()
 	 # Replace with function body.
 
 
 func _on_Goombah_body_entered(body):
-	$BattlePanel3/Dmg_Info.show()
-	$BattlePanel3/DMG_AnimationPlayer.play("Dmg_Float")
+	$AttackMessages/Dmg_Info.show()
+	$AttackMessages/DMG_AnimationPlayer.play("Dmg_Float")
 
 
 func _on_DMG_AnimationPlayer_animation_finished(anim_name):
-	$BattlePanel3/Dmg_Info.hide()
+	$AttackMessages/Dmg_Info.hide()

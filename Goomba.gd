@@ -110,6 +110,7 @@ func receiveDamage(damage):
 		# Die. (At some point we need to actually remove the enemy from the 
 		# Scene's tree after/before death)
 		self.hide()
+		Globals.endBattle(true)
 		# If we are in battle...
 #		if Parent.name == "BattleArena":
 			# See if we can end battle yet?
@@ -141,10 +142,11 @@ func _on_Area_body_entered(body):
 				topEdge = topEdge + get_tree().get_root().get_child(1).getWorldEdge().y
 
 				if body.transform.origin.y >= topEdge:
-					# get hurt
-					receiveDamage(1)
-					if Parent.name=="BattleArena":
-						get_parent().find_node("HUD")._on_Goombah_body_entered(body)
+
+					if get_parent().name=="BattleArena":
+						# get hurt
+						receiveDamage(1)
+						#get_parent().find_node("HUD")._on_Goombah_body_entered(body)
 		else:
 			Parent.find_node("EnemySpawn").get_child(1).stop(true)
 

@@ -199,7 +199,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="BattlePanel2" type="WindowDialog" parent="."]
+[node name="TurnPanel" type="WindowDialog" parent="."]
 visible = true
 anchor_left = 0.03
 anchor_top = 0.402
@@ -217,7 +217,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="abilityList" type="ItemList" parent="BattlePanel2"]
+[node name="abilityList" type="ItemList" parent="TurnPanel"]
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -240,7 +240,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="BattlePanel3" type="WindowDialog" parent="."]
+[node name="AttackMessages" type="WindowDialog" parent="."]
 anchor_left = 0.03
 anchor_top = 0.402
 anchor_right = 0.03
@@ -256,7 +256,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="GratsMessage" type="Label" parent="BattlePanel3"]
+[node name="GratsMessage" type="Label" parent="AttackMessages"]
 visible = false
 margin_left = 144.0
 margin_top = 48.0
@@ -273,7 +273,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="NintendoAButton" type="TextureButton" parent="BattlePanel3"]
+[node name="NintendoAButton" type="TextureButton" parent="AttackMessages"]
 visible = false
 margin_left = 249.0
 margin_top = 158.0
@@ -286,7 +286,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Dmg_Info" type="Label" parent="BattlePanel3"]
+[node name="Dmg_Info" type="Label" parent="AttackMessages"]
 visible = false
 margin_left = 297.0
 margin_top = 87.0
@@ -305,10 +305,10 @@ __meta__ = {
 "_editor_description_": ""
 }
 
-[node name="DMG_AnimationPlayer" type="AnimationPlayer" parent="BattlePanel3"]
+[node name="DMG_AnimationPlayer" type="AnimationPlayer" parent="AttackMessages"]
 anims/Dmg_Float = SubResource( 14 )
 
-[node name="BattlePanel" type="Popup" parent="."]
+[node name="IntroPanel" type="Popup" parent="."]
 margin_left = -6.0
 margin_top = -6.0
 margin_right = 1024.0
@@ -319,7 +319,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Background" type="Panel" parent="BattlePanel"]
+[node name="Background" type="Panel" parent="IntroPanel"]
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -333,7 +333,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="BattleMessage" type="Label" parent="BattlePanel"]
+[node name="BattleMessage" type="Label" parent="IntroPanel"]
 margin_left = 245.0
 margin_top = 252.0
 margin_right = 772.0
@@ -348,9 +348,9 @@ valign = 1
 __meta__ = {
 "_edit_use_anchors_": false
 }
-[connection signal="gui_input" from="BattlePanel2/abilityList" to="." method="_on_abilityList_gui_input"]
-[connection signal="about_to_show" from="BattlePanel3" to="." method="_on_BattlePanel3_about_to_show"]
-[connection signal="popup_hide" from="BattlePanel3" to="." method="_on_BattlePanel3_popup_hide"]
-[connection signal="gui_input" from="BattlePanel3/NintendoAButton" to="." method="_on_NintendoAButton_gui_input"]
-[connection signal="pressed" from="BattlePanel3/NintendoAButton" to="." method="_on_NintendoAButton_pressed"]
-[connection signal="animation_finished" from="BattlePanel3/DMG_AnimationPlayer" to="." method="_on_DMG_AnimationPlayer_animation_finished"]
+[connection signal="gui_input" from="TurnPanel/abilityList" to="." method="_on_abilityList_gui_input"]
+[connection signal="about_to_show" from="AttackMessages" to="." method="_on_BattlePanel3_about_to_show"]
+[connection signal="popup_hide" from="AttackMessages" to="." method="_on_BattlePanel3_popup_hide"]
+[connection signal="gui_input" from="AttackMessages/NintendoAButton" to="." method="_on_NintendoAButton_gui_input"]
+[connection signal="pressed" from="AttackMessages/NintendoAButton" to="." method="_on_NintendoAButton_pressed"]
+[connection signal="animation_finished" from="AttackMessages/DMG_AnimationPlayer" to="." method="_on_DMG_AnimationPlayer_animation_finished"]

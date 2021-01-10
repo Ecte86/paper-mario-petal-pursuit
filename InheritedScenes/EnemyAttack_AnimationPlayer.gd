@@ -23,8 +23,8 @@ func _ready():
 func _process(delta):
 	if self.is_playing():
 		SceneRoot.enemy.lock(false,false)
-		SceneRoot.enemy.set_rotation(Vector3(-1*delta,0,0),true)
 		SceneRoot.enemy.set_positionV3(get_parent().global_transform.origin)
+		SceneRoot.enemy.set_rotation(Vector3(-1*delta,0,0),true)
 		### TODO: *make Goomba inherit from Spatial or MeshInstance? ###
 	else:
 		SceneRoot.enemy.lock(true,true)

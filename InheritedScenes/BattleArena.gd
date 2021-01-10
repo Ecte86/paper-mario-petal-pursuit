@@ -2,13 +2,13 @@ extends Spatial
 signal startBattle(freeAttack)
 signal endBattle(playerWins)
 signal mario_hit()
+signal stop_enemy_attack()
 
 
 var player_Reached_Target=false
 var player_Attack_Started=false
-var enemy_Attack_Started=false
+var enemy_Attack_State=0
 var player_Attack_Finished=false
-var enemy_Attack_Finished=false
 var player_response=""
 var plrAttackPhase =-1 ### Maybe refactor attack code to use this ###
 var double_Attack: bool = false
@@ -44,14 +44,45 @@ signal player_attack
 
 var player_jump_num = -1
 var player_jump_max = -1
+
+enum enemyAttackStates{
+	STARTED = 0,
+	IN_PROGRESS = 1,
+	FINISHED = 2,
+}
+
 # Called when the node enters the scene tree for the first time.
 func _ready():	
+	initVars()
 	setupBattleSettings()
 	load_players_and_enemies()
 	load_and_setup_cameras()
 	position_players_and_enemies()
 	setupHUD()
 	print_debug(Mario.transform.origin)
+	
+func initVars():
+	player_Reached_Target = false
+	player_Attack_Started = false
+	
+	enemy_Attack_State = 0
+	
+	player_Attack_Finished = false
+	
+	player_response=""
+	
+	##plrAttackPhase =-1 ### Maybe refactor attack code to use this ###
+	
+	double_Attack = false
+	battleStatus = Globals.battleStatus
+	playerTurn = Globals.playerTurn
+	finished_Drop_Movement = false
+	
+	player_Pos = Vector3.ZERO
+	enemy_Pos = Vector3.ZERO
+	time_limited_input_check = 0
+	input_timer = 0
+	input_timer_max = 0.750
 	
 func setupHUD():
 	$HUD.startBattle(true)
@@ -150,13 +181,16 @@ func setPlayerGoesFirst(value: bool):
 	Globals.setPlayerGoesFirst(value)
 
 func resetCombatants(end_of_mario_turn=true): # if not false, we assume end of Mario's turn
+	initVars()  # we want to effectively reload the battle,
+				# but not reload the scene
 	if Globals.playerTurn and end_of_mario_turn==true:
 		Globals.playerTurn=false
 		Globals.playerGoesFirst=false
-		enemy_Attack_Started=true
+		enemy_Attack_State==enemyAttackStates.STARTED
+		double_Attack=false
 	else:
 		player_response=""
-		if enemy_Attack_Finished:
+		if enemy_Attack_State==enemyAttackStates.FINISHED:
 			Globals.enemy_turn_finished=true
 		if Globals.enemy_turn_finished==true and end_of_mario_turn==true:
 			Globals.playerTurn=true
@@ -171,37 +205,30 @@ func resetCombatants(end_of_mario_turn=true): # if not false, we assume end of M
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	if Globals.battleStatus ==true:
-		if Globals.playerTurn == true:
+	if Globals.battleStatus ==true: # if we are in battle
+		if Globals.playerTurn == true: # if it's players turn...
+			# ... Make sure enemy position is reset, ...
 			$EnemySpawn/EnemyAttack_AnimationPlayer.stop(true)
 			$EnemySpawn/EnemyAttack_AnimationPlayer.seek(0,true)
-			emit_signal("get_player_move")
-			if player_Attack_Started:
-				# player attack
-				_on_BattleArena_player_attack(delta)#emit_signal("player_attack", delta)
+			emit_signal("get_player_move") # and get player's move
+			if player_Attack_Started: # once player has specified their attack
+				# start player attack
+				_on_BattleArena_player_attack(delta)
 		else: # Its not players turn
-			if enemy_Attack_Started==true:
-				enemy_Attack_Finished=false
-			$PlayerSpawn/PlayerAttack_AnimationPlayer.set_current_animation("run_and_jump_up")
-			$PlayerSpawn/PlayerAttack_AnimationPlayer.stop(true)
-			
-			if enemy_Attack_Finished:
-				$EnemySpawn/EnemyAttack_AnimationPlayer.stop(true)
-				$EnemySpawn/EnemyAttack_AnimationPlayer.set_current_animation("goomba_attack")
-
-			if enemy.get_Heart_Points(): # If Enemy is alive
-				if enemy.visible==false:
-					enemy.show()
-				if enemy_Attack_Finished==false:
+			match enemy_Attack_State:
+				enemyAttackStates.STARTED:
+					enemy_Attack_State=enemyAttackStates.IN_PROGRESS
 					if $EnemySpawn/EnemyAttack_AnimationPlayer.is_playing()==false:
 						$EnemySpawn/EnemyAttack_AnimationPlayer.play("goomba_attack")
-						enemy_Attack_Started=true
-			else:
-				#enemy lost battle!
-				enemy.hide()
-				emit_signal("endBattle", "true")
-#	pass
-
+				enemyAttackStates.IN_PROGRESS:
+					if not $EnemySpawn/EnemyAttack_AnimationPlayer.is_playing():
+						enemy_Attack_State=enemyAttackStates.FINISHED
+				enemyAttackStates.FINISHED:
+					$EnemySpawn/EnemyAttack_AnimationPlayer.stop(true)
+					$EnemySpawn/EnemyAttack_AnimationPlayer.seek(0,true)
+					Globals.playerTurn=true
+					player_Attack_Started=false
+					$HUD._ready()
 #func playerJump(delta):
 #	if plrJumpPhase==3:
 #		return true
@@ -248,6 +275,7 @@ func _on_AttackInputTimer_timeout():
 func _on_BattleArena_get_player_move():
 	if player_response=="Jump" and player_Attack_Started!=true:
 		player_Attack_Started=true
+		player_response=null
 	else:
 		player_response = $HUD.showTurnPanel()
 
@@ -274,17 +302,17 @@ func _on_BattleArena_player_attack(delta):
 		time_limited_input_check=true
 		while input_timer<input_timer_max: 
 			input_timer+=delta
-			$HUD/BattlePanel3.popup()
+			$HUD/AttackMessages.popup()
 			double_Attack=Mario.checkforAttackInput()
 			if double_Attack==false:
 				if input_timer>=input_timer_max:
-					$HUD/BattlePanel3.hide()
+					$HUD/AttackMessages.hide()
 					break
 				yield()
 			else:
 				double_Attack=true
-				$HUD/BattlePanel3/GratsMessage.show()
-				$HUD/BattlePanel3/NintendoAButton.hide()
+				$HUD/AttackMessages/GratsMessage.show()
+				$HUD/AttackMessages/NintendoAButton.hide()
 				
 				break
 		input_timer=0
@@ -324,8 +352,8 @@ func _on_BattleArena_player_attack(delta):
 		if player_Reached_Target==true:
 			$PlayerSpawn/PlayerAttack_AnimationPlayer.stop(true)
 			$PlayerSpawn/PlayerAttack_AnimationPlayer.set_current_animation("run_and_jump_up")
-			$HUD/BattlePanel3/Dmg_Info.text=str(player_jump_max)
-			$HUD/BattlePanel3.hide()
+			$HUD/AttackMessages/Dmg_Info.text=str(player_jump_max)
+			$HUD/AttackMessages.hide()
 			Globals.playerGoesFirst=false
 			player_Attack_Started=false
 			player_Reached_Target=false
@@ -345,13 +373,12 @@ func _on_EnemyAttack_AnimationPlayer_animation_changed(old_name, new_name):
 func _on_EnemyAttack_AnimationPlayer_animation_finished(anim_name):
 	print_debug("Enemy attack finished")
 	if anim_name=="goomba_attack":
-		enemy_Attack_Finished = true
+		enemy_Attack_State==enemyAttackStates.FINISHED
 		$EnemySpawn/EnemyAttack_AnimationPlayer.stop(true)
 		$EnemySpawn/EnemyAttack_AnimationPlayer.seek(0,true)
 	Globals.enemy_turn_finished=true
 	Globals.playerTurn == true
-	enemy_Attack_Finished = true
-	enemy_Attack_Started=false
+	enemy_Attack_State==enemyAttackStates.FINISHED
 	resetCombatants(false)
 
 
@@ -362,3 +389,10 @@ func _on_BattleArena_mario_hit():
 		Globals.enemy_turn_finished=true
 		Globals.playerTurn=true
 		resetCombatants(false)
+
+
+func _on_BattleArena_stop_enemy_attack() -> void:
+	enemy_Attack_State==enemyAttackStates.FINISHED
+	$EnemySpawn/EnemyAttack_AnimationPlayer.stop(true)
+	$EnemySpawn/EnemyAttack_AnimationPlayer.seek(0,true)
+	resetCombatants(false)

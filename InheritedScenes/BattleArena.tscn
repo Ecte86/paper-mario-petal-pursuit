@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=2]
+[gd_scene load_steps=16 format=2]
 
 [ext_resource path="res://BattleStage.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Objects/EditorOnlyPlaceholderMesh.tscn" type="PackedScene" id=2]
@@ -9,6 +9,7 @@
 [ext_resource path="res://InheritedScenes/EnemyAttack_AnimationPlayer.gd" type="Script" id=7]
 [ext_resource path="res://Goomba.tscn" type="PackedScene" id=8]
 [ext_resource path="res://Sun.tscn" type="PackedScene" id=9]
+[ext_resource path="res://MarginContainer.tscn" type="PackedScene" id=10]
 
 [sub_resource type="Animation" id=1]
 resource_name = "jump_on"
@@ -23,7 +24,7 @@ tracks/0/keys = {
 "times": PoolRealArray( 0, 0.3 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 0,
-"values": [ Vector3( 5.888, 7.5, 0 ), Vector3( 5.888, 4.5965, 0 ) ]
+"values": [ Vector3( 5.888, 7.5, 0 ), Vector3( 5.888, 4.27275, 0 ) ]
 }
 
 [sub_resource type="Animation" id=2]
@@ -98,7 +99,7 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -4.316, 2, 9 )
 current = true
 
 [node name="PlayerSpawn" type="Spatial" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -4.684, 2.5, 0 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 5.888, 4.27275, 0 )
 
 [node name="EditorOnlyPlaceholderMesh" parent="PlayerSpawn" instance=ExtResource( 2 )]
 
@@ -132,11 +133,14 @@ __meta__ = {
 }
 
 [node name="DirectionalLight" parent="WorldEnvironment" instance=ExtResource( 9 )]
+
+[node name="MarginContainer" parent="." instance=ExtResource( 10 )]
 [connection signal="endBattle" from="." to="." method="_on_BattleArena_endBattle"]
 [connection signal="get_player_move" from="." to="." method="_on_BattleArena_get_player_move"]
 [connection signal="mario_hit" from="." to="." method="_on_BattleArena_mario_hit"]
 [connection signal="player_attack" from="." to="." method="_on_BattleArena_player_attack"]
 [connection signal="startBattle" from="." to="." method="_on_BattleArena_startBattle" binds= [ true ]]
+[connection signal="stop_enemy_attack" from="." to="." method="_on_BattleArena_stop_enemy_attack"]
 [connection signal="animation_changed" from="PlayerSpawn/PlayerAttack_AnimationPlayer" to="." method="_on_PlayerAttack_AnimationPlayer_animation_changed"]
 [connection signal="animation_finished" from="PlayerSpawn/PlayerAttack_AnimationPlayer" to="." method="_on_PlayerAttack_AnimationPlayer_animation_finished"]
 [connection signal="animation_changed" from="EnemySpawn/EnemyAttack_AnimationPlayer" to="." method="_on_EnemyAttack_AnimationPlayer_animation_changed"]

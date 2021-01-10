@@ -147,9 +147,11 @@ func endBattle(playerWins: bool):
 	playerGoesFirst=null
 	playerTurn=null
 	if playerWins:
+		print("MARIO WINS")
 		get_tree().quit()#get_tree().change_scene("res://Main.tscn")
 	else:
 		# insert lose msg
+		print("OH NO MARIO LOSES :(")
 		get_tree().quit()
 	
 	
