@@ -231,10 +231,12 @@ func _process(delta):
 						$HUD/AttackMessages/NintendoAButton.hide()
 						if input_timer<input_timer_max:
 							$HUD/AttackMessages/GratsMessage.show()
+							$HUD/AttackMessages/Dmg_Info.text="2"
 							double_Attack=true
 						plrAttackPhase=Attack_Phases.IN_PROGRESS
 						$PlayerSpawn/PlayerAttack_AnimationPlayer.play()
 						$PlayerSpawn/PlayerAttack_AnimationPlayer.advance(0)
+						$HUD/AttackMessages/Dmg_Info.show()
 					else:
 #			input_timer+=delta
 #			$HUD/AttackMessages.popup()
@@ -255,7 +257,7 @@ func _process(delta):
 					$PlayerSpawn/PlayerAttack_AnimationPlayer.stop(true)
 					$PlayerSpawn/PlayerAttack_AnimationPlayer.advance(0)
 					if double_Attack==true:
-						enemy.recieve_damage(1)
+						enemy.receive_damage(1)
 					Globals.playerTurn=false
 					plrAttackPhase=Attack_Phases.WAITING_FOR_TURN
 					resetCombatants(true)
@@ -302,11 +304,11 @@ func _on_BattleArena_startBattle(freeAttack):
 
 
 func _on_BattleArena_endBattle(playerWins):
-	if playerWins=="true":
-		playerWins = true
-	else:
-		playerWins = false
-	Globals.endBattle(playerWins)
+#	if playerWins=="true":
+#		playerWins = true
+#	else:
+#		playerWins = false
+	Globals.endBattle(playerWins, Mario)
 
 
 func _on_PlayerAttack_AnimationPlayer_animation_finished(anim_name):

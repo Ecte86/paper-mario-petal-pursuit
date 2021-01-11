@@ -103,14 +103,14 @@ func setup():
 func get_position():
 	return self.transform.origin
 
-func checkforAttackInput():
-	if SceneRoot.time_limited_input_check:
-		if Input.is_action_pressed("jump"): # Spacebar on PC, A on Nintendo
-			return true
-		else:
-			return false
+func checkforAttackInput() -> bool:
+	#if SceneRoot.time_limited_input_check:
+	if Input.is_action_pressed("jump"): # Spacebar on PC, A on Nintendo
+		return true
 	else:
 		return false
+	#else:
+	#	return false
 
 func set_position(x=self.transform.origin.x,y=self.transform.origin.y,z=self.transform.origin.z):
 	self.transform.origin.x=x
@@ -152,9 +152,15 @@ func setBadgePoints(num: int): # Points to use for "Equipment" I guess
 
 func setStarPoints(num: int): # XP
 	Star_Points=num
+	if Star_Points>Globals.max_Star_Points:
+		Star_Points=Star_Points-Globals.max_Star_Points
+		self.setLevel(self.getLevel()+1)
 
 func setLevel(num: int):
 	Level=num
+	if Level>=Globals.max_Level:
+		Level=Globals.max_Level
+		self.setStarPoints(Globals.max_Star_Points)
 
 func setPetalPower(num: int):
 	Petal_Power=num
@@ -164,6 +170,8 @@ func setCoins(num: int):
 
 func setHeartPoints(num: int):
 	self.Heart_Points=num
+	if self.Heart_Points<1:
+		get_parent().emit_signal("endBattle",false)
 	#Globals.hp=num
 	
 func getHeartPoints():

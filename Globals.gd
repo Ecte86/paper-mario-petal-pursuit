@@ -56,7 +56,11 @@ var node_EnemyDupe: Node
 var Enemy_Name: String
 var Enemy_idx: int
 
+var last_battle_winner = 0
+
 var current_scene = null
+
+enum BattleWinner {NONE, MARIO, ENEMY}
 
 func _ready():
 	var root = get_tree().get_root()
@@ -142,17 +146,23 @@ func setPlayerGoesFirst(value: bool):
 	
 #func startBattle(playersTurn: bool):
 
-func endBattle(playerWins: bool):
+func endBattle(playerWins: bool, mario):
 	battleStatus=false
 	playerGoesFirst=null
 	playerTurn=null
 	if playerWins:
 		print("MARIO WINS")
-		get_tree().quit()#get_tree().change_scene("res://Main.tscn")
+		last_battle_winner = BattleWinner.MARIO
+		Input.action_press("jump")
+		Input.action_release("jump")
+		mario.setStarPoints(mario.getStarPoints()+20)
+		#get_tree().quit()#get_tree().change_scene("res://Main.tscn")
 	else:
 		# insert lose msg
 		print("OH NO MARIO LOSES :(")
-		get_tree().quit()
+		last_battle_winner = BattleWinner.ENEMY
+		
+	_deferred_goto_scene("res://Main.tscn")
 	
 	
 

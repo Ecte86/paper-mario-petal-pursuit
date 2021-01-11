@@ -101,7 +101,7 @@ func flash():
 #			self.axis_lock_angular_z=false
 
 # Receiving damage, and death
-func receiveDamage(damage):
+func receive_damage(damage):
 	# Subtract damage from H.P.
 	self.set_Heart_Points(self.get_Heart_Points()-damage)
 	
@@ -110,7 +110,7 @@ func receiveDamage(damage):
 		# Die. (At some point we need to actually remove the enemy from the 
 		# Scene's tree after/before death)
 		self.hide()
-		Globals.endBattle(true)
+		get_parent().emit_signal("endBattle",true)
 		# If we are in battle...
 #		if Parent.name == "BattleArena":
 			# See if we can end battle yet?
@@ -145,7 +145,7 @@ func _on_Area_body_entered(body):
 
 					if get_parent().name=="BattleArena":
 						# get hurt
-						receiveDamage(1)
+						receive_damage(1)
 						#get_parent().find_node("HUD")._on_Goombah_body_entered(body)
 		else:
 			Parent.find_node("EnemySpawn").get_child(1).stop(true)

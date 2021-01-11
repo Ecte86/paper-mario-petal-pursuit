@@ -33,7 +33,7 @@ var prev_cameraDistance: float
 func _ready():
 	# This is all self explanatory, sort of, but:
 	
-	# 1. load and display yMario and enemies
+	# 1. load and display Mario and enemies
 	self.load_players_and_enemies()
 	$Goomba.transform.origin.y=1.147
 	Mario.transform.origin.y=0.056
