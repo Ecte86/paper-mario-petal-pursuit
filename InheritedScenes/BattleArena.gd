@@ -90,8 +90,11 @@ func setupHUD():
 	$HUD.startBattle(true)
 	yield(get_tree().create_timer(3.0), "timeout")
 	print_debug(print_tree_pretty())
-	$HUD.update(getPlayerSettings(Mario))
+	self.update_GUI(Mario)
 	$HUD.showGUI(0)
+	
+func update_GUI(Character: Node):
+	$HUD.update(getPlayerSettings(Character))
 
 func position_players_and_enemies():
 	#player.setup()
@@ -308,6 +311,9 @@ func _on_BattleArena_endBattle(playerWins):
 #		playerWins = true
 #	else:
 #		playerWins = false
+	Globals.set_Mario(self.Mario)
+	self.remove_child(Mario)
+	queue_free()
 	Globals.endBattle(playerWins, Mario)
 
 
@@ -443,6 +449,7 @@ func _on_BattleArena_mario_hit():
 		_on_EnemyAttack_AnimationPlayer_animation_finished("goomba_attack")
 		Globals.enemy_turn_finished=true
 		Globals.playerTurn=true
+		self.update_GUI(getPlayerSettings(Mario))
 		resetCombatants(false)
 
 

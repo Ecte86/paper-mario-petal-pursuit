@@ -99,6 +99,7 @@ func setup():
 	print_debug(str(self.get_position()))
 	print_debug("GL: " + str(groundLevel))
 	$AnimatedSprite3D.play("idleDown")
+	
 
 func get_position():
 	return self.transform.origin
@@ -334,10 +335,10 @@ func _on_Area_body_entered(body):
 		if get_parent().name=="BattleArena":#if Globals.battleStatus==1:
 			if Globals.playerTurn==true:
 				#if self.is_on_floor():
-				self.setHeartPoints(self.getHeartPoints()-1)
 				get_parent().emit_signal("mario_hit")
 			else:
 				get_parent().emit_signal("stop_enemy_attack")
+				self.setHeartPoints(self.getHeartPoints()-1)
 		else:
 			if self.is_on_floor():
 				get_parent().emit_signal("main_startBattle",false)

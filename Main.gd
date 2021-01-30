@@ -45,6 +45,14 @@ func _ready():
 	# 3. setup the cameras 
 	self.setup_cameras()
 	#print_tree_pretty()
+	var extraMario = self.get_child(self.get_child_count()-2)
+	var extraCamera = self.get_child(self.get_child_count()-1)
+	var lastNode_idx = self.get_child_count()-2
+	print_debug(extraCamera.name)
+	if extraMario.name == "Mario5":
+		self.remove_child(self.get_child(lastNode_idx))
+		self.remove_child(extraCamera)
+		load_players_and_enemies()
 
 func preload_BattleArena_and_setup_HUD():
 	# Update the GUI's stats from the mro
@@ -73,8 +81,7 @@ func setup_cameras():
 
 func load_players_and_enemies():
 	#Load Mario.
-	PlayerScene=load("res://Mario.tscn")
-	Mario = PlayerScene.instance()
+	Mario=Globals.get_Mario()
 	#Add Mario at the bottom of Main's tree
 	self.add_child(Mario)
 	#Player is now Mario

@@ -65,7 +65,14 @@ enum BattleWinner {NONE, MARIO, ENEMY}
 func _ready():
 	var root = get_tree().get_root()
 	current_scene = root.get_child(root.get_child_count() - 1)
+	load_Mario()
 	#Mario=
+
+func load_Mario():
+	var PlayerScene
+	PlayerScene=load("res://Mario.tscn")
+	self.set_Mario(PlayerScene.instance())
+	#Mario = PlayerScene.instance()
 
 func get_Enemy():
 	node_EnemyDupe=self.get_child(self.get_child_count()-1).duplicate()
@@ -85,11 +92,15 @@ func set_Enemy(theEnemyNode):
 	
 	
 func get_Mario():
+	if self.get_child_count()-1 == 0:
+		load_Mario()
 	node_MarioDupe=self.get_child(0).duplicate()
 	self.remove_child(self.get_child(0))
 	return node_MarioDupe
 
 func set_Mario(node_Modified_Mario):
+	if self.get_child(0) != null:
+		self.remove_child(self.get_child(0))
 	self.add_child(node_Modified_Mario.duplicate())
 	node_Mario=self.get_child(0)
 
@@ -109,6 +120,14 @@ func goto_scene(path):
 
 
 func _deferred_goto_scene(path):
+	
+	# Define root
+	var root = get_tree().get_root()
+	
+	# Ensure that current_scene isn't null
+	if current_scene == null:
+		current_scene = root.get_child(root.get_child_count() - 1)
+	
 	# It is now safe to remove the current scene
 	current_scene.free()
 
@@ -153,8 +172,8 @@ func endBattle(playerWins: bool, mario):
 	if playerWins:
 		print("MARIO WINS")
 		last_battle_winner = BattleWinner.MARIO
-		Input.action_press("jump")
-		Input.action_release("jump")
+		#Input.action_press("jump")
+		#Input.action_release("jump")
 		mario.setStarPoints(mario.getStarPoints()+20)
 		#get_tree().quit()#get_tree().change_scene("res://Main.tscn")
 	else:
@@ -162,7 +181,8 @@ func endBattle(playerWins: bool, mario):
 		print("OH NO MARIO LOSES :(")
 		last_battle_winner = BattleWinner.ENEMY
 		
-	_deferred_goto_scene("res://Main.tscn")
+	get_tree().change_scene("res://Main.tscn")
+	#_deferred_goto_scene("res://Main.tscn")
 	
 	
 
