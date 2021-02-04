@@ -94,7 +94,7 @@ func setupHUD():
 	$HUD.showGUI(0)
 	
 func update_GUI(Character: Node):
-	$HUD.update(getPlayerSettings(Character))
+	$HUD.update(self.getPlayerSettings(Character))
 
 func position_players_and_enemies():
 	#player.setup()
@@ -143,6 +143,8 @@ func load_players_and_enemies():
 	add_child(Mario)
 	add_child(enemy)
 	
+	Globals.setPlayerSettings(self.Mario,self.getPlayerSettings(Mario))
+	
 
 
 func setupBattleSettings():
@@ -157,7 +159,7 @@ func setupBattleSettings():
 		Globals.setPlayerGoesFirst(false)
 
 	
-func getPlayerSettings(player):
+func getPlayerSettings(player: Node):
 	return [player.name,
 		player.getHeartPoints(),
 		player.getFlowerPoints(),
@@ -210,6 +212,8 @@ func resetCombatants(end_of_mario_turn=true): # if not false, we assume end of M
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	if enemy.get_Heart_Points()>0:
+		$HUD/EnemyHP.text="Enemy HP: "+str(enemy.get_Heart_Points())
 	if Globals.battleStatus ==true: # if we are in battle
 		if Globals.playerTurn == true: # if it's players turn...
 			match plrAttackPhase:
@@ -311,10 +315,11 @@ func _on_BattleArena_endBattle(playerWins):
 #		playerWins = true
 #	else:
 #		playerWins = false
+	
 	Globals.set_Mario(self.Mario)
 	self.remove_child(Mario)
 	queue_free()
-	Globals.endBattle(playerWins, Mario)
+	Globals.endBattle(playerWins, Globals.get_child(0))
 
 
 func _on_PlayerAttack_AnimationPlayer_animation_finished(anim_name):
@@ -445,11 +450,11 @@ func _on_EnemyAttack_AnimationPlayer_animation_finished(anim_name):
 
 
 func _on_BattleArena_mario_hit():
+	self.update_GUI(self.Mario)#getPlayerSettings(self.Mario))
 	if Globals.playerTurn==false:
 		_on_EnemyAttack_AnimationPlayer_animation_finished("goomba_attack")
 		Globals.enemy_turn_finished=true
 		Globals.playerTurn=true
-		self.update_GUI(getPlayerSettings(Mario))
 		resetCombatants(false)
 
 

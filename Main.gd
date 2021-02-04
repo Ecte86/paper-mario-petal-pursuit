@@ -86,8 +86,12 @@ func load_players_and_enemies():
 	self.add_child(Mario)
 	#Player is now Mario
 	Mario = self.get_node(Mario.get_path())
+	#Load settings from Global mario
+	self.setPlayerSettings(Mario, Globals.getPlayerSettings(Mario))
 	#Note: Mario position is set to the middle of the Scene
-	Mario.setHeartPoints(8)
+	if Globals.last_battle_winner == Globals.BattleWinner.NONE:
+		Mario.setHeartPoints(8)
+		
 
 func getWorldEdge():
 	# The floor's size, so we can refer to it with less typing
@@ -130,6 +134,7 @@ func _on_Main_main_startBattle(playerGoesFirst):
 		Globals.set_Mario(Mario.duplicate())
 		# do the same with the enemy we are attacking
 		Globals.set_Enemy($Goomba.duplicate())
+		Globals.node_Enemy.set_Heart_Points($Goomba.get_Heart_Points())
 	else :
 		# otherwise it'd not our turn
 		Globals.setPlayerGoesFirst(false)
@@ -228,3 +233,4 @@ func _on_Mario_hit(body):
 		else :
 			#...so start a battle, we get first attack
 			_on_Main_main_startBattle(true)
+			body.receive_damage(1)

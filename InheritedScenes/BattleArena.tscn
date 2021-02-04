@@ -134,7 +134,12 @@ __meta__ = {
 
 [node name="DirectionalLight" parent="WorldEnvironment" instance=ExtResource( 9 )]
 
-[node name="MarginContainer" parent="." instance=ExtResource( 10 )]
+[node name="MarginContainer2" parent="." instance=ExtResource( 10 )]
+margin_left = 9.36499
+margin_top = 554.636
+margin_right = 69.365
+margin_bottom = 594.636
+rect_pivot_offset = Vector2( 17.635, 18 )
 [connection signal="endBattle" from="." to="." method="_on_BattleArena_endBattle"]
 [connection signal="get_player_move" from="." to="." method="_on_BattleArena_get_player_move"]
 [connection signal="mario_hit" from="." to="." method="_on_BattleArena_mario_hit"]

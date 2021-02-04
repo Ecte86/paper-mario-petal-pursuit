@@ -348,6 +348,16 @@ valign = 1
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="EnemyHP" type="Label" parent="."]
+margin_left = 925.0
+margin_top = 579.0
+margin_right = 1029.0
+margin_bottom = 641.0
+text = "Enemy HP: x"
+__meta__ = {
+"_edit_use_anchors_": false
+}
 [connection signal="gui_input" from="TurnPanel/abilityList" to="." method="_on_abilityList_gui_input"]
 [connection signal="about_to_show" from="AttackMessages" to="." method="_on_BattlePanel3_about_to_show"]
 [connection signal="popup_hide" from="AttackMessages" to="." method="_on_BattlePanel3_popup_hide"]

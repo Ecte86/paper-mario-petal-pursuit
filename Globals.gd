@@ -27,7 +27,7 @@ enum MarioStats{
 }
 
 enum EnemyHP {
-	Goomba = 2
+	Goomba = 3
 }
 
 export(int) var max_Heart_Points = 10 # Maximum Heart Points == Hit Points == Life
@@ -174,7 +174,7 @@ func endBattle(playerWins: bool, mario):
 		last_battle_winner = BattleWinner.MARIO
 		#Input.action_press("jump")
 		#Input.action_release("jump")
-		mario.setStarPoints(mario.getStarPoints()+20)
+		node_Mario.setStarPoints(node_Mario.getStarPoints()+20)
 		#get_tree().quit()#get_tree().change_scene("res://Main.tscn")
 	else:
 		# insert lose msg
@@ -185,6 +185,25 @@ func endBattle(playerWins: bool, mario):
 	#_deferred_goto_scene("res://Main.tscn")
 	
 	
+
+func getPlayerSettings(player: Node):
+	return [player.name,
+		player.getHeartPoints(),
+		player.getFlowerPoints(),
+		player.getBadgePoints(),
+		player.getStarPoints(),
+		player.getLevel(),
+		player.getPetalPower(),
+		player.getCoins()]
+	
+func setPlayerSettings(player, settings: Array):
+	player.setHeartPoints(settings[1])
+	player.setFlowerPoints(settings[2])
+	player.setBadgePoints(settings[3])
+	player.setStarPoints(settings[4])
+	player.setLevel(settings[5])
+	player.setPetalPower(settings[6])
+	player.setCoins(settings[7])
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
