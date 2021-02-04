@@ -1,0 +1,15 @@
+[remap]
+
+importer="ogg_vorbis"
+type="AudioStreamOGGVorbis"
+path="res://.import/The_Sacred_Shrine.ogg-3ccd3ab0443c2ee3af2a5feb71414730.oggstr"
+
+[deps]
+
+source_file="res://The_Sacred_Shrine.ogg"
+dest_files=[ "res://.import/The_Sacred_Shrine.ogg-3ccd3ab0443c2ee3af2a5feb71414730.oggstr" ]
+
+[params]
+
+loop=true
+loop_offset=0

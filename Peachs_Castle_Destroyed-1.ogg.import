@@ -1,0 +1,15 @@
+[remap]
+
+importer="ogg_vorbis"
+type="AudioStreamOGGVorbis"
+path="res://.import/Peachs_Castle_Destroyed-1.ogg-4090af08ddc18bf4deb479cf16898666.oggstr"
+
+[deps]
+
+source_file="res://Peachs_Castle_Destroyed-1.ogg"
+dest_files=[ "res://.import/Peachs_Castle_Destroyed-1.ogg-4090af08ddc18bf4deb479cf16898666.oggstr" ]
+
+[params]
+
+loop=true
+loop_offset=0

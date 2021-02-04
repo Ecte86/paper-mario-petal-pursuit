@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=14 format=2]
 
 [ext_resource path="res://Walls.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Floor.tscn" type="PackedScene" id=2]
@@ -10,6 +10,7 @@
 [ext_resource path="res://Mario.tscn" type="PackedScene" id=8]
 [ext_resource path="res://Sun.tscn" type="PackedScene" id=9]
 [ext_resource path="res://MarginContainer.tscn" type="PackedScene" id=10]
+[ext_resource path="res://The_Sacred_Shrine.ogg" type="AudioStream" id=11]
 
 [sub_resource type="ProceduralSky" id=1]
 
@@ -45,6 +46,7 @@ collision_mask = 3
 
 [node name="BackgroundMusic" parent="." instance=ExtResource( 7 )]
 transform = Transform( 0.113775, -0.993506, 0, 0.993506, 0.113775, 0, 0, 0, 1, 1.11099, 1.52399, -0.978116 )
+stream = ExtResource( 11 )
 unit_db = 80.0
 unit_size = 100.0
 max_db = 2.598
