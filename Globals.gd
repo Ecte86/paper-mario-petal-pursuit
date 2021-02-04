@@ -48,13 +48,15 @@ export (bool) var enemy_turn_finished = false
 
 export (PackedScene) var MarioScene = preload("res://Mario.tscn")
 
-var node_Mario: Node#=MarioScene.instance()# : Node
+var node_Mario: Node = null #=MarioScene.instance()# : Node
 var node_MarioDupe: Node
 
 var node_Enemy: Node
 var node_EnemyDupe: Node
 var Enemy_Name: String
 var Enemy_idx: int
+
+var last_battle_reward = null
 
 var last_battle_winner = 0
 
@@ -66,6 +68,7 @@ func _ready():
 	var root = get_tree().get_root()
 	current_scene = root.get_child(root.get_child_count() - 1)
 	load_Mario()
+	self.node_Mario.setHeartPoints(8)
 	#Mario=
 
 func load_Mario():
@@ -74,7 +77,7 @@ func load_Mario():
 	self.set_Mario(PlayerScene.instance())
 	#Mario = PlayerScene.instance()
 
-func get_Enemy():
+func get_Enemy(Enemy_Name):
 	node_EnemyDupe=self.get_child(self.get_child_count()-1).duplicate()
 	var children=self.get_children()
 	var idx=0
@@ -86,22 +89,22 @@ func get_Enemy():
 
 func set_Enemy(theEnemyNode):
 	Enemy_Name=theEnemyNode.name
-	self.add_child(theEnemyNode.duplicate())
+	self.add_child_below_node(node_Mario,theEnemyNode.duplicate())
 	node_Enemy=self.get_child(self.get_child_count()-1)
 	Enemy_idx=self.get_child_count()-1
 	
 	
 func get_Mario():
-	if self.get_child_count()-1 == 0:
+	if node_Mario == null:
 		load_Mario()
-	node_MarioDupe=self.get_child(0).duplicate()
+	node_MarioDupe=node_Mario.duplicate()
 	self.remove_child(self.get_child(0))
 	return node_MarioDupe
 
 func set_Mario(node_Modified_Mario):
 	if self.get_child(0) != null:
 		self.remove_child(self.get_child(0))
-	self.add_child(node_Modified_Mario.duplicate())
+	self.add_child_below_node(self,node_Modified_Mario.duplicate())
 	node_Mario=self.get_child(0)
 
 
@@ -175,6 +178,7 @@ func endBattle(playerWins: bool, mario):
 		#Input.action_press("jump")
 		#Input.action_release("jump")
 		node_Mario.setStarPoints(node_Mario.getStarPoints()+20)
+		set_last_battle_reward(3,20)
 		#get_tree().quit()#get_tree().change_scene("res://Main.tscn")
 	else:
 		# insert lose msg
@@ -204,6 +208,16 @@ func setPlayerSettings(player, settings: Array):
 	player.setLevel(settings[5])
 	player.setPetalPower(settings[6])
 	player.setCoins(settings[7])
+	
+func set_last_battle_reward(stat: int, amount: int):
+	last_battle_reward=[]
+	for x in last_battle_reward:
+		if x == stat:
+			last_battle_reward[x] = amount
+		else:
+			last_battle_reward[x]=null
+	
+	
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):

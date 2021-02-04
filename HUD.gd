@@ -9,6 +9,10 @@ var response = ""
 
 var doneOnce = false
 
+var cHP = null
+var cFP = null
+var cC = null
+var cS = null
 
 onready var HP_idx = Globals.MarioStats.HEART_POINTS
 onready var FP_idx = Globals.MarioStats.FLOWER_POINTS
@@ -29,9 +33,25 @@ func update_stars(stars):
 
 func update(playerSettings: Array):
 	update_hp(playerSettings[HP_idx])
+	if cHP != null and cHP != playerSettings[HP_idx]:
+		showGUI()
 	update_flowers(playerSettings[FP_idx])
+	if cFP != null and cFP != playerSettings[FP_idx]:
+		showGUI()
 	update_coins(playerSettings[Coin_idx])
+	if cC != null and cC != playerSettings[Coin_idx]:
+		showGUI()
 	update_stars(playerSettings[Star_idx])
+	if cS != null and cS != playerSettings[Star_idx]:
+		showGUI()
+	if cHP == null:
+		cHP = playerSettings[HP_idx]
+	if cFP == null:
+		cFP = playerSettings[FP_idx]
+	if cC == null:
+		cC = playerSettings[Coin_idx]
+	if cS == null:
+		cS = playerSettings[Star_idx]
 
 func showGUI(time = 3.0, forever = false):
 	$HP_Panel.show()
@@ -45,7 +65,6 @@ func hideGUI():
 	$HP_Panel.hide()
 	$PP_Panel.hide()
 	$SnC_Panel.hide()
-
 
 func startBattle(playerFirst: bool):
 	if playerFirst:
@@ -85,6 +104,23 @@ func setupUI_AttackMessages():
 
 func setupUI_IntroPanel():
 	$IntroPanel.hide()
+	
+func RewardCount(stat: int, amount: int):
+	for x in amount:
+		match stat:
+			HP_idx:
+				cHP=cHP+1
+				update_hp(cHP)
+			FP_idx:
+				cFP=cFP+1
+				update_hp(cFP)
+			Coin_idx:
+				cC=cC+1
+				update_hp(cC)
+			Star_idx:
+				cS=cS+1
+				update_hp(cS)
+		yield(get_tree().create_timer(0.3), "timeout")
 
 func _on_abilityList_gui_input(_event):
 	var input_valid = false

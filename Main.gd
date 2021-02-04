@@ -19,6 +19,8 @@ var playerSettings = []
 
 export (PackedScene) var PlayerScene
 
+var bUpdateHUD_Reward = false
+
 var Mario
 
 var MarioCamera: Camera
@@ -45,10 +47,11 @@ func _ready():
 	# 3. setup the cameras 
 	self.setup_cameras()
 	#print_tree_pretty()
+
 	var extraMario = self.get_child(self.get_child_count()-2)
 	var extraCamera = self.get_child(self.get_child_count()-1)
 	var lastNode_idx = self.get_child_count()-2
-	print_debug(extraCamera.name)
+	print_debug(extraCamera.name)			
 	if extraMario.name == "Mario5":
 		self.remove_child(self.get_child(lastNode_idx))
 		self.remove_child(extraCamera)
@@ -59,6 +62,8 @@ func preload_BattleArena_and_setup_HUD():
 	$HUD.update(getMarioSettings(Mario))
 	# Show the GUI, briefly. This is optional, but I included it as a test 
 	$HUD.showGUI()
+	if Globals.last_battle_reward != null:
+		bUpdateHUD_Reward=true
 	# We aren't in a battle so set battleStatus to false
 	Globals.battleStatus = false
 	# Start the Background Music
@@ -87,11 +92,15 @@ func load_players_and_enemies():
 	#Player is now Mario
 	Mario = self.get_node(Mario.get_path())
 	#Load settings from Global mario
-	self.setPlayerSettings(Mario, Globals.getPlayerSettings(Mario))
+	#self.setPlayerSettings(Mario, Globals.getPlayerSettings(Mario))
 	#Note: Mario position is set to the middle of the Scene
-	if Globals.last_battle_winner == Globals.BattleWinner.NONE:
-		Mario.setHeartPoints(8)
-		
+	
+	if Globals.last_battle_winner != 0:
+		if Globals.last_battle_winner == Globals.BattleWinner.ENEMY:
+			MarioCamera.look_at($Goomba.transform.origin,Vector3.UP)
+		else:
+			$Goomba.hide()
+			#Mario.transform.origin=$Goomba.transform.origin
 
 func getWorldEdge():
 	# The floor's size, so we can refer to it with less typing
@@ -134,7 +143,7 @@ func _on_Main_main_startBattle(playerGoesFirst):
 		Globals.set_Mario(Mario.duplicate())
 		# do the same with the enemy we are attacking
 		Globals.set_Enemy($Goomba.duplicate())
-		Globals.node_Enemy.set_Heart_Points($Goomba.get_Heart_Points())
+		Globals.node_Enemy.set_Heart_Points($Goomba.get_Heart_Points()-1)
 	else :
 		# otherwise it'd not our turn
 		Globals.setPlayerGoesFirst(false)
@@ -161,6 +170,13 @@ func _process(delta):
 	# Again, this is poorly designed, but check if Mario is colliding with 
 	# stuff
 	_processPlayerCollisions(delta)
+	
+	if bUpdateHUD_Reward == true:
+		for x in Globals.last_battle_reward:
+			if Globals.last_battle_reward[x] != null:
+				$HUD.RewardCount(x, Globals.last_battle_reward[x])
+		bUpdateHUD_Reward=false
+
 	
 func _processPlayerCollisions(delta):
 	# Loop through any objects Mario is colliding with

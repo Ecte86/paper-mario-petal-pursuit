@@ -21,7 +21,7 @@ var finished_Drop_Movement: bool = false
 # var b = "text"
 
 onready var Mario : Mario= Globals.get_Mario()
-onready var enemy = Globals.get_Enemy()
+onready var enemy = Globals.get_Enemy("Goomba")
 
 export (PackedScene) var EnemyScene
 
@@ -84,7 +84,7 @@ func initVars():
 	enemy_Pos = Vector3.ZERO
 	time_limited_input_check = 0
 	input_timer = 0
-	input_timer_max = 0.750
+	input_timer_max = 0.50
 	
 func setupHUD():
 	$HUD.startBattle(true)
@@ -154,6 +154,7 @@ func setupBattleSettings():
 	if Globals.playerGoesFirst==true:
 		_on_BattleArena_startBattle(true)
 		Globals.setPlayerGoesFirst(true)
+		
 	if Globals.playerGoesFirst==false:
 		_on_BattleArena_startBattle(false)
 		Globals.setPlayerGoesFirst(false)
@@ -238,7 +239,7 @@ func _process(delta):
 						$HUD/AttackMessages/NintendoAButton.hide()
 						if input_timer<input_timer_max:
 							$HUD/AttackMessages/GratsMessage.show()
-							$HUD/AttackMessages/Dmg_Info.text="2"
+							$HUD/AttackMessages/Dmg_Info.text="1"
 							double_Attack=true
 						plrAttackPhase=Attack_Phases.IN_PROGRESS
 						$PlayerSpawn/PlayerAttack_AnimationPlayer.play()
@@ -326,7 +327,13 @@ func _on_PlayerAttack_AnimationPlayer_animation_finished(anim_name):
 	if anim_name=="run_and_jump_up":
 		$PlayerSpawn/PlayerAttack_AnimationPlayer.play("jump_on")
 	else:
-		plrAttackPhase=Attack_Phases.FINISHING
+		if double_Attack == false:
+			plrAttackPhase=Attack_Phases.FINISHING
+		else:
+			$PlayerSpawn/PlayerAttack_AnimationPlayer.seek(0)
+			$PlayerSpawn/PlayerAttack_AnimationPlayer.stop(true)
+			$PlayerSpawn/PlayerAttack_AnimationPlayer.advance(0)
+			$PlayerSpawn/PlayerAttack_AnimationPlayer.play()
 
 
 func _on_AttackInputTimer_timeout():

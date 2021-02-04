@@ -2,7 +2,7 @@ extends RigidBody
 class_name Goomba
 
 # Our H.P.
-export (int) onready var Heart_Points = 3 # Globals.EnemyHP.Goomba
+export (int) onready var Heart_Points# = 3 # Globals.EnemyHP.Goomba
 
 # Our initial position when we entered the room.
 var originalPos: Vector3
