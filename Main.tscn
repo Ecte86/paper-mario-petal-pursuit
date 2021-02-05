@@ -78,6 +78,7 @@ margin_top = -0.164001
 margin_bottom = 39.836
 
 [node name="Label" type="Label" parent="."]
+visible = false
 anchor_left = 0.638
 anchor_top = 0.325
 anchor_right = 0.638

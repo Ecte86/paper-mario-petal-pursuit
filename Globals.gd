@@ -211,11 +211,15 @@ func setPlayerSettings(player, settings: Array):
 	
 func set_last_battle_reward(stat: int, amount: int):
 	last_battle_reward=[]
-	for x in last_battle_reward:
-		if x == stat:
-			last_battle_reward[x] = amount
-		else:
-			last_battle_reward[x]=null
+	last_battle_reward.resize(4)
+	#var idx=0
+#	for idx in range(4):# idx<4:
+#		if idx == stat:
+	last_battle_reward[stat]=amount
+#		else:
+#			last_battle_reward[idx]=null
+#		print(idx)
+		#idx=idx+1
 	
 	
 

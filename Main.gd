@@ -51,7 +51,7 @@ func _ready():
 	var extraMario = self.get_child(self.get_child_count()-2)
 	var extraCamera = self.get_child(self.get_child_count()-1)
 	var lastNode_idx = self.get_child_count()-2
-	print_debug(extraCamera.name)			
+	print_debug(extraCamera.name)
 	if extraMario.name == "Mario5":
 		self.remove_child(self.get_child(lastNode_idx))
 		self.remove_child(extraCamera)
@@ -59,7 +59,7 @@ func _ready():
 
 func preload_BattleArena_and_setup_HUD():
 	# Update the GUI's stats from the mro
-	$HUD.update(getMarioSettings(Mario))
+	$HUD.update(getPlayerSettings(Mario))
 	# Show the GUI, briefly. This is optional, but I included it as a test 
 	$HUD.showGUI()
 	if Globals.last_battle_reward != null:
@@ -98,15 +98,17 @@ func load_players_and_enemies():
 	if Globals.last_battle_winner != 0:
 		if Globals.last_battle_winner == Globals.BattleWinner.ENEMY:
 			MarioCamera.look_at($Goomba.transform.origin,Vector3.UP)
+			Mario.direction=Vector3.ZERO
 		else:
 			$Goomba.hide()
+			$Label.show()
 			#Mario.transform.origin=$Goomba.transform.origin
 
 func getWorldEdge():
 	# The floor's size, so we can refer to it with less typing
 	return $Floor.get_child(0).scale
 
-func getMarioSettings(mro):
+func getPlayerSettings(mro):
 	# Get all Mario's settings and stuff it into an array
 	return [mro.name,
 		mro.getHeartPoints(),
@@ -172,9 +174,11 @@ func _process(delta):
 	_processPlayerCollisions(delta)
 	
 	if bUpdateHUD_Reward == true:
-		for x in Globals.last_battle_reward:
+		for x in range(Globals.last_battle_reward.size()):
 			if Globals.last_battle_reward[x] != null:
-				$HUD.RewardCount(x, Globals.last_battle_reward[x])
+				var reward_amount = Globals.last_battle_reward[x]
+				$HUD.RewardCount(x, reward_amount)
+#				yield(get_tree().create_timer(0.1), "timeout")
 		bUpdateHUD_Reward=false
 
 	

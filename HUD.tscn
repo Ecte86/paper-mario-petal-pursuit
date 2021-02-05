@@ -361,9 +361,14 @@ text = "Enemy HP: x"
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="RewardTimer" type="Timer" parent="."]
+wait_time = 10.0
+one_shot = true
 [connection signal="gui_input" from="TurnPanel/abilityList" to="." method="_on_abilityList_gui_input"]
 [connection signal="about_to_show" from="AttackMessages" to="." method="_on_BattlePanel3_about_to_show"]
 [connection signal="popup_hide" from="AttackMessages" to="." method="_on_BattlePanel3_popup_hide"]
 [connection signal="gui_input" from="AttackMessages/NintendoAButton" to="." method="_on_NintendoAButton_gui_input"]
 [connection signal="pressed" from="AttackMessages/NintendoAButton" to="." method="_on_NintendoAButton_pressed"]
 [connection signal="animation_finished" from="AttackMessages/DMG_AnimationPlayer" to="." method="_on_DMG_AnimationPlayer_animation_finished"]
+[connection signal="timeout" from="RewardTimer" to="." method="_on_RewardTimer_timeout"]

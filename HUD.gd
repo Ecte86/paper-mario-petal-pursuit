@@ -19,6 +19,8 @@ onready var FP_idx = Globals.MarioStats.FLOWER_POINTS
 onready var Coin_idx = Globals.MarioStats.COINS
 onready var Star_idx = Globals.MarioStats.STAR_POINTS
 
+var iRewardProcessTimeFinish: bool = true
+
 func update_hp(HP):
 	$HP_Panel/HPLabel.text = "HP: "+str(HP)+"/"+str(Globals.max_Heart_Points)
 
@@ -106,21 +108,27 @@ func setupUI_IntroPanel():
 	$IntroPanel.hide()
 	
 func RewardCount(stat: int, amount: int):
+	showGUI(30)
 	for x in amount:
-		match stat:
-			HP_idx:
-				cHP=cHP+1
-				update_hp(cHP)
-			FP_idx:
-				cFP=cFP+1
-				update_hp(cFP)
-			Coin_idx:
-				cC=cC+1
-				update_hp(cC)
-			Star_idx:
-				cS=cS+1
-				update_hp(cS)
-		yield(get_tree().create_timer(0.3), "timeout")
+		if iRewardProcessTimeFinish == true:
+			match stat:
+				HP_idx:
+					cHP=cHP+1
+					update_hp(cHP)
+				FP_idx:
+					cFP=cFP+1
+					update_hp(cFP)
+				Coin_idx:
+					cC=cC+1
+					update_hp(cC)
+				Star_idx:
+					cS=cS+1
+					update_hp(cS)
+			$RewardTimer.start()
+			iRewardProcessTimeFinish=false
+
+func _process(delta: float) -> void:
+	update(get_parent().getPlayerSettings(get_parent().Mario))
 
 func _on_abilityList_gui_input(_event):
 	var input_valid = false
@@ -181,3 +189,8 @@ func _on_Goombah_body_entered(body):
 
 func _on_DMG_AnimationPlayer_animation_finished(anim_name):
 	$AttackMessages/Dmg_Info.hide()
+
+
+func _on_RewardTimer_timeout() -> void:
+	iRewardProcessTimeFinish=true
+	pass # Replace with function body.
