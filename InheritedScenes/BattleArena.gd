@@ -84,7 +84,7 @@ func initVars():
 	enemy_Pos = Vector3.ZERO
 	time_limited_input_check = 0
 	input_timer = 0
-	input_timer_max = 0.50
+	input_timer_max = 0.10 # should be 0.1/sec @ 60fps = 6frames
 	
 func setupHUD():
 	$HUD.startBattle(true)

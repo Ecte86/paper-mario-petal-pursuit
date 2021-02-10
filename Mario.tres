@@ -1,4 +1,4 @@
-[gd_resource type="SpriteFrames" load_steps=16 format=2]
+[gd_resource type="SpriteFrames" load_steps=17 format=2]
 
 [ext_resource path="res://Paper_Mario_Back.png" type="Texture" id=1]
 [ext_resource path="res://Mario_Run_Backward/Pera_Albedo.0012_Back.png" type="Texture" id=2]
@@ -12,28 +12,44 @@
 [ext_resource path="res://Mario Jump Forward/Pera_Albedo.0018.png" type="Texture" id=10]
 [ext_resource path="res://Mario_Run_Backward/Pera_Albedo.0010_Back.png" type="Texture" id=11]
 [ext_resource path="res://Mario Idle Forward/Pera_Albedo.0001.png" type="Texture" id=12]
+[ext_resource path="res://jump.png" type="Texture" id=13]
 
 [sub_resource type="AtlasTexture" id=1]
-flags = 23
+flags = 7
 atlas = ExtResource( 1 )
 region = Rect2( 0, 0, 196, 301 )
 
 [sub_resource type="AtlasTexture" id=2]
-flags = 23
+flags = 7
 atlas = ExtResource( 1 )
 region = Rect2( 0, 301, 196, 301 )
 
 [sub_resource type="AtlasTexture" id=3]
-flags = 23
+flags = 7
 atlas = ExtResource( 1 )
 region = Rect2( 0, 602, 196, 301 )
 
 [resource]
 animations = [ {
+"frames": [ ExtResource( 13 ), ExtResource( 13 ) ],
+"loop": true,
+"name": "upJump",
+"speed": 2.0
+}, {
 "frames": [ ExtResource( 11 ), ExtResource( 3 ), ExtResource( 2 ), ExtResource( 3 ) ],
 "loop": true,
 "name": "walkUp",
 "speed": 9.0
+}, {
+"frames": [ ExtResource( 5 ), ExtResource( 10 ) ],
+"loop": true,
+"name": "jump",
+"speed": 2.0
+}, {
+"frames": [ ExtResource( 12 ), ExtResource( 12 ), ExtResource( 12 ), ExtResource( 12 ), ExtResource( 12 ), ExtResource( 12 ), ExtResource( 6 ), ExtResource( 6 ), ExtResource( 6 ), ExtResource( 6 ), ExtResource( 6 ), ExtResource( 6 ), ExtResource( 12 ), ExtResource( 12 ), ExtResource( 12 ), ExtResource( 12 ), ExtResource( 12 ), ExtResource( 6 ), ExtResource( 6 ), ExtResource( 6 ), ExtResource( 6 ), ExtResource( 6 ), ExtResource( 4 ) ],
+"loop": true,
+"name": "idleDown",
+"speed": 10.0
 }, {
 "frames": [ SubResource( 1 ), SubResource( 1 ), SubResource( 1 ), SubResource( 1 ), SubResource( 2 ), SubResource( 2 ), SubResource( 2 ), SubResource( 2 ), SubResource( 1 ), SubResource( 1 ), SubResource( 1 ), SubResource( 1 ), SubResource( 2 ), SubResource( 2 ), SubResource( 2 ), SubResource( 2 ), SubResource( 1 ), SubResource( 1 ), SubResource( 1 ), SubResource( 1 ), SubResource( 2 ), SubResource( 3 ), SubResource( 2 ), SubResource( 2 ), SubResource( 1 ), SubResource( 1 ), SubResource( 1 ), SubResource( 1 ), SubResource( 2 ), SubResource( 2 ), SubResource( 2 ) ],
 "loop": true,
@@ -44,14 +60,4 @@ animations = [ {
 "loop": true,
 "name": "walkDown",
 "speed": 9.0
-}, {
-"frames": [ ExtResource( 12 ), ExtResource( 12 ), ExtResource( 12 ), ExtResource( 12 ), ExtResource( 12 ), ExtResource( 12 ), ExtResource( 6 ), ExtResource( 6 ), ExtResource( 6 ), ExtResource( 6 ), ExtResource( 6 ), ExtResource( 6 ), ExtResource( 12 ), ExtResource( 12 ), ExtResource( 12 ), ExtResource( 12 ), ExtResource( 12 ), ExtResource( 6 ), ExtResource( 6 ), ExtResource( 6 ), ExtResource( 6 ), ExtResource( 6 ), ExtResource( 4 ) ],
-"loop": true,
-"name": "idleDown",
-"speed": 10.0
-}, {
-"frames": [ ExtResource( 5 ), ExtResource( 10 ) ],
-"loop": true,
-"name": "jump",
-"speed": 2.0
 } ]

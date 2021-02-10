@@ -26,8 +26,8 @@ offset = Vector2( 0, -15 )
 shaded = true
 alpha_cut = 2
 frames = ExtResource( 2 )
-animation = "walkDown"
-frame = 2
+animation = "idleDown"
+frame = 15
 playing = true
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="AnimatedSprite3D"]

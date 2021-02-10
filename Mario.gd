@@ -61,6 +61,8 @@ export (int) var max_Petal_Power = 7
 export (int) var Coins = 100
 export (int) var max_Coins = 100
 
+var sMarioDirection: String
+
 var SceneRoot
 var groundLevel
 
@@ -71,6 +73,9 @@ var attackPath_index = 0
 var collision_partner
 
 var position: Vector3
+
+var bfacingAway: bool = false
+var bMarioJumping: bool = false
 
 onready var battle_status = Globals.battleStatus
 
@@ -184,32 +189,55 @@ func _process(_delta):
 		return
 	# Animation processing!
 	
-	var mario_direction # Possible values: N, S, E, W, NW, SW, NE, SE and Idle
+	# sMarioDirection - Possible values: N, S, E, W, NW, SW, NE, SE and Idle
+	
+	var sCurrentMarioDirection: String = ""
+	
+	#$AnimatedSprite3D.flip_h=false
+	if (!is_on_floor() and \
+			 self.transform.origin.y>groundLevel and \
+			 SceneRoot.name!="BattleArena") \
+			 or state == states.JUMP: # If mario is in the air, jump
+		state=states.JUMP
+		if bfacingAway==false:
+			$AnimatedSprite3D.play("jump") # (set animation to "jump")
+		else:
+			$AnimatedSprite3D.play("upJump")
+		return
+	else:
+		state=states.IDLE
 
 	if direction.z==0 and direction.x==0 or state == states.IDLE:
-		mario_direction="Idle"
+		sMarioDirection="Idle"
 	if direction.z<0 and direction.x<0 or state == states.NW:
-		mario_direction="NW"
+		sMarioDirection="NW"
 	if direction.z>0 and direction.x<0 or state == states.SW:
-		mario_direction="SW"
+		sMarioDirection="SW"
 	if direction.z>0 and direction.x>0 or state == states.SE:
-		mario_direction="SE"
+		sMarioDirection="SE"
 	if direction.z<0 and direction.x>0 or state == states.NE:
-		mario_direction="NE"
+		sMarioDirection="NE"
 		
 	if direction.z<0 and direction.x==0 or state == states.N:
-		mario_direction="N"
+		sMarioDirection="N"
 	if direction.z>0 and direction.x==0 or state == states.S:
-		mario_direction="S"
+		sMarioDirection="S"
 	if direction.z==0 and direction.x>0 or state == states.E:
-		mario_direction="E"
+		sMarioDirection="E"
 	if direction.z==0 and direction.x<0 or state == states.W:
-		mario_direction="W"
-		
-	#$AnimatedSprite3D.flip_h=false
-	match mario_direction:
+		sMarioDirection="W"		
+	
+	bMarioJumping=false
+#	if sMarioDirection==sCurrentMarioDirection:
+#		return
+#	else:
+#		sCurrentMarioDirection = sMarioDirection
+	match sMarioDirection:
 		"Idle":
-			$AnimatedSprite3D.play("idleDown")
+			if bfacingAway==false:
+				$AnimatedSprite3D.play("idleDown")
+			else:
+				$AnimatedSprite3D.play("idleUp")
 			
 		"NW":
 			$AnimatedSprite3D.play("walkUp")
@@ -236,16 +264,17 @@ func _process(_delta):
 			$AnimatedSprite3D.play("walkDown")
 			$AnimatedSprite3D.flip_h=true
 			
-	if (!is_on_floor() and \
-		 self.transform.origin.y>groundLevel and \
-		 SceneRoot.name!="BattleArena") \
-		 or state == states.JUMP: # If mario is in the air, jump
-		$AnimatedSprite3D.play("jump") # (set animation to "jump")
+	if $AnimatedSprite3D.animation == "walkUp":
+		bfacingAway=true
+	elif $AnimatedSprite3D.animation == "walkDown":
+		bfacingAway=false
+			
 		if direction.x>0: # flip if we are heading right
 			$AnimatedSprite3D.flip_h=true
 		else:
 			if is_on_floor() or direction.x<0: #head left only if user specifies, or we complete jump
 				$AnimatedSprite3D.flip_h=false
+		
 	if Globals.FAKE_SHADOW:
 		$AnimatedSprite3D/Shadow.show()
 		$AnimatedSprite3D/Shadow.global_transform.origin.y=groundLevel
@@ -253,7 +282,7 @@ func _process(_delta):
 		$AnimatedSprite3D/Shadow.hide()
 
 #	I cannot get this to work very well.
-#	if mario_direction=="Idle":
+#	if sMarioDirection=="Idle":
 #		yield(get_tree().create_timer(10), "timeout")
 #		get_parent().showGUI(3,true)
 #	else:
