@@ -51,7 +51,7 @@ enum enemyAttackStates{
 	FINISHED = 2
 }
 
-enum Attack_Phases{WAITING_FOR_TURN, STARTING, IN_PROGRESS, ACTION_COMMAND, FINISHING}
+enum Attack_Phases{FREE_ATTACK, WAITING_FOR_TURN, STARTING, IN_PROGRESS, ACTION_COMMAND, FINISHING}
 
 # Called when the node enters the scene tree for the first time.
 func _ready():	
@@ -216,13 +216,28 @@ func _process(delta):
 	if enemy.get_Heart_Points()>0:
 		$HUD/EnemyHP.text="Enemy HP: "+str(enemy.get_Heart_Points())
 	if Globals.battleStatus ==true: # if we are in battle
-		if Globals.playerTurn == true: # if it's players turn...
+		if Globals.playerTurn == true: # if it's players turn...				
 			match plrAttackPhase:
-				Attack_Phases.WAITING_FOR_TURN:
-					emit_signal("get_player_move", delta)
-					# ... Make sure enemy position is reset, ...
-					$EnemySpawn/EnemyAttack_AnimationPlayer.stop(true)
+				Attack_Phases.FREE_ATTACK:
+					resetCombatants(false)
+					var MarioAnimPlayer = $PlayerSpawn/PlayerAttack_AnimationPlayer
+					MarioAnimPlayer.current_animation="run_and_jump_up"
+					MarioAnimPlayer.seek(MarioAnimPlayer.current_animation_length \
+											* 0.5,true)
+					MarioAnimPlayer.advance(0)
+					Globals.setPlayerGoesFirst(false)
+					plrAttackPhase = (Attack_Phases.IN_PROGRESS)
+					#MarioAnimPlayer.play("run_and_jump_up")
 					$EnemySpawn/EnemyAttack_AnimationPlayer.seek(0,true)
+					$EnemySpawn/EnemyAttack_AnimationPlayer.stop(true)
+				Attack_Phases.WAITING_FOR_TURN:
+					if Globals.playerGoesFirst==true:
+						plrAttackPhase=Attack_Phases.FREE_ATTACK
+					else:
+						emit_signal("get_player_move", delta)
+						# ... Make sure enemy position is reset, ...
+						$EnemySpawn/EnemyAttack_AnimationPlayer.stop(true)
+						$EnemySpawn/EnemyAttack_AnimationPlayer.seek(0,true)
 				Attack_Phases.IN_PROGRESS:
 					if $PlayerSpawn/PlayerAttack_AnimationPlayer. \
 					   current_animation == "jump_on":
