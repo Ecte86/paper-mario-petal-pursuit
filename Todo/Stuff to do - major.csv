@@ -1,7 +1,0 @@
-"-Make sure the battle system works in relativity. Mario should be able to identify where an enemy is in real time instead of being programmed to do a specific animation for each individual enemy"
-"-Make sure Mario's sprite doesn't disappear"
-"-Give the Goomba 3HP so it has a chance to attack"
-"-First Strikes (jumping on the enemy to initiate a battle)"
-"-The timing of the A press (Has to be as Mario lands on the goomba, usually a 6 frame window to input it.)"
-"-Mario's 2nd Jump (Mario does two jumps if the A button is pressed, instead of extra damage)"
-"-Blocking (mario can reduce the damage by 1 with a well timed A press)"
