@@ -25,3 +25,6 @@ func _process(_delta):
 			if self.current_animation_position==0.6: # and we reach the point where Mario "jumps"
 				get_parent().get_parent().Mario.play("jump")
 		get_parent().get_parent().Mario.transform.origin = Parent.transform.origin
+	if self.current_animation=="reset":
+		get_parent().get_parent().Mario.transform.origin = Parent.transform.origin
+		get_parent().get_parent().Mario.states.IDLE

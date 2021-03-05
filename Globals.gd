@@ -185,7 +185,7 @@ func endBattle(playerWins: bool, mario):
 		print("OH NO MARIO LOSES :(")
 		last_battle_winner = BattleWinner.ENEMY
 		
-	get_tree().change_scene("res://Main.tscn")
+	get_tree().change_scene("res://Scenes/Main.tscn")
 	#_deferred_goto_scene("res://Main.tscn")
 	
 	

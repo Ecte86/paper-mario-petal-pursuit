@@ -69,7 +69,7 @@ func preload_BattleArena_and_setup_HUD():
 	# Start the Background Music
 	$BackgroundMusic.play()
 	# Load the Battle Arena, ready for displaying
-	battleArena = load("res://InheritedScenes/BattleArena.tscn")
+	battleArena = load("res://Scenes/BattleArena.tscn")
 
 func setup_cameras():
 	#Add a new camera at the bottom of Main's tree.

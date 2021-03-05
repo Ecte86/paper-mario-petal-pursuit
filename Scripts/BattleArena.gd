@@ -208,7 +208,7 @@ func resetCombatants(end_of_mario_turn=true): # if not false, we assume end of M
 	player_Attack_Started=false
 	Mario.direction=Vector3.ZERO
 	Mario.velocity=Vector3.ZERO
-	$PlayerSpawn/PlayerAttack_AnimationPlayer.play("stopped")
+	$PlayerSpawn/PlayerAttack_AnimationPlayer.play("reset")
 	$PlayerSpawn/PlayerAttack_AnimationPlayer.advance(0)
 	
 	$EnemySpawn/EnemyAttack_AnimationPlayer.stop()
@@ -218,14 +218,17 @@ func resetCombatants(end_of_mario_turn=true): # if not false, we assume end of M
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	var plrAnimationPlayer: AnimationPlayer
+	plrAnimationPlayer = $PlayerSpawn/PlayerAttack_AnimationPlayer
 	if enemy.get_Heart_Points()>0:
 		$HUD/EnemyHP.text="Enemy HP: "+str(enemy.get_Heart_Points())
 	if Globals.battleStatus ==true: # if we are in battle
 		if Globals.playerTurn == true: # if it's players turn...				
 			match plrAttackPhase:
 				Attack_Phases.FREE_ATTACK:
-					
-					$PlayerSpawn/PlayerAttack_AnimationPlayer.current_animation="jump_on"
+					if plrAnimationPlayer.current_animation != "jump_on" and \
+						actionCommand_Complete == false:
+						plrAnimationPlayer.current_animation="jump_on"
 					plrAttackPhase=Attack_Phases.IN_PROGRESS
 				Attack_Phases.WAITING_FOR_TURN:
 					if Globals.playerGoesFirst==true:
@@ -236,8 +239,11 @@ func _process(delta):
 						$EnemySpawn/EnemyAttack_AnimationPlayer.stop(true)
 						$EnemySpawn/EnemyAttack_AnimationPlayer.seek(0,true)
 						if player_response=="":
-							$PlayerSpawn/PlayerAttack_AnimationPlayer.play("stopped")
+							$PlayerSpawn/PlayerAttack_AnimationPlayer.play("reset")
+							$PlayerSpawn/PlayerAttack_AnimationPlayer.advance(0)
 							plrAttackPhase=Attack_Phases.WAITING_FOR_TURN
+						else:
+							actionCommand_Complete=false
 				Attack_Phases.IN_PROGRESS:
 					if $PlayerSpawn/PlayerAttack_AnimationPlayer. \
 					   current_animation == "jump_on":
@@ -278,19 +284,21 @@ func _process(delta):
 					$HUD/AttackMessages.hide()
 					$HUD/AttackMessages/NintendoAButton.hide()
 					$HUD/AttackMessages/GratsMessage.hide()
-					$PlayerSpawn/PlayerAttack_AnimationPlayer.play("stopped")
+					$PlayerSpawn/PlayerAttack_AnimationPlayer.play("run_and_jump_up")
+					if Globals.playerGoesFirst==true:
+						Globals.playerGoesFirst=false
 					$PlayerSpawn/PlayerAttack_AnimationPlayer.advance(0)
 
 				#	if double_Attack==true:
 				#		enemy.receive_damage(1)
 					if Globals.playerGoesFirst==true:
 						resetCombatants(false)
-						plrAttackPhase=Attack_Phases.WAITING_FOR_TURN
+						plrAttackPhase=Attack_Phases.FREE_ATTACK
 						Globals.playerGoesFirst==false
 					else:
-						Globals.playerTurn=false
+						resetCombatants(false)
+						$PlayerSpawn/PlayerAttack_AnimationPlayer.play("reset")
 						plrAttackPhase=Attack_Phases.WAITING_FOR_TURN
-						resetCombatants(true)
 			### if player_Attack_Started: # once player has specified their attack
 			###	# start player attack
 			###	_on_BattleArena_player_attack(delta, "Jump")
