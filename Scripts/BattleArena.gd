@@ -17,11 +17,8 @@ onready var battleStatus: bool = Globals.battleStatus
 onready var playerTurn: bool = Globals.playerTurn
 
 var finished_Drop_Movement: bool = false
-# Declare member variables here. Examples:
-# var a = 2
-# var b = "text"
 
-onready var Mario : Mario= Globals.get_Mario()
+onready var Mario : Mario = Globals.get_Mario()
 onready var enemy = Globals.get_Enemy("Goomba")
 
 export (PackedScene) var EnemyScene
@@ -36,7 +33,7 @@ var enemy_Pos: Vector3
 
 var time_limited_input_check
 var input_timer = 0
-var input_timer_max = 0.750
+var input_timer_max = 0.10 # should be 0.1/sec @ 60fps = 6frames
 
 
 signal get_player_move
@@ -117,7 +114,7 @@ func position_players_and_enemies():
 	$EnemySpawn/EnemyAttack_AnimationPlayer.set_current_animation("goomba_attack")
 	$EnemySpawn/EnemyAttack_AnimationPlayer.stop(true)
 	
-	Mario.state=Mario.states.IDLE
+	Mario.state=Globals.MarioStates.IDLE
 	Mario.get_child(0).play("idleDown")
 	Mario.hflip(true)
 
@@ -197,14 +194,15 @@ func resetCombatants(end_of_mario_turn=true): # if not false, we assume end of M
 			Globals.playerTurn=false
 			Globals.playerGoesFirst=false
 			enemy_Attack_State==enemyAttackStates.STARTED
-			double_Attack=false
-			actionCommand_Complete=false
 	else:
 		player_response=""
 		if enemy_Attack_State==enemyAttackStates.FINISHED:
 			Globals.enemy_turn_finished=true
 		if Globals.enemy_turn_finished==true and end_of_mario_turn==true:
 			Globals.playerTurn=true
+
+	double_Attack=false
+	actionCommand_Complete=false
 	player_Attack_Started=false
 	Mario.direction=Vector3.ZERO
 	Mario.velocity=Vector3.ZERO
@@ -216,6 +214,92 @@ func resetCombatants(end_of_mario_turn=true): # if not false, we assume end of M
 	$EnemySpawn/EnemyAttack_AnimationPlayer.advance(0)
 	position_players_and_enemies()
 
+func _process_Phase_FreeAttack(delta):
+	if $PlayerSpawn/PlayerAttack_AnimationPlayer.current_animation != "jump_on" and \
+			actionCommand_Complete == false:
+		$PlayerSpawn/PlayerAttack_AnimationPlayer.current_animation="jump_on"
+		plrAttackPhase=Attack_Phases.IN_PROGRESS
+		Mario.state=Globals.MarioStates.E
+
+func _process_Phase_WaitingForTurn(delta):
+	if Globals.playerGoesFirst==true:
+		plrAttackPhase=Attack_Phases.FREE_ATTACK
+	else:
+		emit_signal("get_player_move", delta)
+		# ... Make sure enemy position is reset, ...
+		$EnemySpawn/EnemyAttack_AnimationPlayer.stop(true)
+		$EnemySpawn/EnemyAttack_AnimationPlayer.seek(0,true)
+		if player_response=="":
+			$PlayerSpawn/PlayerAttack_AnimationPlayer.play("reset")
+			$PlayerSpawn/PlayerAttack_AnimationPlayer.advance(0)
+			plrAttackPhase=Attack_Phases.WAITING_FOR_TURN
+		else:
+			$PlayerSpawn/PlayerAttack_AnimationPlayer.play("run_and_jump_up")
+			$PlayerSpawn/PlayerAttack_AnimationPlayer.advance(0)
+			actionCommand_Complete=false
+			plrAttackPhase=Attack_Phases.IN_PROGRESS
+
+func _process_Phase_InProgress(delta):
+	if $PlayerSpawn/PlayerAttack_AnimationPlayer. \
+			current_animation == "jump_on":
+		if $PlayerSpawn/PlayerAttack_AnimationPlayer. \
+				current_animation_position==0:
+			plrAttackPhase=Attack_Phases.ACTION_COMMAND
+
+func _process_Phase_ActionCommand(delta):
+	if actionCommand_Complete == true:
+		plrAttackPhase=Attack_Phases.IN_PROGRESS
+	else:
+		$PlayerSpawn/PlayerAttack_AnimationPlayer.stop(false)
+		$PlayerSpawn/PlayerAttack_AnimationPlayer.advance(0)
+		input_timer+=delta
+		$HUD/AttackMessages.popup()
+		if (Mario.checkforAttackInput() == true):
+			if (input_timer<input_timer_max): # if input within timelimit
+				$HUD/AttackMessages/GratsMessage.show()
+				$HUD/AttackMessages/Dmg_Info.text="1"
+				double_Attack=true
+				actionCommand_Complete=true
+				plrAttackPhase=Attack_Phases.IN_PROGRESS
+				$PlayerSpawn/PlayerAttack_AnimationPlayer.play()
+				$PlayerSpawn/PlayerAttack_AnimationPlayer.advance(0)
+				$HUD/AttackMessages/Dmg_Info.show()
+		else:
+			$HUD/AttackMessages/NintendoAButton.show()
+			$PlayerSpawn/PlayerAttack_AnimationPlayer.stop()
+			$PlayerSpawn/PlayerAttack_AnimationPlayer.advance(0)
+			plrAttackPhase=Attack_Phases.ACTION_COMMAND
+			# dont do anything until input_timer>= input_timer_max:
+			if input_timer>= input_timer_max:
+				$HUD/AttackMessages/NintendoAButton.hide()
+				double_Attack=false
+				actionCommand_Complete=true
+				plrAttackPhase=Attack_Phases.IN_PROGRESS
+				$PlayerSpawn/PlayerAttack_AnimationPlayer.play()
+	
+func _process_Phase_Finishing(delta):
+	$HUD/AttackMessages.hide()
+	$HUD/AttackMessages/NintendoAButton.hide()
+	$HUD/AttackMessages/GratsMessage.hide()
+	$PlayerSpawn/PlayerAttack_AnimationPlayer.play("run_and_jump_up")
+	if Globals.playerGoesFirst==true:
+		Globals.playerGoesFirst=false
+		$PlayerSpawn/PlayerAttack_AnimationPlayer.advance(0)
+		Mario.state=Globals.MarioStates.E
+
+		#	if double_Attack==true:
+		#		enemy.receive_damage(1)
+		if Globals.playerGoesFirst==true:
+			resetCombatants(false)
+			plrAttackPhase=Attack_Phases.FREE_ATTACK
+			Globals.playerGoesFirst==false
+		else:
+			resetCombatants(false)
+			$PlayerSpawn/PlayerAttack_AnimationPlayer.play("reset")
+			plrAttackPhase=Attack_Phases.WAITING_FOR_TURN
+
+	
+
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	var plrAnimationPlayer: AnimationPlayer
@@ -226,79 +310,15 @@ func _process(delta):
 		if Globals.playerTurn == true: # if it's players turn...				
 			match plrAttackPhase:
 				Attack_Phases.FREE_ATTACK:
-					if plrAnimationPlayer.current_animation != "jump_on" and \
-						actionCommand_Complete == false:
-						plrAnimationPlayer.current_animation="jump_on"
-					plrAttackPhase=Attack_Phases.IN_PROGRESS
+					_process_Phase_FreeAttack(delta)
 				Attack_Phases.WAITING_FOR_TURN:
-					if Globals.playerGoesFirst==true:
-						plrAttackPhase=Attack_Phases.FREE_ATTACK
-					else:
-						emit_signal("get_player_move", delta)
-						# ... Make sure enemy position is reset, ...
-						$EnemySpawn/EnemyAttack_AnimationPlayer.stop(true)
-						$EnemySpawn/EnemyAttack_AnimationPlayer.seek(0,true)
-						if player_response=="":
-							$PlayerSpawn/PlayerAttack_AnimationPlayer.play("reset")
-							$PlayerSpawn/PlayerAttack_AnimationPlayer.advance(0)
-							plrAttackPhase=Attack_Phases.WAITING_FOR_TURN
-						else:
-							actionCommand_Complete=false
+					_process_Phase_WaitingForTurn(delta)
 				Attack_Phases.IN_PROGRESS:
-					if $PlayerSpawn/PlayerAttack_AnimationPlayer. \
-					   current_animation == "jump_on":
-						if $PlayerSpawn/PlayerAttack_AnimationPlayer. \
-						   current_animation_position==0:
-							plrAttackPhase=Attack_Phases.ACTION_COMMAND
-							
+					_process_Phase_InProgress(delta)							
 				Attack_Phases.ACTION_COMMAND:
-					if actionCommand_Complete == true:
-						plrAttackPhase=Attack_Phases.IN_PROGRESS
-
-					$PlayerSpawn/PlayerAttack_AnimationPlayer.stop(false)
-					$PlayerSpawn/PlayerAttack_AnimationPlayer.advance(0)
-					input_timer+=delta
-					$HUD/AttackMessages.popup()
-					if (Mario.checkforAttackInput() == true):
-						if (input_timer<input_timer_max): # if input within timelimit
-							$HUD/AttackMessages/GratsMessage.show()
-							$HUD/AttackMessages/Dmg_Info.text="1"
-							double_Attack=true
-							actionCommand_Complete=true
-							plrAttackPhase=Attack_Phases.IN_PROGRESS
-							$PlayerSpawn/PlayerAttack_AnimationPlayer.play()
-							$PlayerSpawn/PlayerAttack_AnimationPlayer.advance(0)
-							$HUD/AttackMessages/Dmg_Info.show()
-					else:
-						$HUD/AttackMessages/NintendoAButton.show()
-						$PlayerSpawn/PlayerAttack_AnimationPlayer.stop()
-						$PlayerSpawn/PlayerAttack_AnimationPlayer.advance(0)
-						plrAttackPhase=Attack_Phases.ACTION_COMMAND
-						# dont do anything until input_timer>= input_timer_max:
-						if input_timer>= input_timer_max:
-							$HUD/AttackMessages/NintendoAButton.hide()
-							double_Attack=false
-							actionCommand_Complete=true
-							plrAttackPhase=Attack_Phases.IN_PROGRESS
+					_process_Phase_ActionCommand(delta)
 				Attack_Phases.FINISHING:
-					$HUD/AttackMessages.hide()
-					$HUD/AttackMessages/NintendoAButton.hide()
-					$HUD/AttackMessages/GratsMessage.hide()
-					$PlayerSpawn/PlayerAttack_AnimationPlayer.play("run_and_jump_up")
-					if Globals.playerGoesFirst==true:
-						Globals.playerGoesFirst=false
-					$PlayerSpawn/PlayerAttack_AnimationPlayer.advance(0)
-
-				#	if double_Attack==true:
-				#		enemy.receive_damage(1)
-					if Globals.playerGoesFirst==true:
-						resetCombatants(false)
-						plrAttackPhase=Attack_Phases.FREE_ATTACK
-						Globals.playerGoesFirst==false
-					else:
-						resetCombatants(false)
-						$PlayerSpawn/PlayerAttack_AnimationPlayer.play("reset")
-						plrAttackPhase=Attack_Phases.WAITING_FOR_TURN
+					_process_Phase_Finishing(delta)
 			### if player_Attack_Started: # once player has specified their attack
 			###	# start player attack
 			###	_on_BattleArena_player_attack(delta, "Jump")
@@ -384,86 +404,6 @@ func _on_BattleArena_player_attack(delta, playerAttack:String):
 		plrAttackPhase=Attack_Phases.IN_PROGRESS
 		if playerAttack=="Jump":
 			$PlayerSpawn/PlayerAttack_AnimationPlayer.play("run_and_jump_up")
-#	var setupVariables = false
-#	if player_Attack_Finished==false:
-#		Mario.direction=Vector3.RIGHT
-#		Mario.state=Mario.states.E
-#	$PlayerSpawn/PlayerAttack_AnimationPlayer.play("run_and_jump_up")
-#	if Mario.transform.origin.y>2.5: # if we are off ground level (2.5) then 
-#									 #  jump
-#		Mario.state=Mario.states.JUMP
-#	elif $PlayerSpawn/PlayerAttack_AnimationPlayer.is_playing() and \
-#		$PlayerSpawn/PlayerAttack_AnimationPlayer.current_animation == "run_and_jump_up":
-#		Mario.state=Mario.states.E
-#	else:
-#		Mario.state=Mario.states.IDLE
-#		Mario.get_child(0).play("idleDown")
-#	if player_Attack_Finished:
-#		var double_Attack
-#		if !setupVariables:
-#			double_Attack = false
-#		time_limited_input_check=true
-#		while input_timer<input_timer_max: 
-#			input_timer+=delta
-#			$HUD/AttackMessages.popup()
-#			double_Attack=Mario.checkforAttackInput()
-#			if double_Attack==false:
-#				if input_timer>=input_timer_max:
-#					$HUD/AttackMessages.hide()
-#					break
-#				yield()
-#			else:
-#				double_Attack=true
-#				$HUD/AttackMessages/GratsMessage.show()
-#				$HUD/AttackMessages/NintendoAButton.hide()
-#
-#				break
-#		input_timer=0
-#		player_Reached_Target=false
-#
-#		if double_Attack==false and player_jump_max==-1:
-#			player_jump_max=1
-#		#var player_original_position = player.transform.origin
-#		if double_Attack==true and player_jump_max==-1:
-#			player_jump_max=2
-#
-#		#var hitEnemy=false
-#		var temp_started = null
-#		if temp_started == null and player_jump_num==-1:
-#			temp_started=false
-#			player_jump_num=0
-#		if input_timer==0:
-#			if player_jump_num<=player_jump_max:
-#				temp_started=true
-#				if !finished_Drop_Movement:
-#					$PlayerSpawn/PlayerAttack_AnimationPlayer.play("jump_on")
-#					yield()
-#				$PlayerSpawn/PlayerAttack_AnimationPlayer.stop(true)
-#				$PlayerSpawn/PlayerAttack_AnimationPlayer.seek(0, true)
-#				player_jump_num+=1
-#				print_debug(player_jump_max)
-#				if player_jump_max-player_jump_num==1: # we need to update player position if we 
-#								  # still have another attack to go
-#					finished_Drop_Movement=false
-#					yield()
-#			else:
-#				$PlayerSpawn/PlayerAttack_AnimationPlayer.stop(true)
-#				$PlayerSpawn/PlayerAttack_AnimationPlayer.set_current_animation("run_and_jump_up")
-#
-#		if player_jump_max-player_jump_num==0 and finished_Drop_Movement:
-#			player_Reached_Target=true
-#		if player_Reached_Target==true:
-#			$PlayerSpawn/PlayerAttack_AnimationPlayer.stop(true)
-#			$PlayerSpawn/PlayerAttack_AnimationPlayer.set_current_animation("run_and_jump_up")
-#			$HUD/AttackMessages/Dmg_Info.text=str(player_jump_max)
-#			$HUD/AttackMessages.hide()
-#			Globals.playerGoesFirst=false
-#			player_Attack_Started=false
-#			player_Reached_Target=false
-#			resetCombatants()
-#	else:
-#		yield()
-
 
 func _on_PlayerAttack_AnimationPlayer_animation_changed(old_name, new_name):
 	Mario.transform.origin=$PlayerSpawn.transform.origin

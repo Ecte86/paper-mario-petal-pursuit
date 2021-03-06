@@ -25,6 +25,19 @@ enum MarioStats{
 	PETAL_POWER = 6,
 	COINS = 7
 }
+enum MarioStates {
+	IDLE = 0
+	NW = 1
+	SW = 2
+	SE = 3
+	NE = 4
+	N = 5
+	S = 6
+	E = 7
+	W = 8
+	JUMP = 9
+	IGNORE = 99
+}
 
 enum EnemyHP {
 	Goomba = 3
@@ -106,6 +119,7 @@ func set_Mario(node_Modified_Mario):
 		self.remove_child(self.get_child(0))
 	self.add_child_below_node(self,node_Modified_Mario.duplicate())
 	node_Mario=self.get_child(0)
+
 
 
 func goto_scene(path):
